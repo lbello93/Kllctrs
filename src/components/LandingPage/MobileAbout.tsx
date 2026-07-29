@@ -33,7 +33,7 @@ export default function MobileAbout() {
       <div className="relative z-10 h-full">
         {/* Label */}
         <div className="absolute left-[34px] top-[30px] flex items-center gap-6">
-          <Image src="/Gem_Pink.png" alt="Gem" width={16} height={29} />
+          <Image src="/footer/Gem_Pink.png" alt="Gem" width={16} height={29} />
 
           <span
             className={`${spaceGrotesk.className} text-[14px] leading-[18px] tracking-[0.15em] uppercase text-white font-medium`}

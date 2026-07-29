@@ -23,7 +23,7 @@ export default function MobileExplore() {
       {/* Label */}
       <div className="absolute left-1/2 top-[24px] -translate-x-1/2 flex items-end gap-[9px]">
         <Image
-          src="/Gem_Pink.png"
+          src="/footer/Gem_Pink.png"
           alt="Gem"
           width={13}
           height={24}

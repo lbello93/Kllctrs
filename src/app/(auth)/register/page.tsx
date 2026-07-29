@@ -155,7 +155,7 @@ export default function RegisterPage() {
           <div className="flex items-center justify-center gap-2.5 mb-8">
             <div className="w-10 h-10 rounded-xl overflow-hidden">
               <Image
-                src="/Gem_Pink.png"
+                src="/footer/Gem_Pink.png"
                 alt="Logo"
                 width={24}
                 height={24}
