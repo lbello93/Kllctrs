@@ -11,8 +11,11 @@ import Image from "next/image";
 function RegisterForm() {
   const router = useRouter();
   const supabase = createClient();
+  const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -26,12 +29,36 @@ function RegisterForm() {
       setLoading(false);
       return;
     }
+    if (password !== confirmPassword) {
+      setError("Passwords do not match");
+      setLoading(false);
+      return;
+    }
+
+    if (username.length < 3) {
+      setError("Username must be at least 3 characters");
+      setLoading(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9_]+$/.test(username)) {
+      setError("Username can only contain letters, numbers, and underscores");
+      setLoading(false);
+      return;
+    }
 
     // Sign up — with email confirmation OFF in Supabase,
     // this immediately creates a session (JWT) and logs the user in
     const { data, error: signUpError } = await supabase.auth.signUp({
       email,
       password,
+      options: {
+        emailRedirectTo: `${window.location.origin}/callback`,
+        data: {
+          full_name: fullName,
+          username: username,
+        },
+      },
     });
 
     if (signUpError) {
@@ -40,29 +67,11 @@ function RegisterForm() {
       return;
     }
 
-    // If session exists, user is logged in — redirect to profile
-    if (data.user) {
-      const { error: profileError } = await supabase.from("profiles").insert({
-        id: data.user.id,
-        email: data.user.email,
-      });
+    console.log("Signup Result:", data);
+    console.log("Signup Error:", signUpError);
 
-      if (profileError) {
-        console.error("Profile creation error:", profileError);
-        setError("Failed to create profile");
-        setLoading(false);
-        return;
-      }
-    }
-
-    if (data.session) {
-      router.push("/profile");
-      router.refresh();
-      return;
-    }
-
-    // Fallback: if somehow no session, go to login
-    router.push("/login");
+    router.push(`/verify-email?email=${encodeURIComponent(email)}`);
+    return;
   };
 
   const inputClass =
@@ -81,6 +90,28 @@ function RegisterForm() {
       </div>
 
       <form onSubmit={handleSignup} className="space-y-3 sm:space-y-4">
+        <div>
+          <label className={labelClass}>Full Name</label>
+          <input
+            type="text"
+            required
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            placeholder="John Doe"
+            className={inputClass}
+          />
+        </div>
+        <div>
+          <label className={labelClass}>Username</label>
+          <input
+            type="text"
+            required
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            placeholder="john_doe"
+            className={inputClass}
+          />
+        </div>
         <div>
           <label className={labelClass}>Email</label>
           <input
@@ -107,6 +138,17 @@ function RegisterForm() {
           <p className="text-xs text-[#4a3f6b]/35 mt-1.5">
             At least 6 characters
           </p>
+        </div>
+        <div>
+          <label className={labelClass}>Confirm Password</label>
+          <input
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            placeholder="••••••••"
+            className={inputClass}
+          />
         </div>
 
         {error && (
