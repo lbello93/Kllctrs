@@ -31,7 +31,7 @@ export function Footer() {
                 className="relative w-10 h-10 rounded-xl overflow-hidden "
               >
                 <Image
-                  src="/Gem_pink.png"
+                  src="/footer/Gem_Pink.png"
                   alt="KLLCTRS AI"
                   fill
                   className="object-contain p-1"
