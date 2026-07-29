@@ -78,7 +78,11 @@ export default function AppraiseToolShowcase() {
         {/* Left Content */}
         <div className="w-[463px]">
           <div className="flex items-center gap-4 mb-[64px]">
-            <img src="/Gem_Pink.png" alt="Gem" className="w-[16px] h-[29px]" />
+            <img
+              src="/footer/Gem_Pink.png"
+              alt="Gem"
+              className="w-[16px] h-[29px]"
+            />
 
             <span className="uppercase tracking-[0.15em] text-[14px] font-medium text-[#151E3C]">
               Content

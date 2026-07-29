@@ -15,7 +15,7 @@ export default function AboutSection() {
             {/* Label */}
             <div className="flex items-center gap-[24px]">
               <img
-                src="/Gem_Pink.png"
+                src="/footer/Gem_Pink.png"
                 alt="Gem"
                 className="w-[16px] h-[29px] object-contain"
               />

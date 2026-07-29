@@ -30,7 +30,7 @@ export default function ShopShowcase() {
             {/* Label */}
             <div className="flex items-center gap-[16px]">
               <img
-                src="/Gem_Pink.png"
+                src="/footer/Gem_Pink.png"
                 alt="Gem"
                 className="w-[16px] h-[29px]"
               />

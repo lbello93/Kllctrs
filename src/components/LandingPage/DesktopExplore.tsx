@@ -9,7 +9,11 @@ export default function ExploreSection() {
       <div className="w-[1320px] h-[395px] flex items-center justify-between">
         <div className="w-[463px] flex flex-col">
           <div className="flex items-center gap-[24px]">
-            <img src="/Gem_Pink.png" alt="Gem" className="w-[16px] h-[29px]" />
+            <img
+              src="/footer/Gem_Pink.png"
+              alt="Gem"
+              className="w-[16px] h-[29px]"
+            />
 
             <span className="text-[14px] leading-[18px] tracking-[0.15em] uppercase font-medium text-[#151E3C]">
               Explore

@@ -162,7 +162,7 @@ export default function ChatWindow() {
             <div className="px-4 py-3 border-b border-violet-100 bg-gradient-to-r from-violet-50 to-fuchsia-50 flex items-center gap-3 shrink-0">
               <div className="relative w-8 h-8 rounded-xl overflow-hidden shrink-0 shadow-md shadow-violet-500/20">
                 <Image
-                  src="/Gem_Pink.png"
+                  src="/footer/Gem_Pink.png"
                   alt="KLLCTRS AI"
                   fill
                   sizes="40px"

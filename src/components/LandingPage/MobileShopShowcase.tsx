@@ -26,7 +26,7 @@ export default function MobileShopShowcase() {
           {/* Label */}
           <div className="flex items-center justify-center gap-4">
             <Image
-              src="/Gem_Pink.png"
+              src="/footer/Gem_Pink.png"
               alt="Gem"
               width={16}
               height={29}
