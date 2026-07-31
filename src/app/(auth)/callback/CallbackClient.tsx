@@ -114,7 +114,7 @@ export default function CallbackClient() {
         // ===========================
         // Success
         // ===========================
-        router.replace("/dashboard");
+        router.replace("/profile");
         router.refresh();
       } catch (err) {
         console.error(err);
