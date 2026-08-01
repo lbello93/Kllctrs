@@ -1,0 +1,20 @@
+export const selectTriggerClass = `
+h-11
+w-full
+rounded-xl
+border
+border-white/10
+bg-[#1E1240]
+text-left
+text-sm
+font-normal
+text-white
+transition
+hover:border-[#E8B85C]/40
+focus:ring-2
+focus:ring-[#E8B85C]/20
+focus:ring-offset-0
+disabled:cursor-not-allowed
+disabled:opacity-60
+data-[placeholder]:text-white/40
+`;
