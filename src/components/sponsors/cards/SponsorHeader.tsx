@@ -1,5 +1,6 @@
 import Image from "next/image";
 import SponsorStatBox from "./SponsorStatBox";
+import { getSponsorLogo } from "@/lib/sponsors/sponsorLogos";
 
 import type { Sponsor } from "@/types";
 
@@ -8,15 +9,17 @@ interface Props {
 }
 
 export default function SponsorHeader({ sponsor }: Props) {
+  const logo = getSponsorLogo(sponsor.name);
+
   return (
     <div className="flex flex-row items-center justify-between w-full h-[77px] gap-[13px]">
       {/* Left Section */}
       <div className="flex flex-row items-center gap-[13px] flex-1 min-w-0">
         {/* Logo */}
         <div className="relative w-[56px] h-[56px] rounded-full bg-[#D9D9D9] overflow-hidden shrink-0">
-          {sponsor.logo_url ? (
+          {logo ? (
             <Image
-              src={sponsor.logo_url}
+              src={logo}
               alt={sponsor.name}
               fill
               sizes="56px"
