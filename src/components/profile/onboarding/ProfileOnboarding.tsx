@@ -14,7 +14,9 @@ import CollectorTypeStep from "./steps/CollectorTypeStep";
 import FavoriteGamesStep from "./steps/FavoriteGamesStep";
 import NotificationStep from "./steps/NotificationStep";
 import FinishStep from "./steps/FinishStep";
+
 import { StepLayout } from "./shared/StepLayout";
+import ExperienceStep from "./steps/ExperienceStep";
 
 interface ProfileOnboardingProps {
   user: any;
@@ -33,6 +35,7 @@ function profileToOnboardingData(profile: any): OnboardingData {
     state: profile?.state ?? undefined,
     country: profile?.country ?? undefined,
     collector_type: profile?.collector_type ?? undefined,
+    years_collecting: profile?.years_collecting ?? undefined,
     favorite_games: profile?.favorite_games ?? [],
     event_notifications: profile?.event_notifications ?? true,
     shop_notifications: profile?.shop_notifications ?? true,
@@ -122,7 +125,8 @@ export default function ProfileOnboarding({
 
       case "collector":
         return <CollectorTypeStep data={data} updateData={updateData} />;
-
+      case "experience":
+        return <ExperienceStep data={data} updateData={updateData} />;
       case "games":
         return <FavoriteGamesStep data={data} updateData={updateData} />;
 

@@ -36,15 +36,13 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
   };
 
   const collectorTypeLabel = profile?.collector_type
-    ? collectorTypeLabels[profile.collector_type] ?? profile.collector_type
+    ? (collectorTypeLabels[profile.collector_type] ?? profile.collector_type)
     : null;
 
-  const memberSince = user?.created_at
-    ? new Date(user.created_at).toLocaleDateString("en-US", {
-        month: "long",
-        year: "numeric",
-      })
-    : "2026";
+  const collectingSinceYear =
+    typeof profile?.years_collecting === "number"
+      ? new Date().getFullYear() - profile.years_collecting
+      : null;
 
   const isPro = user?.user_metadata?.subscription_tier === "pro_beta";
 
@@ -79,7 +77,9 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
               </div>
 
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-white/90">
-                <span>Collecting since {memberSince}</span>
+                {collectingSinceYear && (
+                  <span>Collecting since {collectingSinceYear}</span>
+                )}
 
                 {location && (
                   <span className="flex items-center gap-1.5">

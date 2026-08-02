@@ -5,7 +5,13 @@ module.exports = {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        "space-grotesk": ["var(--font-space)"],
+        "unica-one": ["var(--font-unica)"],
+        inter: ["var(--font-inter)"],
+      },
+    },
   },
   plugins: [],
 };

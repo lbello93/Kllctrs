@@ -7,6 +7,7 @@ const STEPS = [
   "basic",
   "location",
   "collector",
+  "experience",
   "games",
   "notifications",
   "finish",
@@ -23,6 +24,7 @@ export interface OnboardingData {
   state?: string;
   country?: string;
   collector_type?: string;
+  years_collecting?: number;
   favorite_games?: string[];
   event_notifications?: boolean;
   shop_notifications?: boolean;

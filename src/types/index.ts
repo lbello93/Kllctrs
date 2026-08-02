@@ -104,3 +104,14 @@ export interface EventFilters {
   dateTo?: string
   keyword?: string
 }
+
+export interface EventReview {
+  id: string;
+  event_id: string;
+  user_id: string;
+  reviewer_name: string;
+  reviewer_avatar_url: string | null;
+  rating: number;
+  comment: string;
+  created_at: string;
+}

@@ -110,6 +110,7 @@ export const ONBOARDING_STEPS: OnboardingStep[] = [
   "basic",
   "location",
   "collector",
+  "experience",
   "games",
   "notifications",
   "finish",
@@ -135,6 +136,11 @@ export const ONBOARDING_STEP_INFO = [
     id: "collector",
     title: "Collector Type",
     description: "Help us tailor your experience.",
+  },
+{
+    id: "experience",
+    title: "Collecting Experience",
+    description: "How long have you been collecting?",
   },
   {
     id: "games",
