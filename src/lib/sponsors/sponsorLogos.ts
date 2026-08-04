@@ -3,7 +3,7 @@ const SPONSOR_LOGOS: Record<string, string> = {
   "eBay": "ebay.png",
   "Fanatics": "fanatics.png",
   "Goldin": "Goldin.png",
-  "Heritage": "Heritage.png",
+  "Heritage Auctions": "He.png",
   "Panini": "panini.png",
   "PSA": "PSA.png",
   "SGC": "SGC.png",
