@@ -82,10 +82,12 @@ export async function POST(req: NextRequest) {
 
   const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
   if (profile?.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-
-  const { states } = (await req.json()) as { states: string[] };
+     
+  const { states, month } = (await req.json()) as {
+        states: string[];
+        month?: string | null;
+  };
   if (!states?.length) return NextResponse.json({ error: "No states provided" }, { status: 400 });
-
   let inserted = 0;
   let skipped = 0;
   const results: { name: string; city: string; state: string }[] = [];
@@ -108,7 +110,7 @@ export async function POST(req: NextRequest) {
       for (const url of eventUrls) {
         const extracted = await extractEvent(url);
         if (!extracted || !extracted.date_start || !extracted.city) continue;
-
+        if (month && !extracted.date_start.startsWith(month)) continue;
         const dedupeHash = generateDedupeHash(extracted.name, extracted.date_start, extracted.city);
         const { data: existing } = await supabaseAdmin
           .from("events")

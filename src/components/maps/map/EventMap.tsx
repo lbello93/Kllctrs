@@ -26,8 +26,10 @@ export default function EventMap({
 }: Props) {
   const [infoEvent, setInfoEvent] = useState<Event | null>(null);
 
-  const eventsWithCoords = events.filter((e) => e.lat && e.lng);
-
+  const eventsWithCoords = events
+    .filter((e) => e.lat != null && e.lng != null)
+    .map((e) => ({ ...e, lat: Number(e.lat), lng: Number(e.lng) }))
+    .filter((e) => !isNaN(e.lat) && !isNaN(e.lng));
   return (
     <APIProvider apiKey={MAPS_KEY}>
       <Map
@@ -61,7 +63,10 @@ export default function EventMap({
 
         {infoEvent && infoEvent.lat && infoEvent.lng && (
           <InfoWindow
-            position={{ lat: infoEvent.lat, lng: infoEvent.lng }}
+            position={{
+              lat: Number(infoEvent.lat),
+              lng: Number(infoEvent.lng),
+            }}
             onCloseClick={() => setInfoEvent(null)}
           >
             <div className="p-1 max-w-[220px]">
