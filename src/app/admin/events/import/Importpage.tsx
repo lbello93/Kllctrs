@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import { Upload, Loader2, CheckCircle2, X } from "lucide-react";
@@ -57,7 +57,6 @@ const US_STATES: { slug: string; label: string }[] = [
 ];
 
 const MONTHS = [
-  { value: "", label: "All Months" },
   { value: "01", label: "January" },
   { value: "02", label: "February" },
   { value: "03", label: "March" },
@@ -74,6 +73,7 @@ const MONTHS = [
 
 const CURRENT_YEAR = new Date().getFullYear();
 const CURRENT_MONTH = String(new Date().getMonth() + 1).padStart(2, "0");
+
 interface ScrapeResult {
   inserted: number;
   skipped: number;
@@ -81,10 +81,16 @@ interface ScrapeResult {
   errors: string[];
 }
 
+interface SponsorScanResult {
+  name: string;
+  city: string;
+  state: string;
+  sponsors: string[];
+}
+
 export default function ImportPage() {
   const [selectedStates, setSelectedStates] = useState<string[]>([]);
-  const CURRENT_MONTH = String(new Date().getMonth() + 1).padStart(2, "0");
-  const [selectedMonth, setSelectedMonth] = useState<string>(CURRENT_MONTH);
+  const [selectedMonths, setSelectedMonths] = useState<string[]>([CURRENT_MONTH]);
   const [isRunning, setIsRunning] = useState(false);
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [totals, setTotals] = useState({ inserted: 0, skipped: 0 });
@@ -94,14 +100,30 @@ export default function ImportPage() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const BATCH_SIZE = 5;
 
+  const [sponsorScanRunning, setSponsorScanRunning] = useState(false);
+  const [sponsorScanResults, setSponsorScanResults] = useState<SponsorScanResult[]>([]);
+  const [sponsorScanTotals, setSponsorScanTotals] = useState({
+    inserted: 0,
+    updated: 0,
+    sponsorsFound: 0,
+  });
+
   const toggleState = (slug: string) => {
     setSelectedStates((prev) =>
       prev.includes(slug) ? prev.filter((s) => s !== slug) : [...prev, slug],
     );
   };
 
-  const selectAll = () => setSelectedStates(US_STATES.map((s) => s.slug));
-  const clearAll = () => setSelectedStates([]);
+  const toggleMonth = (value: string) => {
+    setSelectedMonths((prev) =>
+      prev.includes(value) ? prev.filter((m) => m !== value) : [...prev, value],
+    );
+  };
+
+  const selectAllStates = () => setSelectedStates(US_STATES.map((s) => s.slug));
+  const clearAllStates = () => setSelectedStates([]);
+  const selectAllMonths = () => setSelectedMonths(MONTHS.map((m) => m.value));
+  const clearAllMonths = () => setSelectedMonths([]);
 
   const runScrape = async (statesToRun: string[]) => {
     if (statesToRun.length === 0) return;
@@ -111,6 +133,11 @@ export default function ImportPage() {
     setAllResults([]);
     setAllErrors([]);
     setProgress({ done: 0, total: statesToRun.length });
+
+    const monthsToRun =
+      selectedMonths.length > 0
+        ? selectedMonths.map((m) => `${CURRENT_YEAR}-${m}`)
+        : [null];
 
     for (let i = 0; i < statesToRun.length; i += BATCH_SIZE) {
       if (cancelledRef.current) break;
@@ -124,7 +151,7 @@ export default function ImportPage() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
             states: batch,
-            month: selectedMonth ? `${CURRENT_YEAR}-${selectedMonth}` : null,
+            months: monthsToRun,
           }),
           signal: controller.signal,
         });
@@ -162,6 +189,50 @@ export default function ImportPage() {
     abortControllerRef.current?.abort();
   };
 
+  const runSponsorScan = async () => {
+    setSponsorScanRunning(true);
+    setSponsorScanResults([]);
+    setSponsorScanTotals({ inserted: 0, updated: 0, sponsorsFound: 0 });
+
+    const PAGES_PER_BATCH = 3;
+    const MAX_PAGES = 60;
+
+    for (let start = 1; start <= MAX_PAGES; start += PAGES_PER_BATCH) {
+      try {
+        const res = await fetch("/api/admin/events/scan-sponsors", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ startPage: start, pageCount: PAGES_PER_BATCH }),
+        });
+        const data = await res.json();
+
+        if (
+          (data.inserted ?? 0) === 0 &&
+          (data.updated ?? 0) === 0 &&
+          (data.skipped ?? 0) === 0
+        ) {
+          break;
+        }
+
+        setSponsorScanTotals((prev) => ({
+          inserted: prev.inserted + (data.inserted ?? 0),
+          updated: prev.updated + (data.updated ?? 0),
+          sponsorsFound: prev.sponsorsFound + (data.sponsorsFound ?? 0),
+        }));
+        setSponsorScanResults((prev) => [
+          ...prev,
+          ...(data.results ?? []).filter(
+            (r: SponsorScanResult) => r.sponsors.length > 0,
+          ),
+        ]);
+      } catch {
+        break;
+      }
+    }
+
+    setSponsorScanRunning(false);
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -169,36 +240,19 @@ export default function ImportPage() {
           Import Events
         </h1>
         <p className="text-sm text-[#4a3f6b]/60 mt-1">
-          Select states to scrape, or run all 50
+          Select states and months to scrape, or run all 50 states
         </p>
       </div>
 
-      {/* State picker */}
+      {/* Month picker */}
       <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm p-6">
-        <div className="mb-4 flex items-center gap-3">
-          <label className="text-sm font-bold text-[#4a3f6b]/70">
-            Filter by month:
-          </label>
-          <select
-            value={selectedMonth}
-            onChange={(e) => setSelectedMonth(e.target.value)}
-            disabled={isRunning}
-            className="rounded-lg border border-violet-200 px-3 py-1.5 text-sm text-[#1a0a3d] outline-none disabled:opacity-50"
-          >
-            {MONTHS.map((m) => (
-              <option key={m.value} value={m.value}>
-                {m.label}
-              </option>
-            ))}
-          </select>
-        </div>
         <div className="mb-4 flex items-center justify-between">
           <h2 className="text-sm font-black uppercase tracking-wider text-[#5f2eea]">
-            Select States ({selectedStates.length} selected)
+            Select Months ({selectedMonths.length} selected — leave empty for all)
           </h2>
           <div className="flex gap-2">
             <button
-              onClick={selectAll}
+              onClick={selectAllMonths}
               disabled={isRunning}
               className="text-xs font-bold text-[#5f2eea] hover:underline disabled:opacity-50"
             >
@@ -206,7 +260,55 @@ export default function ImportPage() {
             </button>
             <span className="text-xs text-[#4a3f6b]/30">·</span>
             <button
-              onClick={clearAll}
+              onClick={clearAllMonths}
+              disabled={isRunning}
+              className="text-xs font-bold text-[#4a3f6b]/50 hover:underline disabled:opacity-50"
+            >
+              Clear
+            </button>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-3 gap-2 sm:grid-cols-4 md:grid-cols-6">
+          {MONTHS.map((m) => (
+            <label
+              key={m.value}
+              className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-xs font-medium transition-colors ${
+                selectedMonths.includes(m.value)
+                  ? "border-[#5f2eea] bg-[#5f2eea]/8 text-[#5f2eea]"
+                  : "border-violet-100 text-[#4a3f6b]/60 hover:border-violet-200"
+              }`}
+            >
+              <input
+                type="checkbox"
+                checked={selectedMonths.includes(m.value)}
+                onChange={() => toggleMonth(m.value)}
+                disabled={isRunning}
+                className="accent-[#5f2eea]"
+              />
+              {m.label}
+            </label>
+          ))}
+        </div>
+      </div>
+
+      {/* State picker */}
+      <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm p-6">
+        <div className="mb-4 flex items-center justify-between">
+          <h2 className="text-sm font-black uppercase tracking-wider text-[#5f2eea]">
+            Select States ({selectedStates.length} selected)
+          </h2>
+          <div className="flex gap-2">
+            <button
+              onClick={selectAllStates}
+              disabled={isRunning}
+              className="text-xs font-bold text-[#5f2eea] hover:underline disabled:opacity-50"
+            >
+              Select All
+            </button>
+            <span className="text-xs text-[#4a3f6b]/30">·</span>
+            <button
+              onClick={clearAllStates}
               disabled={isRunning}
               className="text-xs font-bold text-[#4a3f6b]/50 hover:underline disabled:opacity-50"
             >
@@ -336,6 +438,57 @@ export default function ImportPage() {
           </div>
         </div>
       )}
+
+      {/* Sponsor Scan */}
+      <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm p-6">
+        <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-[#5f2eea]">
+          Site-Wide Sponsor Scan
+        </h2>
+        <p className="mb-4 text-xs text-[#4a3f6b]/60">
+          Scans every event listed on Card Show Hub (not just per-state
+          directories) and detects real brand sponsors, updating existing
+          events or adding new ones.
+        </p>
+
+        <button
+          onClick={runSponsorScan}
+          disabled={sponsorScanRunning}
+          className="flex items-center gap-2 rounded-lg bg-[#5f2eea] px-5 py-3 text-sm font-bold text-white hover:bg-[#4a1fa8] disabled:opacity-50"
+        >
+          {sponsorScanRunning ? (
+            <>
+              <Loader2 className="h-4 w-4 animate-spin" />
+              Scanning...
+            </>
+          ) : (
+            "Run Sponsor Scan"
+          )}
+        </button>
+
+        {(sponsorScanTotals.inserted > 0 || sponsorScanTotals.updated > 0) && (
+          <div className="mt-4 text-sm text-[#4a3f6b]/70">
+            {sponsorScanTotals.inserted} new events, {sponsorScanTotals.updated}{" "}
+            events updated with sponsor data, {sponsorScanTotals.sponsorsFound}{" "}
+            sponsor mentions found
+          </div>
+        )}
+
+        {sponsorScanResults.length > 0 && (
+          <div className="mt-4 max-h-64 space-y-2 overflow-y-auto">
+            {sponsorScanResults.map((r, i) => (
+              <div
+                key={i}
+                className="rounded-lg border border-violet-50 p-3 text-sm"
+              >
+                <div className="font-medium text-[#1a0a3d]">{r.name}</div>
+                <div className="text-xs text-[#4a3f6b]/50">
+                  {r.city}, {r.state} — sponsors: {r.sponsors.join(", ")}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

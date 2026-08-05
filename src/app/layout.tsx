@@ -1,4 +1,5 @@
 import "./globals.css";
+import type { Metadata } from "next";
 
 import { Navbar } from "../components/layout/navbar/Navbar";
 import { Footer } from "@/components/layout/footer";
@@ -8,6 +9,16 @@ import CookieBanner from "@/components/layout/CookieBanner";
 import { Toaster } from "sonner";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 import { Space_Grotesk, Inter, Unica_One } from "next/font/google";
+
+export const metadata: Metadata = {
+  title: "KLLCTRS",
+  description: "KLLCTRS",
+  icons: {
+    icon: "/Favicon/Group.svg",
+    shortcut: "/favicon.ico",
+    apple: "/Favicon/Group.svg",
+  },
+};
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
@@ -52,7 +63,6 @@ export default function RootLayout({
         <ChatWindow />
         <CookieBanner />
 
-        {/* SONNER TOASTS */}
         <AnalyticsTracker />
 
         <Toaster

@@ -22,10 +22,11 @@ const SCHEMA_PROMPT = `Extract structured event data from this trading card show
   "zip_code": string | null,
   "website": string | null (official show website, not cardshowhub.com),
   "categories": string[] (e.g. "Sports Cards", "Pokemon", "Magic: The Gathering"),
+  "sponsor_brands": string[] (any of these EXACT brand names mentioned as a sponsor, partner, or grading service on the page: "PSA", "Beckett", "SGC", "Topps", "Panini", "Upper Deck", "Goldin", "Heritage Auctions", "eBay", "Fanatics". Only include a brand if it is explicitly named on the page as a sponsor/partner/official grading service of THIS show. Do not include a brand just because a card of that brand is mentioned as being sold. Empty array if none found.),
   "description": string (150-250 words, engaging, collector-audience tone)
 }
 
-If a field isn't present on the page, use null. Do not fabricate data.`;
+If a field isn't present on the page, use null — except "description", which must always be filled in using only verified extracted fields. Do not fabricate names, dates, or addresses.`;
 
 function extractStaticMapCoords(html: string): { lat: number; lng: number } | null {
   const match = html.match(/center=(-?\d+\.\d+)%2C(-?\d+\.\d+)/);
@@ -78,10 +79,9 @@ async function scrapeEvent(url: string) {
   return result;
 }
 
-// Run: npx tsx scripts/scrape-event.ts <url>
 const url = process.argv[2];
 if (!url) {
-  console.error("Usage: npx tsx scripts/scrape-event.ts <event-url>");
+  console.error("Usage: npx tsx scripts/scrape-events.ts <event-url>");
   process.exit(1);
 }
 

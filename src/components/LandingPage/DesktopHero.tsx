@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Search } from "lucide-react";
@@ -15,6 +16,18 @@ const inter = Inter({
 });
 
 export default function HeroSection() {
+  const [query, setQuery] = useState("");
+
+  const handleSearch = (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    window.dispatchEvent(
+      new CustomEvent("kllctbls:chat", { detail: { message: trimmed } }),
+    );
+    setQuery("");
+  };
+
   return (
     <section className="relative w-full h-[710px] overflow-hidden bg-[#FEF9FF]">
       {/* Background */}
@@ -64,33 +77,53 @@ export default function HeroSection() {
 
         {/* Search */}
         <div className="mt-[97px]">
-          <div className="flex h-[40px] w-[576px] items-center justify-between rounded-full border border-[#B39EF9] bg-white px-4 shadow-sm">
-            <span className={`${inter.className} text-[14px] text-[#CBBEFB]`}>
-              Ask anything about the hobby...
-            </span>
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch(query);
+            }}
+            className="flex h-[40px] w-[576px] items-center justify-between rounded-full border border-[#B39EF9] bg-white px-4 shadow-sm"
+          >
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask anything about the hobby..."
+              className={`${inter.className} flex-1 bg-transparent text-[14px] text-black placeholder-[#CBBEFB] outline-none`}
+            />
 
-            <Search size={16} strokeWidth={1.6} className="text-[#5B18BE]" />
-          </div>
+            <button type="submit" aria-label="Search">
+              <Search size={16} strokeWidth={1.6} className="text-[#5B18BE]" />
+            </button>
+          </form>
 
           {/* Suggestions */}
           <div className="mt-2 flex gap-[6px]">
-            <div className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px]">
+            <button
+              onClick={() => handleSearch("best pokemon shops in chicago")}
+              className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px] hover:bg-[#E5DFFD] transition-colors"
+            >
               <span className="text-[11px] text-[#151E3C]">
                 best pokemon shops in chicago
               </span>
-            </div>
+            </button>
 
-            <div className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px]">
+            <button
+              onClick={() => handleSearch("where is Nationals 2026")}
+              className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px] hover:bg-[#E5DFFD] transition-colors"
+            >
               <span className="text-[11px] text-[#151E3C]">
                 where is Nationals 2026
               </span>
-            </div>
+            </button>
 
-            <div className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px]">
+            <button
+              onClick={() => handleSearch("top rookies to invest in 2026")}
+              className="flex h-[24px] items-center justify-center rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-[14px] hover:bg-[#E5DFFD] transition-colors"
+            >
               <span className="text-[11px] text-[#151E3C]">
                 top rookies to invest in 2026
               </span>
-            </div>
+            </button>
           </div>
         </div>
       </div>

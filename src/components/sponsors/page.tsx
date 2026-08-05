@@ -1,4 +1,4 @@
-﻿import SponsorsClient from "@/components/sponsors/SponsorsClients";
+import SponsorsClient from "@/components/sponsors/SponsorsClients";
 import { createClient } from "@/lib/supabase/server";
 import type { Sponsor } from "@/types";
 
@@ -17,7 +17,8 @@ export default async function SponsorsPage() {
     .gte("date_start", new Date().toISOString().split("T")[0])
     .order("date_start", { ascending: true });
 
-  const showsBySponsor: Record<
+  // Build a map: sponsor name -> list of upcoming events that mention it
+  const showsBySponsor: Record
     string,
     { id: string; name: string; slug: string; date_start: string }[]
   > = {};

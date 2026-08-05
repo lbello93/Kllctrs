@@ -11,11 +11,21 @@ import { useSponsorsFilter } from "./hooks/useSponsorsFilter";
 
 import { useState } from "react";
 
+interface ShowSummary {
+  id: string;
+  name: string;
+  slug: string;
+  date_start: string;
+}
 interface Props {
   initialSponsors: Sponsor[];
+  showsBySponsor: Record<string, ShowSummary[]>;
 }
 
-export default function SponsorsClients({ initialSponsors }: Props) {
+export default function SponsorsClients({
+  initialSponsors,
+  showsBySponsor,
+}: Props) {
   const [search, setSearch] = useState("");
 
   const [categoryFilter, setCategoryFilter] = useState("all");
@@ -50,7 +60,7 @@ export default function SponsorsClients({ initialSponsors }: Props) {
       {filtered.length === 0 ? (
         <EmptySponsors />
       ) : (
-        <SponsorsGrid sponsors={filtered} />
+        <SponsorsGrid sponsors={filtered} showsBySponsor={showsBySponsor} />
       )}
     </main>
   );

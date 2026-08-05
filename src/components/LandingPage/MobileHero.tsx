@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Search } from "lucide-react";
 import { Inter, Unica_One } from "next/font/google";
 
 const unica = Unica_One({
@@ -14,6 +16,18 @@ const inter = Inter({
 });
 
 export default function MobileHero() {
+  const [query, setQuery] = useState("");
+
+  const handleSearch = (text: string) => {
+    const trimmed = text.trim();
+    if (!trimmed) return;
+
+    window.dispatchEvent(
+      new CustomEvent("kllctbls:chat", { detail: { message: trimmed } }),
+    );
+    setQuery("");
+  };
+
   return (
     <section className="relative w-full h-[637px] bg-[#FEF9FF] overflow-hidden">
       {/* Background Map */}
@@ -61,17 +75,28 @@ export default function MobileHero() {
               Get Listed
             </Link>
           </div>
+
+          {/* Search */}
+          <form
+            onSubmit={(e) => {
+              e.preventDefault();
+              handleSearch(query);
+            }}
+            className="flex h-[36px] w-full items-center justify-between rounded-full border border-[#B39EF9] bg-white px-3 shadow-sm"
+          >
+            <input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Ask anything about the hobby..."
+              className={`${inter.className} flex-1 bg-transparent text-[12px] text-black placeholder-[#CBBEFB] outline-none`}
+            />
+
+            <button type="submit" aria-label="Search">
+              <Search size={14} strokeWidth={1.6} className="text-[#5B18BE]" />
+            </button>
+          </form>
         </div>
       </div>
     </section>
   );
 }
-
-// "use client";
-// export default function MobileHero() {
-//   return (
-//     <div className="fixed top-0 left-0 z-[9999] bg-red-500 text-white p-2">
-//       MOBILE HERO
-//     </div>
-//   );
-// }

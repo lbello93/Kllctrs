@@ -156,7 +156,7 @@ export default function ChatWindow() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
-            className="fixed bottom-24 right-6 z-50 w-[390px] max-w-[calc(100vw-3rem)] h-[560px] max-h-[calc(100vh-8rem)] bg-white border border-violet-100 rounded-2xl shadow-2xl shadow-violet-200/50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 z-50 w-[85vw] sm:w-[60vw] md:w-[30vw] max-w-[390px] h-[70vh] sm:h-[65vh] md:h-[60vh] max-h-[560px] bg-white border border-violet-100 rounded-2xl shadow-2xl shadow-violet-200/50 flex flex-col overflow-hidden"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-violet-100 bg-gradient-to-r from-violet-50 to-fuchsia-50 flex items-center gap-3 shrink-0">

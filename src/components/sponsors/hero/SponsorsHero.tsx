@@ -25,7 +25,7 @@ export default function SponsorsHero() {
 
       {/* Desktop Background */}
       <Image
-        src="/sponsors/sponsors.png"
+        src="/sponsors/sponsors.jpeg"
         alt="Brands Hero"
         fill
         priority
