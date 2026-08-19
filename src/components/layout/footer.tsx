@@ -45,8 +45,8 @@ export function Footer() {
             <FooterColumn
               title="Platform"
               items={[
-                { href: "/events", label: "Event Calendar" },
-                { href: "/shops", label: "Card Shops" },
+                { href: "/maps", label: "Event Calendar" },
+                { href: "/maps", label: "Card Shops" },
                 { href: "/sponsors", label: "Sponsors" },
                 { href: "/blog", label: "Blog" },
               ]}
