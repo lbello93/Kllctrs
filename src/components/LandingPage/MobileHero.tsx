@@ -69,7 +69,7 @@ export default function MobileHero() {
             </Link>
 
             <Link
-              href="/signup"
+              href="/shops/submit"
               className="w-[120px] h-[36px] bg-[#8B5CF6] border border-[#8B5CF6] rounded-[10px] flex items-center justify-center text-[14px] text-white"
             >
               Get Listed

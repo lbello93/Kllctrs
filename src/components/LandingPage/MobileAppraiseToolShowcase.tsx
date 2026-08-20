@@ -12,7 +12,7 @@ export default function MobileAppraiseToolShowcase() {
         <div className="flex flex-col items-center gap-12">
           <div className="flex items-center gap-4">
             <Image
-              src="/footer/Gem_Pink.png"
+              src="/Favicon/logo.png"
               alt="Gem"
               width={16}
               height={29}

@@ -79,7 +79,7 @@ export default function AppraiseToolShowcase() {
         <div className="w-[463px]">
           <div className="flex items-center gap-4 mb-[64px]">
             <img
-              src="/footer/Gem_Pink.png"
+              src="/Favicon/logo.png"
               alt="Gem"
               className="w-[16px] h-[29px]"
             />

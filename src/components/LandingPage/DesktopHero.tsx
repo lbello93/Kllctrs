@@ -68,7 +68,7 @@ export default function HeroSection() {
           </Link>
 
           <Link
-            href="/signup"
+            href="/shops/submit"
             className="flex h-[48px] w-[184px] items-center justify-center rounded-[10px] border border-[#8B5CF6] bg-[#8B5CF6] text-[14px] text-white transition hover:opacity-90"
           >
             Get Listed Today

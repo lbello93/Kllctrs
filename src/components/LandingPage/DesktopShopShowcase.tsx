@@ -30,7 +30,7 @@ export default function ShopShowcase() {
             {/* Label */}
             <div className="flex items-center gap-[16px]">
               <img
-                src="/footer/Gem_Pink.png"
+                src="/Favicon/logo.png"
                 alt="Gem"
                 className="w-[16px] h-[29px]"
               />
@@ -53,7 +53,7 @@ export default function ShopShowcase() {
 
           {/* CTA */}
           <Link
-            href="/signup"
+            href="/shops/submit"
             className="w-[140px] h-[40px] bg-[#8B5CF6] border border-[#8B5CF6] rounded-[10px] flex items-center justify-center text-[14px] leading-[17px] tracking-[-0.01em] text-white hover:opacity-90 transition"
           >
             Get Listed

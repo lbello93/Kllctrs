@@ -50,7 +50,7 @@ export default function MobileCTASection() {
           </Link>
 
           <Link
-            href="/signup"
+            href="/shops/submit"
             className={`${inter.className} w-[140px] h-[48px] bg-[#8B5CF6] border border-[#8B5CF6] rounded-[10px] flex items-center justify-center text-[14px] text-white`}
           >
             Get Listed
