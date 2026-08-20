@@ -19,51 +19,155 @@ function ContentCard({
   const isEditorial = tag === "Editorial";
 
   return (
-    <div className="w-[363px] h-[239px]">
-      {/* Header */}
+    <div
+      className="
+        group
+        relative
+        w-[363px]
+        h-[239px]
+        cursor-pointer
+        rounded-[20px]
+        transition-all
+        duration-300
+        ease-out
+        hover:-translate-y-2
+        hover:shadow-[0_18px_45px_rgba(139,92,246,0.28)]
+      "
+    >
+      {/* Soft hover glow */}
       <div
-        className={`h-[60px] rounded-t-[20px] px-4 py-[19px] flex items-start bg-cover bg-center ${
-          isEditorial ? "bg-[#8B5CF6]" : "bg-[#151E3C]"
-        }`}
-        style={
-          headerImage ? { backgroundImage: `url('${headerImage}')` } : undefined
-        }
-      >
+        className="
+          pointer-events-none
+          absolute
+          -inset-1
+          rounded-[22px]
+          bg-[#8B5CF6]
+          opacity-0
+          blur-xl
+          transition-opacity
+          duration-300
+          group-hover:opacity-20
+        "
+      />
+
+      {/* Card */}
+      <div className="relative h-full overflow-hidden rounded-[20px]">
+        {/* Header */}
         <div
-          className={`px-3 py-1 rounded-[10px] text-[11px] border ${
-            isEditorial
-              ? "bg-[#8B5CF6] border-[#CBBEFB] text-white"
-              : "bg-[#151E3C] border-[#8B9DD6] text-white"
-          }`}
+          className={`
+            relative
+            flex
+            h-[60px]
+            items-start
+            rounded-t-[20px]
+            bg-cover
+            bg-center
+            px-4
+            py-[19px]
+            transition-transform
+            duration-500
+            ease-out
+            group-hover:scale-[1.03]
+            ${isEditorial ? "bg-[#8B5CF6]" : "bg-[#151E3C]"}
+          `}
+          style={
+            headerImage
+              ? {
+                  backgroundImage: `url('${headerImage}')`,
+                }
+              : undefined
+          }
         >
-          {tag}
+          {/* Header overlay */}
+          {headerImage && (
+            <div className="absolute inset-0 bg-black/10 transition-colors duration-300 group-hover:bg-black/0" />
+          )}
+
+          {/* Tag */}
+          <div
+            className={`
+              relative
+              z-10
+              rounded-[10px]
+              border
+              px-3
+              py-1
+              text-[11px]
+              transition-all
+              duration-300
+              group-hover:translate-x-1
+              ${
+                isEditorial
+                  ? "border-[#CBBEFB] bg-[#8B5CF6] text-white"
+                  : "border-[#8B9DD6] bg-[#151E3C] text-white"
+              }
+            `}
+          >
+            {tag}
+          </div>
         </div>
-      </div>
 
-      {/* Body */}
-      <div className="h-[179px] bg-white rounded-b-[20px] p-6 flex flex-col justify-between">
-        <div>
-          <h3 className="text-[20px] leading-[20px] font-medium text-black mb-2">
-            {title}
-          </h3>
+        {/* Body */}
+        <div
+          className="
+            flex
+            h-[179px]
+            flex-col
+            justify-between
+            rounded-b-[20px]
+            bg-white
+            p-6
+            transition-colors
+            duration-300
+            group-hover:bg-[#FEF9FF]
+          "
+        >
+          <div>
+            <h3
+              className="
+                mb-2
+                text-[20px]
+                font-medium
+                leading-[20px]
+                text-black
+                transition-colors
+                duration-300
+                group-hover:text-[#151E3C]
+              "
+            >
+              {title}
+            </h3>
 
-          <p className="text-[12px] leading-[15px] text-black">{description}</p>
-        </div>
-
-        <div className="flex justify-between items-center text-[11px] text-black">
-          <div className="flex items-center gap-1">
-            <User size={14} />
-            <span>{author}</span>
+            <p className="text-[12px] leading-[15px] text-black">
+              {description}
+            </p>
           </div>
 
-          <div className="flex items-center gap-1">
-            <Clock3 size={14} />
-            <span>5 Mins Read</span>
-          </div>
+          {/* Meta */}
+          <div className="flex items-center justify-between text-[11px] text-black">
+            <div className="flex items-center gap-1">
+              <User
+                size={14}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>{author}</span>
+            </div>
 
-          <div className="flex items-center gap-1">
-            <Calendar size={14} />
-            <span>May 2024</span>
+            <div className="flex items-center gap-1">
+              <Clock3
+                size={14}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>5 Mins Read</span>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <Calendar
+                size={14}
+                className="transition-transform duration-300 group-hover:scale-110"
+              />
+              <span>May 2024</span>
+            </div>
           </div>
         </div>
       </div>
@@ -73,18 +177,18 @@ function ContentCard({
 
 export default function AppraiseToolShowcase() {
   return (
-    <section className="w-full h-[626px] bg-[#F2EFFE] flex justify-center">
-      <div className="w-[1245px] h-full flex items-center justify-between">
+    <section className="flex h-[626px] w-full justify-center bg-[#F2EFFE]">
+      <div className="flex h-full w-[1245px] items-center justify-between">
         {/* Left Content */}
         <div className="w-[463px]">
-          <div className="flex items-center gap-4 mb-[64px]">
+          <div className="mb-[64px] flex items-center gap-4">
             <img
               src="/Favicon/logo.png"
               alt="Gem"
-              className="w-[16px] h-[29px]"
+              className="h-[29px] w-[16px]"
             />
 
-            <span className="uppercase tracking-[0.15em] text-[14px] font-medium text-[#151E3C]">
+            <span className="text-[14px] font-medium uppercase tracking-[0.15em] text-[#151E3C]">
               Content
             </span>
           </div>
@@ -104,7 +208,24 @@ export default function AppraiseToolShowcase() {
 
           <Link
             href="/blog"
-            className="mt-8 w-[300px] h-[40px] border border-[#8B5CF6] rounded-[10px] flex items-center justify-center text-[#8B5CF6] text-[14px]"
+            className="
+              mt-8
+              flex
+              h-[40px]
+              w-[300px]
+              items-center
+              justify-center
+              rounded-[10px]
+              border
+              border-[#8B5CF6]
+              text-[14px]
+              text-[#8B5CF6]
+              transition-all
+              duration-300
+              hover:bg-[#8B5CF6]
+              hover:text-white
+              hover:shadow-[0_8px_24px_rgba(139,92,246,0.25)]
+            "
           >
             Explore Content
           </Link>

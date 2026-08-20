@@ -6,11 +6,17 @@ import { motion } from "framer-motion";
 import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import Image from "next/image";
 
-interface FooterProps {
-  onChatClick?: () => void;
-}
+export function Footer() {
+  const handleChatClick = () => {
+    window.dispatchEvent(
+      new CustomEvent("kllctbls:chat", {
+        detail: {
+          message: "",
+        },
+      }),
+    );
+  };
 
-export function Footer({ onChatClick }: FooterProps) {
   return (
     <footer className="border-t border-[#D9D9D9] bg-[#151E3C]">
       <Container>
@@ -35,18 +41,21 @@ export function Footer({ onChatClick }: FooterProps) {
 
             {/* Social Icons */}
             <div className="flex items-center gap-4">
+              {/* X / Twitter */}
               <IconBtn
                 icon={FaXTwitter}
                 href="https://x.com/kllctrs"
                 label="KLLCTRS on X"
               />
 
+              {/* Instagram */}
               <IconBtn
                 icon={FaInstagram}
                 href="https://www.instagram.com/kllctrs?igsi=c25iZmRnODhoNDhu"
                 label="KLLCTRS on Instagram"
               />
 
+              {/* LinkedIn */}
               <IconBtn
                 icon={FaLinkedin}
                 href="https://www.linkedin.com/company/kllctrs/"
@@ -83,13 +92,30 @@ export function Footer({ onChatClick }: FooterProps) {
               </div>
 
               <div className="flex w-48 flex-col items-start gap-2">
+                {/* AI Chatbot */}
                 <button
                   type="button"
-                  onClick={onChatClick}
+                  onClick={handleChatClick}
                   className="font-['Inter'] text-left text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
                 >
                   AI Chatbot
                 </button>
+
+                {/* Email Alerts */}
+                <Link
+                  href="#"
+                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                >
+                  Email Alerts
+                </Link>
+
+                {/* Newsletter */}
+                <Link
+                  href="#"
+                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                >
+                  Newsletter
+                </Link>
               </div>
             </div>
           </div>
@@ -99,7 +125,7 @@ export function Footer({ onChatClick }: FooterProps) {
   );
 }
 
-/* ---------- Footer Column ---------- */
+/* ---------- Components ---------- */
 
 function FooterColumn({
   title,
