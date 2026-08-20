@@ -11,7 +11,7 @@ export function Footer() {
     window.dispatchEvent(
       new CustomEvent("kllctbls:chat", {
         detail: {
-          message: "",
+          message: "Hi",
         },
       }),
     );
@@ -76,10 +76,22 @@ export function Footer() {
             <FooterColumn
               title="Platform"
               items={[
-                { href: "/maps", label: "Event Calendar" },
-                { href: "/maps", label: "Card Shops" },
-                { href: "/sponsors", label: "Sponsors" },
-                { href: "/blog", label: "Blog" },
+                {
+                  href: "/maps",
+                  label: "Event Calendar",
+                },
+                {
+                  href: "/maps",
+                  label: "Card Shops",
+                },
+                {
+                  href: "/sponsors",
+                  label: "Sponsors",
+                },
+                {
+                  href: "/blog",
+                  label: "Blog",
+                },
               ]}
             />
 
@@ -96,7 +108,17 @@ export function Footer() {
                 <button
                   type="button"
                   onClick={handleChatClick}
-                  className="font-['Inter'] text-left text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                  className="
+                    font-['Inter']
+                    text-left
+                    text-sm
+                    font-normal
+                    leading-[140%]
+                    text-[#FEF9FF]
+                    transition
+                    hover:opacity-70
+                    focus:outline-none
+                  "
                 >
                   AI Chatbot
                 </button>
@@ -104,7 +126,15 @@ export function Footer() {
                 {/* Email Alerts */}
                 <Link
                   href="#"
-                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                  className="
+                    font-['Inter']
+                    text-sm
+                    font-normal
+                    leading-[140%]
+                    text-[#FEF9FF]
+                    transition
+                    hover:opacity-70
+                  "
                 >
                   Email Alerts
                 </Link>
@@ -112,7 +142,15 @@ export function Footer() {
                 {/* Newsletter */}
                 <Link
                   href="#"
-                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                  className="
+                    font-['Inter']
+                    text-sm
+                    font-normal
+                    leading-[140%]
+                    text-[#FEF9FF]
+                    transition
+                    hover:opacity-70
+                  "
                 >
                   Newsletter
                 </Link>
@@ -125,14 +163,17 @@ export function Footer() {
   );
 }
 
-/* ---------- Components ---------- */
+/* ---------- Footer Column ---------- */
 
 function FooterColumn({
   title,
   items,
 }: {
   title: string;
-  items: { href: string; label: string }[];
+  items: {
+    href: string;
+    label: string;
+  }[];
 }) {
   return (
     <div className="flex w-60 flex-col items-start gap-2">
@@ -147,7 +188,15 @@ function FooterColumn({
           <Link
             key={item.label}
             href={item.href}
-            className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+            className="
+              font-['Inter']
+              text-sm
+              font-normal
+              leading-[140%]
+              text-[#FEF9FF]
+              transition
+              hover:opacity-70
+            "
           >
             {item.label}
           </Link>
