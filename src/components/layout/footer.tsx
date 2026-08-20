@@ -6,13 +6,18 @@ import { motion } from "framer-motion";
 import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import Image from "next/image";
 
-export function Footer() {
+interface FooterProps {
+  onChatClick?: () => void;
+}
+
+export function Footer({ onChatClick }: FooterProps) {
   return (
     <footer className="border-t border-[#D9D9D9] bg-[#151E3C]">
       <Container>
         <div className="flex flex-row flex-wrap items-center justify-between gap-10 py-8 px-0 md:px-[60px]">
           {/* Title block: logo + socials + description */}
           <div className="flex w-[262px] min-w-[240px] flex-col items-start gap-4">
+            {/* Logo */}
             <div className="flex h-12 w-[124px] items-center justify-center">
               <motion.div
                 whileHover={{ rotate: 10, scale: 1.1 }}
@@ -28,12 +33,28 @@ export function Footer() {
               </motion.div>
             </div>
 
+            {/* Social Icons */}
             <div className="flex items-center gap-4">
-              <IconBtn icon={FaXTwitter} />
-              <IconBtn icon={FaInstagram} />
-              <IconBtn icon={FaLinkedin} />
+              <IconBtn
+                icon={FaXTwitter}
+                href="https://x.com/kllctrs"
+                label="KLLCTRS on X"
+              />
+
+              <IconBtn
+                icon={FaInstagram}
+                href="https://www.instagram.com/kllctrs?igsi=c25iZmRnODhoNDhu"
+                label="KLLCTRS on Instagram"
+              />
+
+              <IconBtn
+                icon={FaLinkedin}
+                href="https://www.linkedin.com/company/kllctrs/"
+                label="KLLCTRS on LinkedIn"
+              />
             </div>
 
+            {/* Description */}
             <p className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF]">
               The operating system for collectors. Discover shows, track shops,
               analyze sponsors, and get real-time insights powered by AI.
@@ -42,6 +63,7 @@ export function Footer() {
 
           {/* Link columns */}
           <div className="flex max-w-[512px] flex-row items-start gap-8">
+            {/* Platform */}
             <FooterColumn
               title="Platform"
               items={[
@@ -51,14 +73,25 @@ export function Footer() {
                 { href: "/blog", label: "Blog" },
               ]}
             />
-            <FooterColumn
-              title="Resources"
-              items={[
-                { href: "#", label: "AI Chatbot" },
-                { href: "#", label: "Email Alerts" },
-                { href: "#", label: "Newsletter" },
-              ]}
-            />
+
+            {/* Resources */}
+            <div className="flex w-60 flex-col items-start gap-2">
+              <div className="w-60 pb-2">
+                <span className="font-['Inter'] text-sm font-semibold leading-[140%] text-[#FEF9FF]">
+                  Resources
+                </span>
+              </div>
+
+              <div className="flex w-48 flex-col items-start gap-2">
+                <button
+                  type="button"
+                  onClick={onChatClick}
+                  className="font-['Inter'] text-left text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
+                >
+                  AI Chatbot
+                </button>
+              </div>
+            </div>
           </div>
         </div>
       </Container>
@@ -66,7 +99,7 @@ export function Footer() {
   );
 }
 
-/* ---------- Components ---------- */
+/* ---------- Footer Column ---------- */
 
 function FooterColumn({
   title,
@@ -82,10 +115,11 @@ function FooterColumn({
           {title}
         </span>
       </div>
+
       <div className="flex w-48 flex-col items-start gap-2">
         {items.map((item) => (
           <Link
-            key={item.href}
+            key={item.label}
             href={item.href}
             className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
           >
@@ -97,10 +131,27 @@ function FooterColumn({
   );
 }
 
-function IconBtn({ icon: Icon }: { icon: any }) {
+/* ---------- Social Icon Button ---------- */
+
+function IconBtn({
+  icon: Icon,
+  href,
+  label,
+}: {
+  icon: any;
+  href: string;
+  label: string;
+}) {
   return (
     <motion.div whileHover={{ scale: 1.2 }}>
-      <Icon className="h-5 w-5 cursor-pointer text-[#FEF9FF]" />
+      <Link
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label={label}
+      >
+        <Icon className="h-5 w-5 cursor-pointer text-[#FEF9FF]" />
+      </Link>
     </motion.div>
   );
 }

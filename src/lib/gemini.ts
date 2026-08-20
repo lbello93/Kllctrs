@@ -6,7 +6,7 @@ import { GoogleGenerativeAI } from '@google/generative-ai'
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
 
 export const geminiFlash = genAI.getGenerativeModel({
-  model: 'gemini-2.5-flash-preview-04-17',
+  model: 'gemini-3.6-flash',
 })
 
 export async function generateChatResponse(prompt: string): Promise<string> {
