@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Calendar, ShoppingBag } from "lucide-react";
+import { Search, Calendar, ShoppingBag, X } from "lucide-react";
 
 interface Props {
   mode: "shows" | "shops";
@@ -32,20 +32,19 @@ export default function MapFilters({
   setCategory,
   categories,
 }: Props) {
-  return (
-    <div className="flex items-center justify-center gap-10 mb-8 mt-8 flex-wrap">
-      {/* Toggle */}
+  const hasActiveFilters = search !== "" || city !== "" || category !== "";
 
-      <div className="flex h-8">
+  return (
+    <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5">
+      {/* Step 1: what are you looking for */}
+      <div className="flex h-12 w-full max-w-[320px] overflow-hidden rounded-full border border-[#8B5CF6] bg-white p-1">
         <button
           onClick={() => setMode("shows")}
-          className={`flex items-center gap-2 px-4 rounded-l-[20px] text-[11px]
-            ${
-              mode === "shows"
-                ? "bg-[#8B5CF6] text-white"
-                : "bg-white border border-[#8B5CF6]"
-            }
-          `}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors ${
+            mode === "shows"
+              ? "bg-[#8B5CF6] text-white"
+              : "text-[#4a3f6b]/60 hover:text-[#8B5CF6]"
+          }`}
         >
           <Calendar size={16} />
           Shows
@@ -53,76 +52,91 @@ export default function MapFilters({
 
         <button
           onClick={() => setMode("shops")}
-          className={`flex items-center gap-2 px-4 rounded-r-[20px] text-[11px]
-            ${
-              mode === "shops"
-                ? "bg-[#8B5CF6] text-white"
-                : "bg-white border border-[#8B5CF6]"
-            }
-          `}
+          className={`flex flex-1 items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors ${
+            mode === "shops"
+              ? "bg-[#8B5CF6] text-white"
+              : "text-[#4a3f6b]/60 hover:text-[#8B5CF6]"
+          }`}
         >
           <ShoppingBag size={16} />
           Shops
         </button>
       </div>
 
-      {/* Search */}
+      {/* Step 2: search + narrow it down */}
+      <div className="flex w-full flex-wrap items-end justify-center gap-4">
+        {/* Search, always the biggest, most obvious control */}
+        <div className="flex min-w-[280px] flex-1 flex-col gap-1.5">
+          <label className="text-xs font-medium text-[#4a3f6b]/50">
+            Search by name
+          </label>
+          <div className="flex h-11 items-center gap-2 rounded-[10px] border border-[#B39EF9] bg-white px-4">
+            <Search size={16} className="shrink-0 text-[#8B5CF6]" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder={
+                mode === "shows"
+                  ? "e.g. Nationals, Chicago Card Show..."
+                  : "e.g. Dave & Adam's, The Compleat Strategist..."
+              }
+              className="flex-1 text-sm text-[#1E1E1E] outline-none placeholder:text-[#4a3f6b]/30"
+            />
+          </div>
+        </div>
 
-      <div className="flex items-center justify-between w-[363px] h-[40px] px-6 border border-[#B39EF9] rounded-[10px] bg-white">
-        <input
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="search your next hobby station"
-          className="outline-none text-[12px] text-[#1E1E1E] flex-1"
-        />
+        {/* Category only makes sense for shops, so it only appears in shop mode */}
+        {mode === "shops" && (
+          <div className="flex w-[160px] flex-col gap-1.5">
+            <label className="text-xs font-medium text-[#4a3f6b]/50">
+              Category
+            </label>
+            <select
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="h-11 rounded-[10px] border border-[#B39EF9] bg-white px-3 text-sm text-[#1E1E1E]"
+            >
+              <option value="">All categories</option>
+              {categories.map((categoryName) => (
+                <option key={categoryName} value={categoryName}>
+                  {categoryName}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        <Search size={16} className="text-[#8B5CF6]" />
+        <div className="flex w-[160px] flex-col gap-1.5">
+          <label className="text-xs font-medium text-[#4a3f6b]/50">City</label>
+          <select
+            value={city}
+            onChange={(e) => setCity(e.target.value)}
+            className="h-11 rounded-[10px] border border-[#B39EF9] bg-white px-3 text-sm text-[#1E1E1E]"
+          >
+            <option value="">All cities</option>
+            {cities.map((cityName) => (
+              <option key={cityName} value={cityName}>
+                {cityName}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        {/* Clear only shows up once there's actually something to clear */}
+        {hasActiveFilters && (
+          <button
+            onClick={() => {
+              setSearch("");
+              setCity("");
+              setCategory("");
+            }}
+            className="flex h-11 items-center gap-1.5 rounded-[10px] px-3 text-sm font-medium text-[#8B5CF6] hover:bg-[#F2EFFE] transition-colors"
+          >
+            <X size={14} />
+            Clear
+          </button>
+        )}
       </div>
-
-      {/* Category */}
-
-      <select
-        value={category}
-        onChange={(e) => setCategory(e.target.value)}
-        className="w-[160px] h-[32px] px-3 border border-[#B39EF9] rounded-[10px] bg-white text-[12px]"
-      >
-        <option value="">All Categories</option>
-
-        {categories.map((categoryName) => (
-          <option key={categoryName} value={categoryName}>
-            {categoryName}
-          </option>
-        ))}
-      </select>
-
-      {/* City */}
-
-      <select
-        value={city}
-        onChange={(e) => setCity(e.target.value)}
-        className="w-[140px] h-[32px] px-3 border border-[#B39EF9] rounded-[10px] bg-white text-[12px]"
-      >
-        <option value="">All Cities</option>
-
-        {cities.map((cityName) => (
-          <option key={cityName} value={cityName}>
-            {cityName}
-          </option>
-        ))}
-      </select>
-
-      {/* Clear */}
-
-      <button
-        onClick={() => {
-          setSearch("");
-          setCity("");
-          setCategory("");
-        }}
-        className="w-[114px] h-[32px] rounded-[10px] bg-[#8B5CF6] text-white text-[14px] shadow"
-      >
-        Clear
-      </button>
     </div>
   );
 }

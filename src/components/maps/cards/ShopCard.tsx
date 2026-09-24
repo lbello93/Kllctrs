@@ -1,17 +1,19 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Link from "next/link";
 import {
   MapPin,
   Bookmark,
   BookmarkCheck,
   MessageSquare,
   Globe,
+  ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
 import { createClient } from "@/lib/supabase/client";
+import { formatDistance } from "@/lib/geo/distance";
 import type { Shop } from "@/types";
 
 interface Props {
@@ -19,6 +21,7 @@ interface Props {
   isSaved: boolean;
   savedShopIds: string[];
   setSavedShopIds: React.Dispatch<React.SetStateAction<string[]>>;
+  distanceMiles?: number;
 }
 
 export default function ShopCard({
@@ -26,9 +29,9 @@ export default function ShopCard({
   isSaved,
   savedShopIds,
   setSavedShopIds,
+  distanceMiles,
 }: Props) {
   const supabase = createClient();
-  const router = useRouter();
 
   const [saving, setSaving] = useState(false);
 
@@ -49,15 +52,11 @@ export default function ShopCard({
 
       if (isSaved) {
         updated = savedShopIds.filter((id) => id !== shop.id);
-
-        // Instant UI update
         setSavedShopIds(updated);
 
         const { error } = await supabase
           .from("profiles")
-          .update({
-            saved_shops: updated,
-          })
+          .update({ saved_shops: updated })
           .eq("id", user.id);
 
         if (error) {
@@ -68,15 +67,11 @@ export default function ShopCard({
         toast.success("Removed from Collection");
       } else {
         updated = [...savedShopIds, shop.id];
-
-        // Instant UI update
         setSavedShopIds(updated);
 
         const { error } = await supabase
           .from("profiles")
-          .update({
-            saved_shops: updated,
-          })
+          .update({ saved_shops: updated })
           .eq("id", user.id);
 
         if (error) {
@@ -84,9 +79,7 @@ export default function ShopCard({
           return;
         }
 
-        toast.success("Added to Collection ✨", {
-          description: shop.name,
-        });
+        toast.success("Added to Collection ✨", { description: shop.name });
       }
     } catch (err) {
       console.error(err);
@@ -105,15 +98,20 @@ export default function ShopCard({
       : [];
 
   return (
-    <div className="w-full overflow-hidden rounded-[10px] border border-[#F2EFFE] bg-[#FEF9FF]">
-      <div className="px-6 py-4">
-        {/* Tags */}
+    <div className="w-full overflow-hidden rounded-2xl border border-[#F2EFFE] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
+      <div className="p-5">
+        {/* Badges */}
+        <div className="mb-3 flex flex-wrap items-center gap-2">
+          {distanceMiles != null && (
+            <span className="rounded-full bg-[#1F8A4C]/10 px-3 py-1 text-xs font-semibold text-[#1F8A4C]">
+              {formatDistance(distanceMiles)}
+            </span>
+          )}
 
-        <div className="mb-3 flex flex-wrap justify-end gap-1">
           {tags.map((tag) => (
             <span
               key={tag}
-              className="rounded-full border border-[#CBBEFB] bg-[#E5DFFD] px-3 py-1 text-[11px] text-[#8B5CF6]"
+              className="rounded-full bg-[#8B5CF6]/10 px-3 py-1 text-xs font-semibold text-[#8B5CF6]"
             >
               {tag}
             </span>
@@ -121,57 +119,50 @@ export default function ShopCard({
         </div>
 
         {/* Title */}
-
-        <h3 className="text-[20px] font-medium leading-[26px]">{shop.name}</h3>
+        <h3 className="line-clamp-2 text-lg font-semibold leading-snug text-[#151E3C]">
+          {shop.name}
+        </h3>
 
         {/* Location */}
-
-        <div className="mt-3 flex items-center gap-1 text-[11px]">
-          <MapPin size={14} />
-          {shop.city}, {shop.state}
+        <div className="mt-2 flex items-center gap-1.5 text-sm text-[#8B5CF6]">
+          <MapPin size={15} className="shrink-0" />
+          <span className="font-medium">
+            {shop.city}, {shop.state}
+          </span>
         </div>
       </div>
 
-      {/* Actions */}
-
-      <div className="flex h-[39px]">
+      {/* ACTIONS */}
+      <div className="flex items-center gap-2 border-t border-[#F2EFFE] px-4 py-3">
         <button
           onClick={handleSave}
           disabled={saving}
-          className={`
-            flex flex-1 items-center justify-center gap-2
-            rounded-bl-[10px]
-            border border-[#F2EFFE]
-            text-[12px]
-            font-medium
-            transition
-
-            ${
-              isSaved
-                ? "bg-violet-50 text-violet-700"
-                : "text-[#8B5CF6] hover:bg-[#F8F5FF]"
-            }
-          `}
+          className={`flex h-9 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-medium transition-colors disabled:opacity-60 ${
+            isSaved
+              ? "bg-violet-50 text-violet-700"
+              : "text-[#4a3f6b]/60 hover:bg-[#F2EFFE] hover:text-[#8B5CF6]"
+          }`}
         >
-          {isSaved ? <BookmarkCheck size={13} /> : <Bookmark size={13} />}
-
+          {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
           {saving ? "Saving..." : isSaved ? "Saved" : "Save"}
         </button>
-
-        <button className="flex flex-1 items-center justify-center gap-2 border-y border-[#F2EFFE] text-[12px] font-medium text-[#8B5CF6]">
-          <MessageSquare size={13} />
-          Review
-        </button>
-
         <a
           href={shop.website ?? "#"}
           target="_blank"
           rel="noreferrer"
-          className="flex flex-1 items-center justify-center gap-2 rounded-br-[10px] border border-[#F2EFFE] text-[12px] font-medium text-[#8B5CF6]"
+          className="flex h-9 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-medium text-[#4a3f6b]/60 hover:bg-[#F2EFFE] hover:text-[#8B5CF6] transition-colors"
         >
-          <Globe size={13} />
+          <Globe size={16} />
           Web
         </a>
+
+        <Link
+          href={`/shops/${shop.slug}`}
+          className="ml-auto flex h-9 items-center gap-1.5 rounded-full bg-[#8B5CF6] px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
+        >
+          View Shop
+          <ArrowRight size={15} />
+        </Link>
       </div>
     </div>
   );

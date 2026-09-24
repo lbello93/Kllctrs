@@ -15,6 +15,7 @@ interface Props {
   events: Event[];
   selectedEvent: Event | null;
   onEventSelect: (event: Event) => void;
+  userLocation?: { lat: number; lng: number } | null;
 }
 
 const MAPS_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
@@ -23,6 +24,7 @@ export default function EventMap({
   events,
   selectedEvent,
   onEventSelect,
+  userLocation,
 }: Props) {
   const [infoEvent, setInfoEvent] = useState<Event | null>(null);
 
@@ -30,16 +32,28 @@ export default function EventMap({
     .filter((e) => e.lat != null && e.lng != null)
     .map((e) => ({ ...e, lat: Number(e.lat), lng: Number(e.lng) }))
     .filter((e) => !isNaN(e.lat) && !isNaN(e.lng));
+
+  const center = userLocation ?? { lat: 37.5, lng: -96 };
+  const zoom = userLocation ? 9 : 5;
+
   return (
     <APIProvider apiKey={MAPS_KEY}>
       <Map
-        defaultCenter={{ lat: 37.5, lng: -96 }}
-        defaultZoom={5}
+        defaultCenter={center}
+        defaultZoom={zoom}
         mapId="kllctbls-events"
         style={{ width: "100%", height: "100%" }}
         gestureHandling="greedy"
         disableDefaultUI={false}
       >
+        {userLocation && (
+          <AdvancedMarker position={userLocation}>
+            <div className="flex h-4 w-4 items-center justify-center rounded-full border-2 border-white bg-[#2563eb] shadow-md">
+              <div className="h-1.5 w-1.5 rounded-full bg-white" />
+            </div>
+          </AdvancedMarker>
+        )}
+
         {eventsWithCoords.map((event) => (
           <AdvancedMarker
             key={event.id}
