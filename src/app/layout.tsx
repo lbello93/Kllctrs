@@ -5,6 +5,7 @@ import { Navbar } from "../components/layout/navbar/Navbar";
 import { Footer } from "@/components/layout/footer";
 import ChatWindow from "@/components/chat/ChatWindow";
 import CookieBanner from "@/components/layout/CookieBanner";
+import AppSplash from "@/components/ui/AppSplash";
 
 import { Toaster } from "sonner";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
@@ -47,34 +48,31 @@ export default function RootLayout({
       className={`${spaceGrotesk.variable} ${inter.variable} ${unica.variable}`}
     >
       <body
-        className={`
-          ${inter.className}
-          ${spaceGrotesk.variable}
-          ${inter.variable}
-          ${unica.variable}
-        `}
+        className={`${inter.className} ${spaceGrotesk.variable} ${inter.variable} ${unica.variable}`}
       >
-        <div className="flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+        <AppSplash>
+          <div className="flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
 
-        <ChatWindow />
-        <CookieBanner />
+          <ChatWindow />
+          <CookieBanner />
 
-        <AnalyticsTracker />
+          <AnalyticsTracker />
 
-        <Toaster
-          position="top-center"
-          richColors
-          closeButton
-          expand
-          duration={3000}
-          toastOptions={{
-            className: "font-inter",
-          }}
-        />
+          <Toaster
+            position="top-center"
+            richColors
+            closeButton
+            expand
+            duration={3000}
+            toastOptions={{
+              className: "font-inter",
+            }}
+          />
+        </AppSplash>
       </body>
     </html>
   );
