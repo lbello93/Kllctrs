@@ -1,4 +1,4 @@
-﻿"use client";
+"use client";
 
 import { useEffect, useState } from "react";
 
@@ -43,6 +43,7 @@ export default function AnalyticsClient() {
     fetchAnalytics();
   }, [range]);
 
+  // Loading State
   if (loading) {
     return (
       <main className="min-h-screen bg-[#f4f3fb]">
@@ -53,6 +54,7 @@ export default function AnalyticsClient() {
     );
   }
 
+  // Error State
   if (!data) {
     return (
       <main className="flex min-h-screen items-center justify-center bg-[#f4f3fb]">
@@ -65,6 +67,7 @@ export default function AnalyticsClient() {
     );
   }
 
+  // Empty State
   const hasAnalytics =
     data.summary.totalViews > 0 ||
     data.timeline.length > 0 ||
@@ -87,6 +90,7 @@ export default function AnalyticsClient() {
     );
   }
 
+  // Dashboard
   return (
     <main className="min-h-screen bg-[#f4f3fb]">
       <div className="mx-auto max-w-7xl space-y-8 px-6 py-8">
@@ -101,7 +105,12 @@ export default function AnalyticsClient() {
           title="Traffic Overview"
           description="Daily visitor trend across KLLCTRS."
         >
-          <AnalyticsLineChart data={data.timeline} dataKey="views" xKey="date" valueLabel="Views" />
+          <AnalyticsLineChart
+            data={data.timeline}
+            dataKey="views"
+            xKey="date"
+            valueLabel="Views"
+          />
         </DashboardSection>
 
         <div className="grid gap-8 xl:grid-cols-2">

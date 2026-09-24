@@ -1,15 +1,5 @@
-/**
- * ------------------------------------------------------------
- * FILE: SummaryCards.tsx
- * PURPOSE:
- * Displays the dashboard KPI cards using the reusable StatCard component.
- * ------------------------------------------------------------
- */
-
 import { Eye, Globe, MapPinned, Building2 } from "lucide-react";
-
 import { SummaryStats } from "@/types/analytics";
-
 import StatCard from "./StatCard";
 
 interface SummaryCardsProps {
@@ -22,41 +12,25 @@ export default function SummaryCards({ summary }: SummaryCardsProps) {
       title: "Total Views",
       value: summary.totalViews,
       subtitle: "All page visits",
-      icon: <Eye size={28} />,
-      trend: {
-        value: "+12%",
-        positive: true,
-      },
+      icon: <Eye size={24} />,
     },
     {
       title: "Countries",
       value: summary.uniqueCountries,
       subtitle: "Unique countries",
-      icon: <Globe size={28} />,
-      trend: {
-        value: "+3",
-        positive: true,
-      },
+      icon: <Globe size={24} />,
     },
     {
       title: "States",
       value: summary.uniqueStates,
       subtitle: "Unique states",
-      icon: <MapPinned size={28} />,
-      trend: {
-        value: "+7",
-        positive: true,
-      },
+      icon: <MapPinned size={24} />,
     },
     {
       title: "Cities",
       value: summary.uniqueCities,
       subtitle: "Unique cities",
-      icon: <Building2 size={28} />,
-      trend: {
-        value: "+18",
-        positive: true,
-      },
+      icon: <Building2 size={24} />,
     },
   ];
 
@@ -69,7 +43,6 @@ export default function SummaryCards({ summary }: SummaryCardsProps) {
           value={card.value.toLocaleString()}
           subtitle={card.subtitle}
           icon={card.icon}
-          trend={card.trend}
         />
       ))}
     </div>

@@ -1,134 +1,124 @@
 "use client";
 
-/**
- * ------------------------------------------------------------
- * FILE: AnalyticsLineChart.tsx
- * PURPOSE:
- * Reusable premium line chart component.
- * ------------------------------------------------------------
- */
-
 import {
   ResponsiveContainer,
   CartesianGrid,
   XAxis,
   YAxis,
   Tooltip,
-  LineChart,
   Line,
   Area,
   AreaChart,
 } from "recharts";
 
+interface TooltipPayload {
+  value: number;
+}
+
+interface CustomTooltipProps {
+  active?: boolean;
+  payload?: TooltipPayload[];
+  label?: string;
+  valueLabel: string;
+}
+
+function CustomTooltip({
+  active,
+  payload,
+  label,
+  valueLabel,
+}: CustomTooltipProps) {
+  if (!active || !payload?.length) return null;
+
+  return (
+    <div className="rounded-2xl border border-violet-100 bg-white px-4 py-3 shadow-xl">
+      <p className="mb-1 text-sm font-semibold text-[#1a0a3d]">{label}</p>
+      <p className="text-sm text-[#5f2eea]">
+        {payload[0].value.toLocaleString()} {valueLabel}
+      </p>
+    </div>
+  );
+}
+
 interface AnalyticsLineChartProps {
   data: object[];
   dataKey: string;
   xKey: string;
-}
-
-function CustomTooltip({ active, payload, label }: any) {
-  if (!active || !payload?.length) return null;
-
-  return (
-    <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-xl">
-      <p className="mb-1 text-sm font-semibold text-slate-900">{label}</p>
-
-      <p className="text-sm text-sky-600">
-        {payload[0].value.toLocaleString()} Visitors
-      </p>
-    </div>
-  );
+  valueLabel?: string;
 }
 
 export default function AnalyticsLineChart({
   data,
   dataKey,
   xKey,
+  valueLabel = "Views",
 }: AnalyticsLineChartProps) {
   if (!data.length) {
     return (
-      <div className="flex h-[350px] items-center justify-center rounded-3xl border border-dashed border-slate-300 bg-white">
-        <p className="text-slate-500">No analytics available yet.</p>
+      <div className="flex h-[350px] items-center justify-center rounded-3xl border border-dashed border-violet-200 bg-white">
+        <p className="text-[#4a3f6b]/50">No analytics available yet.</p>
       </div>
     );
   }
 
   return (
     <div className="h-[360px]">
-      <div className="h-[360px]">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data}>
-            <defs>
-              <linearGradient
-                id="analyticsGradient"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop offset="0%" stopColor="#0ea5e9" stopOpacity={0.35} />
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data}>
+          <defs>
+            <linearGradient id="analyticsGradient" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%" stopColor="#5f2eea" stopOpacity={0.3} />
+              <stop offset="100%" stopColor="#5f2eea" stopOpacity={0} />
+            </linearGradient>
+          </defs>
 
-                <stop offset="100%" stopColor="#0ea5e9" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+          <CartesianGrid
+            stroke="#ede9fe"
+            strokeDasharray="4 4"
+            vertical={false}
+          />
 
-            <CartesianGrid
-              stroke="#e2e8f0"
-              strokeDasharray="4 4"
-              vertical={false}
-            />
+          <XAxis
+            dataKey={xKey}
+            tick={{ fill: "#4a3f6b", fontSize: 12 }}
+            tickLine={false}
+            axisLine={false}
+          />
 
-            <XAxis
-              dataKey={xKey}
-              tick={{
-                fill: "#64748b",
-                fontSize: 12,
-              }}
-              tickLine={false}
-              axisLine={false}
-            />
+          <YAxis
+            tick={{ fill: "#4a3f6b", fontSize: 12 }}
+            tickLine={false}
+            axisLine={false}
+          />
 
-            <YAxis
-              tick={{
-                fill: "#64748b",
-                fontSize: 12,
-              }}
-              tickLine={false}
-              axisLine={false}
-            />
+          <Tooltip
+            cursor={{ stroke: "#5f2eea", strokeDasharray: "4 4" }}
+            content={<CustomTooltip valueLabel={valueLabel} />}
+          />
 
-            <Tooltip
-              cursor={{
-                stroke: "#0ea5e9",
-                strokeDasharray: "4 4",
-              }}
-              content={<CustomTooltip />}
-            />
+          <Area
+            type="monotone"
+            dataKey={dataKey}
+            fill="url(#analyticsGradient)"
+            stroke="none"
+          />
 
-            <Area
-              type="monotone"
-              dataKey={dataKey}
-              fill="url(#analyticsGradient)"
-              stroke="none"
-            />
-
-            <Line
-              type="monotone"
-              dataKey={dataKey}
-              stroke="#0ea5e9"
-              strokeWidth={3}
-              dot={false}
-              activeDot={{
-                r: 7,
-                fill: "#ffffff",
-                stroke: "#0ea5e9",
-                strokeWidth: 3,
-              }}
-              animationDuration={1200}
-            />
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
+          <Line
+            type="monotone"
+            dataKey={dataKey}
+            stroke="#5f2eea"
+            strokeWidth={3}
+            dot={false}
+            activeDot={{
+              r: 7,
+              fill: "#ffffff",
+              stroke: "#5f2eea",
+              strokeWidth: 3,
+            }}
+            animationDuration={1200}
+          />
+        </AreaChart>
+      </ResponsiveContainer>
     </div>
   );
 }
