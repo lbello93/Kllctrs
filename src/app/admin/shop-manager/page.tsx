@@ -1,12 +1,26 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminShopManagerClient from "@/components/admin/AdminShopManagerClient";
+import AdminShopsClient from "@/components/admin/AdminShopsClient";
+import type { Shop } from "@/types";
 
-export default async function ShopManagerPage() {
+interface SearchParams {
+  searchParams: Promise<{ status?: string }>;
+}
+
+export default async function ShopManagerPage({ searchParams }: SearchParams) {
+  const { status } = await searchParams;
+  const filterStatus = status ?? "pending";
+
   const { data: shops } = await supabaseAdmin
     .from("shops")
     .select("*")
-    .order("updated_at", { ascending: false })
-    .limit(1000);
+    .eq("status", filterStatus)
+    .order("created_at", { ascending: false })
+    .limit(500);
 
-  return <AdminShopManagerClient initialShops={shops ?? []} />;
+  return (
+    <AdminShopsClient
+      initialShops={(shops ?? []) as Shop[]}
+      currentStatus={filterStatus}
+    />
+  );
 }
