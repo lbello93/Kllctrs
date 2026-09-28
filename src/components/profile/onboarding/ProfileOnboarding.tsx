@@ -2,27 +2,31 @@
 
 import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft } from "lucide-react";
 
-import { useOnboarding, OnboardingData } from "@/hooks/useOnboarding";
-import { ONBOARDING_STEP_INFO } from "@/lib/profile/constants";
+import { useOnboarding, type OnboardingData } from "@/hooks/useOnboarding";
+import {
+  ONBOARDING_STEPS,
+  ONBOARDING_STEP_INFO,
+} from "@/lib/profile/constants";
+import type { OnboardingStep } from "@/lib/profile/types";
 
 import WelcomeStep from "./steps/WelcomeStep";
 import BasicInfoStep from "./steps/BasicInfoStep";
 import LocationStep from "./steps/LocationStep";
 import CollectorTypeStep from "./steps/CollectorTypeStep";
+import ExperienceStep from "./steps/ExperienceStep";
 import FavoriteGamesStep from "./steps/FavoriteGamesStep";
 import NotificationStep from "./steps/NotificationStep";
 import FinishStep from "./steps/FinishStep";
-
+import { validateBasicInfo } from "@/lib/profile/validation";
 import { StepLayout } from "./shared/StepLayout";
-import ExperienceStep from "./steps/ExperienceStep";
 
 interface ProfileOnboardingProps {
   user: any;
   profile: any;
   isEditing?: boolean;
   onExit?: () => void;
+  startAtStep?: OnboardingStep;
 }
 
 function profileToOnboardingData(profile: any): OnboardingData {
@@ -50,19 +54,34 @@ export default function ProfileOnboarding({
   profile,
   isEditing = false,
   onExit,
+  startAtStep,
 }: ProfileOnboardingProps) {
   const router = useRouter();
   const [completeError, setCompleteError] = useState<string | null>(null);
 
+  // The first step the person can see. Editing skips the welcome screen.
+  const firstStep: OnboardingStep =
+    startAtStep ?? (isEditing ? "basic" : "welcome");
+  const firstIndex = Math.max(0, ONBOARDING_STEPS.indexOf(firstStep));
+
   const initialData = useMemo(
-    () => (isEditing ? profileToOnboardingData(profile) : undefined),
-    [isEditing, profile],
+    () =>
+      isEditing
+        ? profileToOnboardingData(profile)
+        : {
+            display_name:
+              profile?.display_name ??
+              user?.user_metadata?.full_name ??
+              undefined,
+            username:
+              profile?.username ?? user?.user_metadata?.username ?? undefined,
+          },
+    [isEditing, profile, user],
   );
 
   const {
     currentStep,
     currentIndex,
-    progress,
     totalSteps,
     nextStep,
     previousStep,
@@ -75,8 +94,13 @@ export default function ProfileOnboarding({
     isSubmitting,
   } = useOnboarding({
     initialData,
-    startAtStep: isEditing ? "basic" : undefined,
+    startAtStep: firstStep,
   });
+
+  // Numbers shown on screen, counted from the first visible step.
+  const stepNumber = currentIndex - firstIndex + 1;
+  const visibleSteps = totalSteps - firstIndex;
+  const visibleProgress = (stepNumber / visibleSteps) * 100;
 
   const stepInfo = useMemo(() => {
     return ONBOARDING_STEP_INFO[currentIndex];
@@ -87,10 +111,10 @@ export default function ProfileOnboarding({
       setCompleteError(null);
       const success = await completeOnboarding();
       if (success) {
+        // Reload the server data so the profile page shows the new values.
+        router.refresh();
         if (isEditing && onExit) {
           onExit();
-        } else {
-          router.refresh();
         }
       } else {
         setCompleteError(
@@ -125,8 +149,10 @@ export default function ProfileOnboarding({
 
       case "collector":
         return <CollectorTypeStep data={data} updateData={updateData} />;
+
       case "experience":
         return <ExperienceStep data={data} updateData={updateData} />;
+
       case "games":
         return <FavoriteGamesStep data={data} updateData={updateData} />;
 
@@ -152,44 +178,32 @@ export default function ProfileOnboarding({
   };
 
   return (
-    <div>
-      {isEditing && (
-        <div className="mx-auto max-w-3xl px-4 pt-6 sm:px-6">
-          <button
-            type="button"
-            onClick={onExit}
-            className="inline-flex items-center gap-2 text-sm text-white/60 hover:text-white"
-          >
-            <ArrowLeft className="h-4 w-4" />
-            Back to profile
-          </button>
-        </div>
-      )}
-
-      <StepLayout
-        title={stepInfo.title}
-        description={stepInfo.description}
-        currentStep={currentIndex + 1}
-        totalSteps={totalSteps}
-        progress={progress}
-        onBack={handleBack}
-        onNext={handleNext}
-        disableBack={false}
-        nextDisabled={isLastStep && !data.terms_accepted}
-        nextLoading={isSubmitting}
-        nextLabel={
-          currentStep === "welcome"
-            ? "Get Started"
-            : isLastStep
-              ? isEditing
-                ? "Save Changes"
-                : "Complete Profile"
-              : "Continue"
-        }
-        backLabel={isFirstStep && isEditing ? "Cancel" : "Back"}
-      >
-        {renderStep()}
-      </StepLayout>
-    </div>
+    <StepLayout
+      title={stepInfo.title}
+      description={stepInfo.description}
+      currentStep={stepNumber}
+      totalSteps={visibleSteps}
+      progress={visibleProgress}
+      onBack={handleBack}
+      onNext={handleNext}
+      disableBack={isFirstStep && !isEditing}
+      nextLoading={isSubmitting}
+      nextDisabled={
+        (isLastStep && !data.terms_accepted) ||
+        (currentStep === "basic" && !validateBasicInfo(data).isValid)
+      }
+      nextLabel={
+        currentStep === "welcome"
+          ? "Get Started"
+          : isLastStep
+            ? isEditing
+              ? "Save Changes"
+              : "Complete Profile"
+            : "Continue"
+      }
+      backLabel={isFirstStep && isEditing ? "Cancel" : "Back"}
+    >
+      {renderStep()}
+    </StepLayout>
   );
 }

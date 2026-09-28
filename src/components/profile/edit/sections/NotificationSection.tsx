@@ -1,7 +1,12 @@
-﻿"use client";
+"use client";
 
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import {
+  bodyM,
+  caption,
+  headingM,
+} from "@/components/profile/onboarding/shared/onboardingStyles";
 
 export interface NotificationPreferences {
   event_notifications: boolean;
@@ -66,17 +71,17 @@ export default function NotificationSection({
 
   return (
     <div className="space-y-6">
-      <div>
-        <h3 className="text-lg font-semibold text-white">
+      <div className="space-y-1">
+        <h3 className={`${headingM} text-[#FEF9FF]`}>
           Notification Preferences
         </h3>
 
-        <p className="text-sm text-white/50">
+        <p className={`${bodyM} text-[#FEF9FF]/50`}>
           Choose which notifications you would like to receive.
         </p>
       </div>
 
-      <div className="flex items-center justify-between rounded-xl border border-[#E8B85C]/30 bg-[#E8B85C]/5 p-4">
+      <div className="flex items-center justify-between rounded-xl border border-[#9C7CF7]/30 bg-[#9C7CF7]/5 p-4">
         <div className="space-y-1">
           <Label className="font-medium text-white">All Notifications</Label>
           <p className="text-sm text-white/50">
@@ -95,7 +100,7 @@ export default function NotificationSection({
         {ITEMS.map((item) => (
           <div
             key={item.key}
-            className="flex items-center justify-between rounded-xl border border-white/10 bg-[#1E1240] p-4"
+            className="flex items-center justify-between rounded-xl border border-white/10 bg-[#FEF9FF]/[0.06] p-4"
           >
             <div className="space-y-1">
               <Label className="font-medium text-white">{item.title}</Label>
@@ -112,7 +117,7 @@ export default function NotificationSection({
       </div>
 
       {!allEnabled && !allDisabled && (
-        <p className="text-xs text-white/40">
+        <p className={`${caption} text-[#FEF9FF]/40`}>
           Some notifications are on, some are off.
         </p>
       )}

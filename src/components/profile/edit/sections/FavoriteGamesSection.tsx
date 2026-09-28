@@ -49,10 +49,10 @@ export default function FavoriteGamesSection({
             <Card
               key={game}
               onClick={() => toggleGame(game)}
-              className={`cursor-pointer border bg-[#1E1240] transition-all ${
+              className={`cursor-pointer border bg-[#FEF9FF]/[0.06] transition-all ${
                 selected
-                  ? "border-[#E8B85C] ring-2 ring-[#E8B85C]/30"
-                  : "border-white/10 hover:border-[#E8B85C]/40"
+                  ? "border-[#9C7CF7] ring-2 ring-[#9C7CF7]/30"
+                  : "border-white/10 hover:border-[#9C7CF7]/40"
               }`}
             >
               <CardContent className="flex items-center justify-center p-5 text-center font-medium text-white">

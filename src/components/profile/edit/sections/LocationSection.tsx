@@ -177,12 +177,12 @@ export default function LocationSection({
               </span>
             </SelectTrigger>
 
-            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#1E1240]">
+            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#240554]">
               {allCountries.map((countryItem) => (
                 <SelectItem
                   key={countryItem.isoCode}
                   value={countryItem.name}
-                  className="rounded-lg text-sm text-white focus:bg-[#E8B85C]/10 focus:text-[#E8B85C]"
+                  className="rounded-lg text-sm text-white focus:bg-[#9C7CF7]/10 focus:text-[#9C7CF7]"
                 >
                   {countryItem.name}
                 </SelectItem>
@@ -214,12 +214,12 @@ export default function LocationSection({
               </span>
             </SelectTrigger>
 
-            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#1E1240]">
+            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#240554]">
               {states.map((stateItem) => (
                 <SelectItem
                   key={stateItem.isoCode}
                   value={stateItem.name}
-                  className="rounded-lg text-sm text-white focus:bg-[#E8B85C]/10 focus:text-[#E8B85C]"
+                  className="rounded-lg text-sm text-white focus:bg-[#9C7CF7]/10 focus:text-[#9C7CF7]"
                 >
                   {stateItem.name}
                 </SelectItem>
@@ -244,12 +244,12 @@ export default function LocationSection({
               </span>
             </SelectTrigger>
 
-            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#1E1240]">
+            <SelectContent className="max-h-72 rounded-xl border border-white/10 bg-[#240554]">
               {cities.map((cityItem) => (
                 <SelectItem
                   key={cityItem.name}
                   value={cityItem.name}
-                  className="rounded-lg text-sm text-white focus:bg-[#E8B85C]/10 focus:text-[#E8B85C]"
+                  className="rounded-lg text-sm text-white focus:bg-[#9C7CF7]/10 focus:text-[#9C7CF7]"
                 >
                   {cityItem.name}
                 </SelectItem>

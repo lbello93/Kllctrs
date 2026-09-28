@@ -38,8 +38,11 @@ export function StepLayout({
   children,
 }: StepLayoutProps) {
   return (
-    <div className="min-h-[calc(100vh-var(--navbar-height,4rem))] w-full bg-[#150B30]">
-      <div className="mx-auto flex w-full max-w-3xl flex-col gap-10 px-4 py-10 sm:px-6 sm:py-14 lg:py-20">
+    <div
+      data-focus-screen
+      className="flex h-[100dvh] w-full flex-col overflow-hidden bg-[#151E3C]"
+    >
+      <div className="mx-auto flex min-h-0 w-full max-w-3xl flex-1 flex-col gap-5 px-4 pt-20 sm:px-6 [@media(min-height:800px)]:gap-8 [@media(min-height:800px)]:pt-28">
         <ProgressBar
           currentStep={currentStep}
           totalSteps={totalSteps}
@@ -48,18 +51,19 @@ export function StepLayout({
 
         <StepHeader title={title} description={description} />
 
-        <motion.main
+        <motion.div
           key={currentStep}
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -12 }}
           transition={{ duration: 0.25, ease: "easeOut" }}
-          className="flex w-full flex-col gap-8"
+          className="flex min-h-0 flex-1 flex-col overflow-y-auto pb-4 [scrollbar-color:rgba(254,249,255,0.25)_transparent] [scrollbar-width:thin]"
         >
           {children}
-        </motion.main>
+        </motion.div>
+      </div>
 
-        <div className="w-full border-t border-white/10 pt-6">
+      <div className="shrink-0 border-t border-white/10 bg-[#151E3C]">
+        <div className="mx-auto w-full max-w-3xl px-4 py-4 sm:px-6">
           <NavigationButtons
             onBack={onBack}
             onNext={onNext}

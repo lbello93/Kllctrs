@@ -32,10 +32,10 @@ export const CATEGORY_CONFIG = {
   },
 
   market_intel: {
-    label: "Market-Intel",
-    image: "/Blog/Market-Intel.png",
-    bg: "bg-[#151E3C]",
-    border: "border-[#8B9DD6]",
-    text: "text-white",
-  },
+  label: "Market-Intel",
+  image: "/Blog/Market_Intel.png",
+  bg: "bg-[#151E3C]",
+  border: "border-[#8B9DD6]",
+  text: "text-white",
+},
 } as const;

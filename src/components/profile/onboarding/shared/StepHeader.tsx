@@ -1,6 +1,7 @@
 "use client";
 
 import { ReactNode } from "react";
+import { bodyM, displayXl } from "./onboardingStyles";
 
 interface StepHeaderProps {
   title: string;
@@ -10,14 +11,10 @@ interface StepHeaderProps {
 export function StepHeader({ title, description }: StepHeaderProps) {
   return (
     <header className="flex flex-col gap-3">
-      <h1 className="text-2xl font-semibold tracking-tight text-white sm:text-3xl">
-        {title}
-      </h1>
+      <h1 className={`${displayXl} text-[#FEF9FF]`}>{title}</h1>
 
       {description && (
-        <p className="max-w-2xl text-sm leading-relaxed text-white/60 sm:text-base">
-          {description}
-        </p>
+        <p className={`${bodyM} max-w-2xl text-[#FEF9FF]/60`}>{description}</p>
       )}
     </header>
   );

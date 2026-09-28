@@ -55,21 +55,21 @@ export default function AvatarUploader({
           from-white/10
           to-white/[0.02]
           p-[2px]
-          shadow-[0_8px_40px_-8px_rgba(232,184,92,0.25)]
+          shadow-[0_8px_40px_-8px_rgba(156,124,247,0.25)]
           transition-all
           duration-300
-          hover:shadow-[0_12px_48px_-8px_rgba(232,184,92,0.4)]
+          hover:shadow-[0_12px_48px_-8px_rgba(156,124,247,0.4)]
           focus-visible:outline
           focus-visible:outline-2
           focus-visible:outline-offset-2
-          focus-visible:outline-[#E8B85C]
+          focus-visible:outline-[#9C7CF7]
         "
         style={{
           backgroundImage:
-            "linear-gradient(135deg, rgba(232,184,92,0.7), rgba(232,184,92,0.15) 40%, rgba(232,184,92,0.5))",
+            "linear-gradient(135deg, rgba(156,124,247,0.7), rgba(156,124,247,0.15) 40%, rgba(156,124,247,0.5))",
         }}
       >
-        <div className="relative h-full w-full overflow-hidden rounded-[26px] bg-gradient-to-br from-[#241452] to-[#150B30]">
+        <div className="relative h-full w-full overflow-hidden rounded-[26px] bg-gradient-to-br from-[#240554] to-[#151E3C]">
           {imageSrc ? (
             <Image
               src={imageSrc}
@@ -89,7 +89,7 @@ export default function AvatarUploader({
             className="
               absolute inset-0
               flex items-center justify-center
-              bg-[#150B30]/60
+              bg-[#151E3C]/60
               opacity-0
               transition-opacity
               duration-300

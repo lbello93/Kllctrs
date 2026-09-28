@@ -12,10 +12,34 @@ import { extractText } from "@/lib/ai/parser";
 
 import { buildContext } from "@/lib/ai/context-builder";
 import { mergeContext } from "@/lib/ai/context-merger";
+
 interface ChatSource {
   tool: string;
   args: unknown;
   count: number;
+}
+
+// In-memory rate limit: 10 messages per minute per IP.
+// Resets on server restart/redeploy, good enough to stop a runaway loop,
+// not a substitute for a real store like Redis if abuse becomes frequent.
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60_000;
+const requestLog = new Map<string, number[]>();
+
+function isRateLimited(key: string): boolean {
+  const now = Date.now();
+  const timestamps = (requestLog.get(key) ?? []).filter(
+    (t) => now - t < RATE_WINDOW_MS,
+  );
+
+  if (timestamps.length >= RATE_LIMIT) {
+    requestLog.set(key, timestamps);
+    return true;
+  }
+
+  timestamps.push(now);
+  requestLog.set(key, timestamps);
+  return false;
 }
 
 export async function POST(req: NextRequest) {
@@ -29,6 +53,23 @@ export async function POST(req: NextRequest) {
     const {
       data: { user },
     } = await supabase.auth.getUser();
+
+    //--------------------------------------------------
+    // Rate limit (per user if logged in, per IP otherwise)
+    //--------------------------------------------------
+
+    const rateLimitKey =
+      user?.id ??
+      req.headers.get("x-forwarded-for") ??
+      req.headers.get("x-real-ip") ??
+      "anonymous";
+
+    if (isRateLimited(rateLimitKey)) {
+      return NextResponse.json(
+        { error: "You're sending messages too quickly. Please wait a moment and try again." },
+        { status: 429 },
+      );
+    }
 
     //--------------------------------------------------
     // Request
@@ -199,10 +240,7 @@ const result =
 
     return NextResponse.json(
       {
-        error:
-          error instanceof Error
-            ? error.message
-            : "Chat failed",
+        error: "Something went wrong. Please try again.",
       },
       {
         status: 500,

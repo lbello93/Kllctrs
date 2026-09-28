@@ -2,18 +2,10 @@
 
 import { useMemo, useState } from "react";
 
-const STEPS = [
-  "welcome",
-  "basic",
-  "location",
-  "collector",
-  "experience",
-  "games",
-  "notifications",
-  "finish",
-] as const;
+import { ONBOARDING_STEPS } from "@/lib/profile/constants";
+import type { OnboardingStep } from "@/lib/profile/types";
 
-export type OnboardingStep = (typeof STEPS)[number];
+export type { OnboardingStep };
 
 export interface OnboardingData {
   display_name?: string;
@@ -23,6 +15,7 @@ export interface OnboardingData {
   city?: string;
   state?: string;
   country?: string;
+  timezone?: string;
   collector_type?: string;
   years_collecting?: number;
   favorite_games?: string[];
@@ -39,13 +32,14 @@ interface UseOnboardingOptions {
 }
 
 export function useOnboarding(options: UseOnboardingOptions = {}) {
-  const startIndex = options.startAtStep
-    ? STEPS.indexOf(options.startAtStep)
+  const requestedIndex = options.startAtStep
+    ? ONBOARDING_STEPS.indexOf(options.startAtStep)
     : 0;
 
-  const [currentIndex, setCurrentIndex] = useState(
-    startIndex >= 0 ? startIndex : 0,
-  );
+  // The first step the user can see. In edit mode this is "basic", not "welcome".
+  const minIndex = requestedIndex >= 0 ? requestedIndex : 0;
+
+  const [currentIndex, setCurrentIndex] = useState(minIndex);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
@@ -59,12 +53,16 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
     ...options.initialData,
   });
 
-  const totalSteps = STEPS.length;
-  const currentStep = STEPS[currentIndex];
+  const totalSteps = ONBOARDING_STEPS.length;
+  const currentStep = ONBOARDING_STEPS[currentIndex];
+
+  // Numbers the user sees, counted from the first visible step.
+  const visibleSteps = totalSteps - minIndex;
+  const stepNumber = currentIndex - minIndex + 1;
 
   const progress = useMemo(
-    () => ((currentIndex + 1) / totalSteps) * 100,
-    [currentIndex, totalSteps],
+    () => (stepNumber / visibleSteps) * 100,
+    [stepNumber, visibleSteps],
   );
 
   const nextStep = () => {
@@ -72,7 +70,7 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
   };
 
   const previousStep = () => {
-    setCurrentIndex((prev) => (prev > 0 ? prev - 1 : prev));
+    setCurrentIndex((prev) => (prev > minIndex ? prev - 1 : prev));
   };
 
   const updateData = (values: Partial<OnboardingData>) => {
@@ -83,13 +81,6 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
   };
 
   const completeOnboarding = async (): Promise<boolean> => {
-    if (!data.terms_accepted) {
-      setSubmitError(
-        "Please accept the Terms of Service and Privacy Policy to continue.",
-      );
-      return false;
-    }
-
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -122,11 +113,13 @@ export function useOnboarding(options: UseOnboardingOptions = {}) {
   return {
     currentStep,
     currentIndex,
+    stepNumber,
+    visibleSteps,
     progress,
     totalSteps,
     nextStep,
     previousStep,
-    isFirstStep: currentIndex === 0,
+    isFirstStep: currentIndex === minIndex,
     isLastStep: currentIndex === totalSteps - 1,
     data,
     updateData,

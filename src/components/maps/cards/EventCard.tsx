@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import {
   Bookmark,
@@ -13,7 +14,6 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { createClient } from "@/lib/supabase/client";
 import { formatDistance } from "@/lib/geo/distance";
 import type { Event } from "@/types";
 
@@ -32,59 +32,52 @@ export default function EventCard({
   setSavedEventIds,
   distanceMiles,
 }: Props) {
-  const supabase = createClient();
-
+  const router = useRouter();
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
+    setSaving(true);
+
+    // optimistic update
+    const wasSaved = isSaved;
+    setSavedEventIds((prev) =>
+      wasSaved ? prev.filter((id) => id !== event.id) : [...prev, event.id],
+    );
+
     try {
-      setSaving(true);
+      const res = await fetch(`/api/events/${event.id}/save`, {
+        method: "POST",
+      });
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        window.location.href = "/login";
+      if (res.status === 401) {
+        // revert
+        setSavedEventIds(savedEventIds);
+        const currentPath = window.location.pathname;
+        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
         return;
       }
 
-      let updated: string[];
-
-      if (isSaved) {
-        updated = savedEventIds.filter((id) => id !== event.id);
-
-        const { error } = await supabase
-          .from("profiles")
-          .update({ saved_events: updated })
-          .eq("id", user.id);
-
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-
-        setSavedEventIds(updated);
-        toast.success("Removed from Collection");
+      if (!res.ok) {
+        setSavedEventIds(savedEventIds);
+        toast.error("Something went wrong");
         return;
       }
 
-      updated = [...savedEventIds, event.id];
+      const data: { saved: boolean } = await res.json();
 
-      const { error } = await supabase
-        .from("profiles")
-        .update({ saved_events: updated })
-        .eq("id", user.id);
+      // reconcile with what the server actually did, in case of a race
+      setSavedEventIds((prev) => {
+        const withoutId = prev.filter((id) => id !== event.id);
+        return data.saved ? [...withoutId, event.id] : withoutId;
+      });
 
-      if (error) {
-        toast.error(error.message);
-        return;
-      }
-
-      setSavedEventIds(updated);
-      toast.success("Added to Collection ✨", { description: event.name });
+      toast.success(
+        data.saved ? "Added to Collection ✨" : "Removed from Collection",
+        data.saved ? { description: event.name } : undefined,
+      );
     } catch (err) {
       console.error(err);
+      setSavedEventIds(savedEventIds);
       toast.error("Something went wrong");
     } finally {
       setSaving(false);
@@ -159,6 +152,7 @@ export default function EventCard({
           {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
           {saving ? "Saving..." : isSaved ? "Saved" : "Save"}
         </button>
+
         <a
           href={event.website ?? "#"}
           target="_blank"

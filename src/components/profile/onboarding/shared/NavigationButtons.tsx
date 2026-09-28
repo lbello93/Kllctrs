@@ -1,7 +1,11 @@
 "use client";
 
 import { ArrowLeft, ArrowRight, Loader2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { primaryButtonClass } from "./onboardingStyles";
+
+// Gold gradient for Back and Cancel. Navy text keeps it easy to read.
+const goldButtonClass =
+  "flex h-10 min-w-[110px] items-center justify-center gap-2 rounded-[10px] bg-[linear-gradient(94.43deg,#F0C040_35.73%,#FCDB9F_100%)] px-[14px] py-[10px] font-inter text-[14px] font-normal leading-[17px] tracking-[-0.01em] text-[#151E3C] shadow-[0px_4px_4px_rgba(0,0,0,0.25)] transition-opacity hover:opacity-90 active:shadow-none disabled:cursor-not-allowed disabled:opacity-40";
 
 interface NavigationButtonsProps {
   onBack: () => void;
@@ -24,38 +28,37 @@ export function NavigationButtons({
 }: NavigationButtonsProps) {
   return (
     <nav
-      className="flex flex-col-reverse gap-3 sm:flex-row sm:items-center sm:justify-between"
+      className="flex items-center justify-between gap-3"
       aria-label="Onboarding navigation"
     >
-      <Button
+      <button
         type="button"
-        variant="ghost"
         onClick={onBack}
         disabled={disableBack || isLoading}
-        className="w-full text-white/70 hover:text-white hover:bg-white/5 sm:w-auto"
+        className={goldButtonClass}
       >
-        <ArrowLeft className="mr-2 h-4 w-4" />
+        <ArrowLeft className="h-4 w-4" />
         {backLabel}
-      </Button>
+      </button>
 
-      <Button
+      <button
         type="button"
         onClick={onNext}
         disabled={isLoading || nextDisabled}
-        className="w-full bg-[#E8B85C] text-[#150B30] hover:bg-[#E8B85C]/90 sm:w-auto"
+        className={`${primaryButtonClass} flex min-w-[140px] flex-1 items-center justify-center gap-2 sm:flex-none`}
       >
         {isLoading ? (
           <>
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            <Loader2 className="h-4 w-4 animate-spin" />
             Saving…
           </>
         ) : (
           <>
             {nextLabel}
-            <ArrowRight className="ml-2 h-4 w-4" />
+            <ArrowRight className="h-4 w-4" />
           </>
         )}
-      </Button>
+      </button>
     </nav>
   );
 }

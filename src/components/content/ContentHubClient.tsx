@@ -49,7 +49,7 @@ export default function ContentHubClient({ initialContent }: Props) {
   }, [initialContent, activeCategory, search]);
 
   return (
-    <main className="min-h-screen bg-[#F8F5FF]">
+    <main className="min-h-screen bg-[#FEF9FF]">
       <ContentHeroSection />
 
       <ContentFilterBar

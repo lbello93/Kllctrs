@@ -2,17 +2,16 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   MapPin,
   Bookmark,
   BookmarkCheck,
-  MessageSquare,
   Globe,
   ArrowRight,
 } from "lucide-react";
 import { toast } from "sonner";
 
-import { createClient } from "@/lib/supabase/client";
 import { formatDistance } from "@/lib/geo/distance";
 import type { Shop } from "@/types";
 
@@ -31,58 +30,49 @@ export default function ShopCard({
   setSavedShopIds,
   distanceMiles,
 }: Props) {
-  const supabase = createClient();
-
+  const router = useRouter();
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
+    setSaving(true);
+
+    const wasSaved = isSaved;
+    setSavedShopIds((prev) =>
+      wasSaved ? prev.filter((id) => id !== shop.id) : [...prev, shop.id],
+    );
+
     try {
-      setSaving(true);
+      const res = await fetch(`/api/shops/${shop.id}/save`, {
+        method: "POST",
+      });
 
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
-      if (!user) {
-        window.location.href = "/login";
+      if (res.status === 401) {
+        setSavedShopIds(savedShopIds);
+        const currentPath = window.location.pathname;
+        router.push(`/login?redirect=${encodeURIComponent(currentPath)}`);
         return;
       }
 
-      let updated: string[];
-
-      if (isSaved) {
-        updated = savedShopIds.filter((id) => id !== shop.id);
-        setSavedShopIds(updated);
-
-        const { error } = await supabase
-          .from("profiles")
-          .update({ saved_shops: updated })
-          .eq("id", user.id);
-
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-
-        toast.success("Removed from Collection");
-      } else {
-        updated = [...savedShopIds, shop.id];
-        setSavedShopIds(updated);
-
-        const { error } = await supabase
-          .from("profiles")
-          .update({ saved_shops: updated })
-          .eq("id", user.id);
-
-        if (error) {
-          toast.error(error.message);
-          return;
-        }
-
-        toast.success("Added to Collection ✨", { description: shop.name });
+      if (!res.ok) {
+        setSavedShopIds(savedShopIds);
+        toast.error("Something went wrong");
+        return;
       }
+
+      const data: { saved: boolean } = await res.json();
+
+      setSavedShopIds((prev) => {
+        const withoutId = prev.filter((id) => id !== shop.id);
+        return data.saved ? [...withoutId, shop.id] : withoutId;
+      });
+
+      toast.success(
+        data.saved ? "Added to Collection ✨" : "Removed from Collection",
+        data.saved ? { description: shop.name } : undefined,
+      );
     } catch (err) {
       console.error(err);
+      setSavedShopIds(savedShopIds);
       toast.error("Something went wrong");
     } finally {
       setSaving(false);
@@ -146,6 +136,7 @@ export default function ShopCard({
           {isSaved ? <BookmarkCheck size={16} /> : <Bookmark size={16} />}
           {saving ? "Saving..." : isSaved ? "Saved" : "Save"}
         </button>
+
         <a
           href={shop.website ?? "#"}
           target="_blank"

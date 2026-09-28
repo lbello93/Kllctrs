@@ -33,7 +33,7 @@ export function ProgressBar({
         aria-label={`Onboarding progress: step ${currentStep} of ${totalSteps}`}
       >
         <motion.div
-          className="absolute inset-y-0 left-0 rounded-full bg-[#E8B85C]"
+          className="absolute inset-y-0 left-0 rounded-full bg-[#9C7CF7]"
           initial={false}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.4, ease: "easeInOut" }}

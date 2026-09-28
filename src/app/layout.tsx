@@ -2,7 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 
 import { Navbar } from "../components/layout/navbar/Navbar";
-import { Footer } from "@/components/layout/footer";
+import FooterGate from "@/components/layout/FooterGate";
 import ChatWindow from "@/components/chat/ChatWindow";
 import CookieBanner from "@/components/layout/CookieBanner";
 import AppSplash from "@/components/ui/AppSplash";
@@ -54,7 +54,7 @@ export default function RootLayout({
           <div className="flex min-h-screen flex-col">
             <Navbar />
             <main className="flex-1">{children}</main>
-            <Footer />
+            <FooterGate />
           </div>
 
           <ChatWindow />

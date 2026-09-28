@@ -1,8 +1,10 @@
 "use client";
 
-import EventCard from "@/components/maps/cards/EventCard";
-import type { Event } from "@/types";
 import { useState } from "react";
+import { CalendarDays } from "lucide-react";
+import EventCard from "@/components/maps/cards/EventCard";
+import { EmptyPanel, SectionHeader } from "../shared/SectionShell";
+import type { Event } from "@/types";
 
 interface Props {
   events?: Event[];
@@ -11,40 +13,43 @@ interface Props {
 export default function SavedEvents({ events = [] }: Props) {
   const safeEvents = Array.isArray(events) ? events : [];
 
-  const [savedEventIds, setSavedEventIds] = useState(
-    safeEvents.map((e) => e.id),
+  const [savedEventIds, setSavedEventIds] = useState<string[]>(
+    safeEvents.map((event) => event.id),
   );
-  if (safeEvents.length === 0) {
-    return (
-      <section className="mt-10">
-        <h2 className="mb-6 text-2xl font-bold">Saved Events</h2>
 
-        <div className="rounded-3xl border border-dashed p-12 text-center text-zinc-500">
-          No saved events yet.
-        </div>
-      </section>
-    );
-  }
-
-  const visibleEvents = events.filter((event) =>
+  const visibleEvents = safeEvents.filter((event) =>
     savedEventIds.includes(event.id),
   );
 
   return (
-    <section className="mt-10">
-      <h2 className="mb-6 text-2xl font-bold">Saved Events</h2>
+    <section>
+      <SectionHeader
+        title="Saved events"
+        subtitle="Card shows and meetups you want to remember."
+        count={visibleEvents.length}
+      />
 
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {visibleEvents.map((event) => (
-          <EventCard
-            key={event.id}
-            event={event}
-            isSaved={savedEventIds.includes(event.id)}
-            savedEventIds={savedEventIds}
-            setSavedEventIds={setSavedEventIds}
-          />
-        ))}
-      </div>
+      {visibleEvents.length === 0 ? (
+        <EmptyPanel
+          icon={<CalendarDays className="h-6 w-6" />}
+          title="No saved events yet"
+          text="Save a card show and it will show up here so you never miss it."
+          ctaLabel="Browse events"
+          ctaHref="/maps"
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {visibleEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              isSaved={savedEventIds.includes(event.id)}
+              savedEventIds={savedEventIds}
+              setSavedEventIds={setSavedEventIds}
+            />
+          ))}
+        </div>
+      )}
     </section>
   );
 }

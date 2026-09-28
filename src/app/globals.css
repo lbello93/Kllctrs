@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@plugin "@tailwindcss/typography";
-
 .shop-scrollbar::-webkit-scrollbar {
   width: 12px;
 }
@@ -21,4 +19,20 @@
 .shop-scrollbar {
   scrollbar-width: thin;
   scrollbar-color: #8b5cf6 #bdbcbe;
+}
+
+/* Full screen flows such as onboarding and edit profile */
+body:has([data-focus-screen]) {
+  background-color: #151e3c;
+  overflow: hidden;
+}
+
+body:has([data-focus-screen]) footer {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  body:has([data-focus-screen]) button[aria-label="Open chat"] {
+    display: none;
+  }
 }

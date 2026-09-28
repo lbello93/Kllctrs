@@ -1,6 +1,9 @@
 "use client";
 
+import { useState } from "react";
+import { Store } from "lucide-react";
 import ShopCard from "@/components/maps/cards/ShopCard";
+import { EmptyPanel, SectionHeader } from "../shared/SectionShell";
 import type { Shop } from "@/types";
 
 interface Props {
@@ -8,48 +11,45 @@ interface Props {
 }
 
 export default function SavedShops({ shops = [] }: Props) {
-  if (shops.length === 0) {
-    return (
-      <section className="mt-10">
-        <h2 className="mb-6 text-2xl font-bold">Saved Shops</h2>
+  const safeShops = Array.isArray(shops) ? shops : [];
 
-        <div className="rounded-3xl border-2 border-dashed border-violet-200 bg-violet-50 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-20 w-20 items-center justify-center rounded-full bg-white shadow">
-            ⭐
-          </div>
+  const [savedShopIds, setSavedShopIds] = useState<string[]>(
+    safeShops.map((shop) => shop.id),
+  );
 
-          <h3 className="text-xl font-bold text-zinc-900">
-            No Saved Shops Yet
-          </h3>
-
-          <p className="mt-2 text-zinc-500">
-            Save your favourite shops to quickly find them later.
-          </p>
-        </div>
-      </section>
-    );
-  }
+  const visibleShops = safeShops.filter((shop) =>
+    savedShopIds.includes(shop.id),
+  );
 
   return (
-    <section className="mt-12">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h2 className="text-3xl font-black text-zinc-900">Saved Shops</h2>
+    <section>
+      <SectionHeader
+        title="Saved shops"
+        subtitle="Your favorite local card stores and collectibles destinations."
+        count={visibleShops.length}
+      />
 
-          <p className="mt-1 text-sm text-zinc-500">
-            Your favourite local card stores and collectibles destinations.
-          </p>
+      {visibleShops.length === 0 ? (
+        <EmptyPanel
+          icon={<Store className="h-6 w-6" />}
+          title="No saved shops yet"
+          text="Save a shop and it will show up here so you can find it fast."
+          ctaLabel="Browse shops"
+          ctaHref="/maps"
+        />
+      ) : (
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+          {visibleShops.map((shop) => (
+            <ShopCard
+              key={shop.id}
+              shop={shop}
+              isSaved={savedShopIds.includes(shop.id)}
+              savedShopIds={savedShopIds}
+              setSavedShopIds={setSavedShopIds}
+            />
+          ))}
         </div>
-
-        <div className="rounded-full bg-violet-100 px-4 py-2 text-sm font-semibold text-violet-700">
-          {shops.length} Saved
-        </div>
-      </div>
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-        {shops.map((shop) => (
-          <ShopCard key={shop.id} shop={shop} />
-        ))}
-      </div>
+      )}
     </section>
   );
 }

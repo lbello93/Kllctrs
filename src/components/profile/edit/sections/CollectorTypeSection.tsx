@@ -1,6 +1,10 @@
 "use client";
 
 import { Card, CardContent } from "@/components/ui/card";
+import {
+  bodyM,
+  headingM,
+} from "@/components/profile/onboarding/shared/onboardingStyles";
 
 interface CollectorTypeSectionProps {
   value?: string;
@@ -36,12 +40,12 @@ export default function CollectorTypeSection({
 }: CollectorTypeSectionProps) {
   return (
     <div className="space-y-5">
-      <div>
-        <h3 className="text-lg font-semibold text-white">
+      <div className="space-y-1">
+        <h3 className={`${headingM} text-[#FEF9FF]`}>
           What type of collector are you?
         </h3>
 
-        <p className="text-sm text-white/50">
+        <p className={`${bodyM} text-[#FEF9FF]/50`}>
           Choose the option that best describes you.
         </p>
       </div>
@@ -51,10 +55,10 @@ export default function CollectorTypeSection({
           <Card
             key={type.id}
             onClick={() => onChange(type.id)}
-            className={`cursor-pointer border bg-[#1E1240] transition-all ${
+            className={`cursor-pointer border bg-[#FEF9FF]/[0.06] transition-all ${
               value === type.id
-                ? "border-[#E8B85C] ring-2 ring-[#E8B85C]/30"
-                : "border-white/10 hover:border-[#E8B85C]/40"
+                ? "border-[#9C7CF7] ring-2 ring-[#9C7CF7]/30"
+                : "border-white/10 hover:border-[#9C7CF7]/40"
             }`}
           >
             <CardContent className="p-5">

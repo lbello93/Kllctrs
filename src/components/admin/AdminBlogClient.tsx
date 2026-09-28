@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
+import { toast } from "sonner";
 import {
   Newspaper,
   Sparkles,
@@ -15,6 +16,7 @@ import {
   CheckCircle2,
   BookOpen,
 } from "lucide-react";
+import ArticleUploadCard from "@/components/admin/content/ArticleUploadCard";
 
 interface Post {
   id: string;
@@ -68,12 +70,12 @@ export default function AdminBlogClient({
     setGenerating(false);
     const data = await res.json();
     if (!res.ok) {
-      alert(data.error ?? "Generation failed");
+      toast.error(data.error ?? "Generation failed");
       return;
     }
     setPosts((prev) => [data.draft, ...prev]);
     setSelectedEvent("");
-    alert("Draft generated! Switch to Drafts tab to review.");
+    toast.success("Draft generated! Switch to Drafts tab to review.");
   };
 
   const handleAction = async (
@@ -94,7 +96,7 @@ export default function AdminBlogClient({
     setBusy(null);
     if (!res.ok) {
       const e = await res.json().catch(() => ({}));
-      alert(e.error ?? "Action failed");
+      toast.error(e.error ?? "Action failed");
       return;
     }
     setPosts((prev) => prev.filter((p) => p.id !== id));
@@ -115,49 +117,55 @@ export default function AdminBlogClient({
         </p>
       </div>
 
-      {/* Generate new draft */}
-      <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5">
-        <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-4">
-          Generate New Draft
-        </h2>
-        <div className="flex flex-wrap gap-3 items-end">
-          <div className="flex-1 min-w-[200px]">
-            <label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">
-              Pick an event
-            </label>
-            <select
-              value={selectedEvent}
-              onChange={(e) => setSelectedEvent(e.target.value)}
-              className={inputClass}
+      {/* Generate new draft + Upload PDF, side by side */}
+      <div className="grid gap-4 md:grid-cols-2">
+        <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5">
+          <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-4">
+            Generate New Draft
+          </h2>
+          <div className="flex flex-wrap gap-3 items-end">
+            <div className="flex-1 min-w-[200px]">
+              <label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">
+                Pick an event
+              </label>
+              <select
+                value={selectedEvent}
+                onChange={(e) => setSelectedEvent(e.target.value)}
+                className={inputClass}
+              >
+                <option value="">Select event...</option>
+                {availableEvents.map((ev) => (
+                  <option key={ev.id} value={ev.id}>
+                    {ev.name} — {format(new Date(ev.date_start), "MMM d, yyyy")}{" "}
+                    ({ev.city}, {ev.state})
+                  </option>
+                ))}
+              </select>
+            </div>
+            <motion.button
+              onClick={handleGenerate}
+              disabled={!selectedEvent || generating}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className="h-10 px-5 rounded-xl text-sm font-black text-white flex items-center gap-2 border-0 shadow-lg shadow-violet-500/20 disabled:opacity-40 cursor-pointer"
+              style={{
+                background: "linear-gradient(135deg, #5f2eea, #4a1fa8)",
+              }}
             >
-              <option value="">Select event...</option>
-              {availableEvents.map((ev) => (
-                <option key={ev.id} value={ev.id}>
-                  {ev.name} — {format(new Date(ev.date_start), "MMM d, yyyy")} (
-                  {ev.city}, {ev.state})
-                </option>
-              ))}
-            </select>
+              {generating ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" /> Generating…
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" /> Generate Draft
+                </>
+              )}
+            </motion.button>
           </div>
-          <motion.button
-            onClick={handleGenerate}
-            disabled={!selectedEvent || generating}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            className="h-10 px-5 rounded-xl text-sm font-black text-white flex items-center gap-2 border-0 shadow-lg shadow-violet-500/20 disabled:opacity-40 cursor-pointer"
-            style={{ background: "linear-gradient(135deg, #5f2eea, #4a1fa8)" }}
-          >
-            {generating ? (
-              <>
-                <Loader2 className="w-4 h-4 animate-spin" /> Generating…
-              </>
-            ) : (
-              <>
-                <Sparkles className="w-4 h-4" /> Generate Draft
-              </>
-            )}
-          </motion.button>
         </div>
+
+        <ArticleUploadCard />
       </div>
 
       {/* Tabs */}
@@ -188,7 +196,7 @@ export default function AdminBlogClient({
           </p>
           <p className="text-xs text-[#4a3f6b]/40 mt-1">
             {currentStatus === "draft"
-              ? "Generate a draft above to get started."
+              ? "Generate a draft above, or upload one, to get started."
               : "Nothing here yet."}
           </p>
         </div>

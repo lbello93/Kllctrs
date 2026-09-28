@@ -19,11 +19,26 @@ const nextConfig: NextConfig = {
       {
         protocol: "https",
         hostname: "**.ebay.com",
-      },{
+      },
+      {
         protocol: "https",
         hostname: "ntowgijfpkkohenxipxf.supabase.co",
       },
     ],
+  },
+  async redirects() {
+    return [
+      {
+        source: "/register",
+        destination: "/login?mode=signup",
+        permanent: false,
+      },
+      {
+        source: "/verify-email",
+        destination: "/login",
+        permanent: false,
+      },
+    ];
   },
 };
 
