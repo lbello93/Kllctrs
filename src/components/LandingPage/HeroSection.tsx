@@ -43,7 +43,7 @@ function DesktopHero() {
         {/* Buttons */}
         <div className="absolute left-[73px] top-[443px] flex items-center gap-[11px]">
           <Link
-            href="/pro"
+            href="/pricing"
             className="flex h-[48px] w-[149px] items-center justify-center rounded-[4px] bg-[#F0C040] text-[14px] font-normal tracking-[-0.01em] text-black transition hover:opacity-90"
           >
             Go Pro
