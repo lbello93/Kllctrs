@@ -86,8 +86,8 @@ export default function SubmitSponsorForm() {
   };
 
   const inputClass =
-    "w-full h-10 px-3 rounded-xl border border-violet-200 bg-white text-[#1a0a3d] text-sm placeholder-[#4a3f6b]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors";
-  const labelClass = "text-sm font-medium text-[#4a3f6b] mb-1.5 block";
+    "w-full h-10 px-3 rounded-xl border border-violet-200 bg-white text-[#151E3C] text-sm placeholder-[#151E3C]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors";
+  const labelClass = "text-sm font-medium text-[#151E3C] mb-1.5 block";
 
   if (submitted) {
     return (
@@ -99,10 +99,10 @@ export default function SubmitSponsorForm() {
         <div className="w-16 h-16 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center mx-auto mb-5">
           <CheckCircle2 className="w-8 h-8 text-green-500" />
         </div>
-        <h2 className="text-2xl font-black text-[#1a0a3d] mb-2">
+        <h2 className="text-2xl font-black text-[#151E3C] mb-2">
           Application Submitted!
         </h2>
-        <p className="text-sm text-[#4a3f6b]/60 mb-6 max-w-sm mx-auto">
+        <p className="text-sm text-[#151E3C]/60 mb-6 max-w-sm mx-auto">
           Thanks for your interest in sponsoring KLLCTRS. We&apos;ll review your
           application and reach out within 48 hours.
         </p>
@@ -111,7 +111,7 @@ export default function SubmitSponsorForm() {
             <motion.button
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
-              className="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-[#5f2eea] bg-violet-50 border border-violet-200 hover:bg-violet-100 transition-colors cursor-pointer"
+              className="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-bold text-[#8B5CF6] bg-violet-50 border border-violet-200 hover:bg-violet-100 transition-colors cursor-pointer"
             >
               <ArrowLeft className="w-4 h-4" /> View Sponsors
             </motion.button>
@@ -122,7 +122,7 @@ export default function SubmitSponsorForm() {
               whileTap={{ scale: 0.98 }}
               className="inline-flex items-center gap-2 h-11 px-6 rounded-xl text-sm font-black text-white border-0 shadow-xl shadow-violet-500/25 cursor-pointer"
               style={{
-                background: "linear-gradient(135deg, #5f2eea, #4a1fa8)",
+                background: "linear-gradient(94.43deg, #5B18BE 35.73%, #9C7CF7 100%)",
               }}
             >
               Back to Home
@@ -140,14 +140,14 @@ export default function SubmitSponsorForm() {
       className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-xl shadow-violet-200/30 p-6 sm:p-8"
     >
       <div className="flex items-center gap-3 mb-6">
-        <div className="w-10 h-10 rounded-xl bg-[#5f2eea]/8 flex items-center justify-center">
-          <Trophy className="w-5 h-5 text-[#5f2eea]" />
+        <div className="w-10 h-10 rounded-xl bg-[#8B5CF6]/8 flex items-center justify-center">
+          <Trophy className="w-5 h-5 text-[#8B5CF6]" />
         </div>
         <div>
-          <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase">
+          <h2 className="text-[10px] font-black tracking-[0.25em] text-[#8B5CF6] uppercase">
             Sponsor Application
           </h2>
-          <p className="text-xs text-[#4a3f6b]/40">
+          <p className="text-xs text-[#151E3C]/40">
             Fields marked * are required
           </p>
         </div>
@@ -174,7 +174,7 @@ export default function SubmitSponsorForm() {
             onChange={(e) => update("description", e.target.value)}
             placeholder="Brief description of your company and what you do in the hobby..."
             rows={3}
-            className="w-full px-3 py-2.5 rounded-xl border border-violet-200 bg-white text-[#1a0a3d] text-sm placeholder-[#4a3f6b]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors resize-none"
+            className="w-full px-3 py-2.5 rounded-xl border border-violet-200 bg-white text-[#151E3C] text-sm placeholder-[#151E3C]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors resize-none"
           />
         </div>
 
@@ -234,7 +234,7 @@ export default function SubmitSponsorForm() {
 
         {/* Divider */}
         <div className="border-t border-violet-100 pt-5">
-          <h3 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-4">
+          <h3 className="text-[10px] font-black tracking-[0.25em] text-[#8B5CF6] uppercase mb-4">
             Contact Information
           </h3>
         </div>
@@ -283,7 +283,7 @@ export default function SubmitSponsorForm() {
             onChange={(e) => update("notes", e.target.value)}
             placeholder="Any specific shows you'd like to sponsor, goals, or questions..."
             rows={3}
-            className="w-full px-3 py-2.5 rounded-xl border border-violet-200 bg-white text-[#1a0a3d] text-sm placeholder-[#4a3f6b]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors resize-none"
+            className="w-full px-3 py-2.5 rounded-xl border border-violet-200 bg-white text-[#151E3C] text-sm placeholder-[#151E3C]/30 focus:outline-none focus:ring-2 focus:ring-violet-400/30 focus:border-violet-400 transition-colors resize-none"
           />
         </div>
 
@@ -306,7 +306,7 @@ export default function SubmitSponsorForm() {
           whileHover={{ scale: 1.01 }}
           whileTap={{ scale: 0.98 }}
           className="w-full h-12 rounded-xl font-black text-sm text-white flex items-center justify-center gap-2 border-0 shadow-xl shadow-violet-500/25 disabled:opacity-40 transition-all cursor-pointer"
-          style={{ background: "linear-gradient(135deg, #5f2eea, #4a1fa8)" }}
+          style={{ background: "linear-gradient(94.43deg, #5B18BE 35.73%, #9C7CF7 100%)" }}
         >
           {loading ? (
             <>
