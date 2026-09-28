@@ -2,179 +2,37 @@
  * ------------------------------------------------------------
  * FILE: queries.ts
  * PURPOSE:
- * All database queries used by the analytics dashboard.
+ * Reads visits from Supabase and builds the numbers for the
+ * analytics dashboard. One fetch per request, then everything
+ * is counted in memory.
  * ------------------------------------------------------------
  */
 
-import { createClient } from "@supabase/supabase-js";
-import { SummaryStats } from "@/types/analytics";
-import { PageStat } from "@/types/analytics";
-import { CountryStat } from "@/types/analytics";
-import { StateStat } from "@/types/analytics";
-import { CityStat } from "@/types/analytics";
-import { TimelineStat } from "@/types/analytics";
+import { supabaseAdmin } from "@/lib/supabase/admin";
+import type { AnalyticsResponse } from "@/types/analytics";
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-);
+export type AnalyticsRange = "today" | "7d" | "30d" | "90d" | "year" | "all";
 
+export const ANALYTICS_RANGES: AnalyticsRange[] = [
+  "today",
+  "7d",
+  "30d",
+  "90d",
+  "year",
+  "all",
+];
 
-export async function getAnalyticsSummary(): Promise<SummaryStats> {
-  // Total page views
-  const { count: totalViews, error: totalError } = await supabase
-    .from("analytics_locations")
-    .select("*", { count: "exact", head: true });
+const PAGE_SIZE = 1000; // Supabase returns at most 1000 rows per request
+const MAX_ROWS = 50000; // safety limit for the breakdowns (newest rows first)
+const TOP_N = 10; // how many bars each chart shows
 
-  if (totalError) throw totalError;
-
-  // Fetch country/state/city columns
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("country, state, city");
-
-  if (error) throw error;
-
-  const uniqueCountries = new Set(
-    data.map((d) => d.country).filter(Boolean)
-  ).size;
-
-  const uniqueStates = new Set(
-    data.map((d) => d.state).filter(Boolean)
-  ).size;
-
-  const uniqueCities = new Set(
-    data.map((d) => d.city).filter(Boolean)
-  ).size;
-
-  return {
-    totalViews: totalViews ?? 0,
-    uniqueCountries,
-    uniqueStates,
-    uniqueCities,
-  };
+interface VisitRow {
+  page: string | null;
+  country: string | null;
+  state: string | null;
+  city: string | null;
+  visited_at: string;
 }
-
-export async function getTopPages(): Promise<PageStat[]> {
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("page");
-
-  if (error) throw error;
-
-  const counts = new Map<string, number>();
-
-  data.forEach((row) => {
-    counts.set(row.page, (counts.get(row.page) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([page, views]) => ({
-      page,
-      views,
-    }))
-    .sort((a, b) => b.views - a.views);
-}
-
-
-export async function getCountries(): Promise<CountryStat[]> {
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("country");
-
-  if (error) throw error;
-
-  const counts = new Map<string, number>();
-
-  data.forEach((row) => {
-    if (!row.country) return;
-    counts.set(row.country, (counts.get(row.country) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([country, views]) => ({
-      country,
-      views,
-    }))
-    .sort((a, b) => b.views - a.views);
-}
-
-
-export async function getStates(): Promise<StateStat[]> {
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("state");
-
-  if (error) throw error;
-
-  const counts = new Map<string, number>();
-
-  data.forEach((row) => {
-    if (!row.state) return;
-    counts.set(row.state, (counts.get(row.state) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([state, views]) => ({
-      state,
-      views,
-    }))
-    .sort((a, b) => b.views - a.views);
-}
-
-
-export async function getCities(): Promise<CityStat[]> {
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("city");
-
-  if (error) throw error;
-
-  const counts = new Map<string, number>();
-
-  data.forEach((row) => {
-    if (!row.city) return;
-    counts.set(row.city, (counts.get(row.city) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([city, views]) => ({
-      city,
-      views,
-    }))
-    .sort((a, b) => b.views - a.views);
-}
-
-
-export async function getTimeline(): Promise<TimelineStat[]> {
-  const { data, error } = await supabase
-    .from("analytics_locations")
-    .select("visited_at");
-
-  if (error) throw error;
-
-  const counts = new Map<string, number>();
-
-  data.forEach((row) => {
-    const date = row.visited_at.split("T")[0];
-    counts.set(date, (counts.get(date) ?? 0) + 1);
-  });
-
-  return [...counts.entries()]
-    .map(([date, views]) => ({
-      date,
-      views,
-    }))
-    .sort((a, b) => a.date.localeCompare(b.date));
-}
-
-export type AnalyticsRange =
-  | "today"
-  | "7d"
-  | "30d"
-  | "90d"
-  | "year"
-  | "all";
 
 function getStartDate(range: AnalyticsRange): string | null {
   const date = new Date();
@@ -183,38 +41,103 @@ function getStartDate(range: AnalyticsRange): string | null {
     case "today":
       date.setHours(0, 0, 0, 0);
       return date.toISOString();
-
     case "7d":
       date.setDate(date.getDate() - 7);
       return date.toISOString();
-
     case "30d":
       date.setDate(date.getDate() - 30);
       return date.toISOString();
-
     case "90d":
       date.setDate(date.getDate() - 90);
       return date.toISOString();
-
     case "year":
       date.setMonth(0, 1);
       date.setHours(0, 0, 0, 0);
       return date.toISOString();
-
-    case "all":
     default:
       return null;
   }
 }
 
-function analyticsQuery(range: AnalyticsRange) {
-  const startDate = getStartDate(range);
+async function loadVisits(startDate: string | null): Promise<VisitRow[]> {
+  const rows: VisitRow[] = [];
 
-  let query = supabase.from("analytics_locations");
+  for (let from = 0; from < MAX_ROWS; from += PAGE_SIZE) {
+    let query = supabaseAdmin
+      .from("analytics_locations")
+      .select("page, country, state, city, visited_at");
 
-  if (startDate) {
-    query = query.gte("visited_at", startDate);
+    if (startDate) query = query.gte("visited_at", startDate);
+
+    const { data, error } = await query
+      .order("visited_at", { ascending: false })
+      .range(from, from + PAGE_SIZE - 1);
+
+    if (error) throw error;
+
+    rows.push(...(data as VisitRow[]));
+
+    if (data.length < PAGE_SIZE) break;
   }
 
-  return query;
+  return rows;
+}
+
+async function countVisits(startDate: string | null): Promise<number | null> {
+  let query = supabaseAdmin
+    .from("analytics_locations")
+    .select("*", { count: "exact", head: true });
+
+  if (startDate) query = query.gte("visited_at", startDate);
+
+  const { count, error } = await query;
+  if (error) throw error;
+
+  return count;
+}
+
+function tally(values: Array<string | null>): Array<[string, number]> {
+  const counts = new Map<string, number>();
+
+  for (const value of values) {
+    if (!value) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+
+  return [...counts.entries()].sort((a, b) => b[1] - a[1]);
+}
+
+export async function getAnalytics(
+  range: AnalyticsRange = "all",
+): Promise<AnalyticsResponse> {
+  const startDate = getStartDate(range);
+
+  const [rows, totalViews] = await Promise.all([
+    loadVisits(startDate),
+    countVisits(startDate),
+  ]);
+
+  const pages = tally(rows.map((r) => r.page));
+  const countries = tally(rows.map((r) => r.country));
+  const states = tally(rows.map((r) => r.state));
+  const cities = tally(rows.map((r) => r.city));
+  const days = tally(rows.map((r) => r.visited_at.slice(0, 10)));
+
+  return {
+    summary: {
+      totalViews: totalViews ?? rows.length,
+      uniqueCountries: countries.length,
+      uniqueStates: states.length,
+      uniqueCities: cities.length,
+    },
+    pages: pages.slice(0, TOP_N).map(([page, views]) => ({ page, views })),
+    countries: countries
+      .slice(0, TOP_N)
+      .map(([country, views]) => ({ country, views })),
+    states: states.slice(0, TOP_N).map(([state, views]) => ({ state, views })),
+    cities: cities.slice(0, TOP_N).map(([city, views]) => ({ city, views })),
+    timeline: days
+      .map(([date, views]) => ({ date, views }))
+      .sort((a, b) => a.date.localeCompare(b.date)),
+  };
 }
