@@ -1,29 +1,23 @@
-import type { Sponsor } from "@/types";
-
 import SponsorsCard from "./SponsorsCard";
-
-interface ShowSummary {
-  id: string;
-  name: string;
-  slug: string;
-  date_start: string;
-}
+import type { SponsorRow, SponsorStats } from "../shared";
 
 interface Props {
-  sponsors: Sponsor[];
-  showsBySponsor: Record<string, ShowSummary[]>;
+  sponsors: SponsorRow[];
+  stats: Record<string, SponsorStats>;
 }
 
-export default function SponsorsGrid({ sponsors, showsBySponsor }: Props) {
+const EMPTY_STATS: SponsorStats = { upcoming: [], left: 0, total: 0 };
+
+export default function SponsorsGrid({ sponsors, stats }: Props) {
   return (
     <section className="w-full py-8">
       <div className="mx-auto max-w-[1320px] px-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {sponsors.map((sponsor) => (
             <SponsorsCard
               key={sponsor.id}
               sponsor={sponsor}
-              shows={showsBySponsor[sponsor.name] ?? []}
+              stats={stats[sponsor.id] ?? EMPTY_STATS}
             />
           ))}
         </div>

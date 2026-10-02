@@ -51,12 +51,12 @@ export default function EventQuickFacts({
         <div className="flex items-center gap-1.5">
           <Tag className="h-6 w-6 text-[#8B5CF6]" strokeWidth={2.5} />
           <span className="text-sm font-bold uppercase tracking-tight text-[#151E3C]">
-            Categories
+            Sponsors
           </span>
         </div>
         <div>
           <div className="text-xl tracking-tight text-black">
-            {event.sponsors?.slice(0, 2).join(", ") || "General"}
+            {event.sponsors?.slice(0, 2).join(", ") || "None listed"}
           </div>
         </div>
       </div>
@@ -69,15 +69,23 @@ export default function EventQuickFacts({
           </span>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-3">
-            <span className="text-4xl tracking-tight text-black">
-              {avgRating ? avgRating.toFixed(1) : "—"}
+          {avgRating ? (
+            <>
+              <div className="flex items-center gap-3">
+                <span className="text-4xl tracking-tight text-black">
+                  {avgRating.toFixed(1)}
+                </span>
+                <Star className="h-5 w-5 fill-[#F0C040] text-[#F0C040]" />
+              </div>
+              <span className="text-sm tracking-tight text-black">
+                ({reviewCount} Review{reviewCount === 1 ? "" : "s"})
+              </span>
+            </>
+          ) : (
+            <span className="text-sm tracking-tight text-black">
+              No reviews yet
             </span>
-            <Star className="h-5 w-5 fill-[#F0C040] text-[#F0C040]" />
-          </div>
-          <span className="text-sm tracking-tight text-black">
-            ({reviewCount} Review{reviewCount === 1 ? "" : "s"})
-          </span>
+          )}
         </div>
       </div>
     </div>

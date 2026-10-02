@@ -1,7 +1,12 @@
 import RecommendedShowCard from "./RecommendedShowCard";
 import type { Event } from "@/types";
 
-export default function RecommendedShows({ events }: { events: Event[] }) {
+interface Props {
+  events: Event[];
+  savedEventIds: string[];
+}
+
+export default function RecommendedShows({ events, savedEventIds }: Props) {
   if (events.length === 0) return null;
 
   return (
@@ -11,7 +16,11 @@ export default function RecommendedShows({ events }: { events: Event[] }) {
       </h2>
       <div className="flex flex-col gap-6 overflow-x-auto md:flex-row">
         {events.map((ev) => (
-          <RecommendedShowCard key={ev.id} event={ev} />
+          <RecommendedShowCard
+            key={ev.id}
+            event={ev}
+            isSaved={savedEventIds.includes(ev.id)}
+          />
         ))}
       </div>
     </div>

@@ -4,7 +4,7 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { after } from "next/server";
 import { format, parseISO } from "date-fns";
-import { ArrowLeft, ArrowRight, CalendarDays, MapPin } from "lucide-react";
+import { ArrowLeft, ArrowRight, MapPin } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
@@ -13,7 +13,6 @@ import SponsorWebsiteLink from "@/components/sponsors/SponsorWebsiteLink";
 import {
   CATEGORY_LABELS,
   TIER_STYLES,
-  primaryLinkClass,
   tierKey,
   type SponsorRow,
   type SponsorShow,
@@ -45,7 +44,7 @@ export async function generateMetadata({ params }: Params) {
     title: `${sponsor.name} | KLLCTRS`,
     description:
       sponsor.description?.slice(0, 155) ??
-      `Upcoming card shows sponsored by ${sponsor.name}.`,
+      `Card shows sponsored by ${sponsor.name}.`,
   };
 }
 
@@ -70,12 +69,13 @@ export default async function SponsorPage({ params }: Params) {
 
   const shows = (rows ?? []) as SponsorShow[];
   const upcoming = shows.filter((show) => show.date_start >= today);
-  const thisYear = shows.filter((show) => show.date_start.startsWith(year));
-  const left = thisYear.filter((show) => show.date_start >= today).length;
+  const left = upcoming.filter((show) =>
+    show.date_start.startsWith(year),
+  ).length;
   const states = new Set(upcoming.map((show) => show.state).filter(Boolean))
     .size;
 
-  // Count this visit after the page has been sent to the browser.
+  // Count this visit after the page has been sent.
   after(async () => {
     const { data } = await supabaseAdmin
       .from("sponsors")
@@ -91,13 +91,6 @@ export default async function SponsorPage({ params }: Params) {
 
   const logo = getSponsorLogo(sponsor.name);
   const tier = tierKey(sponsor.tier);
-  const categoryLabel = CATEGORY_LABELS[sponsor.category] ?? sponsor.category;
-
-  const tiles = [
-    { label: "Upcoming shows", value: upcoming.length },
-    { label: "Left this year", value: left },
-    { label: "States", value: states },
-  ];
 
   return (
     <div className="min-h-screen bg-[#FEF9FF] px-4 pb-16 pt-28">
@@ -130,15 +123,15 @@ export default async function SponsorPage({ params }: Params) {
 
             <div className="min-w-0 flex-1 space-y-2">
               <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex rounded-full bg-[#8B5CF6]/10 px-3 py-1 font-inter text-[12px] font-medium leading-[15px] text-[#5B18BE]">
-                  {categoryLabel}
+                <span className="rounded-full bg-[#8B5CF6]/10 px-3 py-1 font-inter text-[12px] font-medium leading-[15px] text-[#5B18BE]">
+                  {CATEGORY_LABELS[sponsor.category] ?? sponsor.category}
                 </span>
 
                 {tier && (
                   <span
-                    className={`inline-flex rounded-full border px-3 py-1 font-inter text-[12px] font-medium capitalize leading-[15px] ${TIER_STYLES[tier]}`}
+                    className={`rounded-full border px-3 py-1 font-inter text-[12px] font-medium capitalize leading-[15px] ${TIER_STYLES[tier]}`}
                   >
-                    {tier} sponsor
+                    {tier}
                   </span>
                 )}
               </div>
@@ -162,40 +155,22 @@ export default async function SponsorPage({ params }: Params) {
             </p>
           )}
 
-          <div className="mt-6 grid grid-cols-3 gap-3">
-            {tiles.map((tile) => (
-              <div
-                key={tile.label}
-                className="rounded-xl border border-[#F2EFFE] bg-[#FEF9FF] px-4 py-3"
-              >
-                <p className="font-space-grotesk text-[24px] leading-[28px] text-[#151E3C]">
-                  {tile.value}
-                </p>
-                <p className="font-inter text-[12px] leading-[15px] text-[#151E3C]/55">
-                  {tile.label}
-                </p>
-              </div>
-            ))}
-          </div>
+          <p className="mt-4 font-inter text-[13px] leading-4 text-[#151E3C]/55">
+            {upcoming.length} upcoming{" "}
+            {upcoming.length === 1 ? "show" : "shows"}, {states}{" "}
+            {states === 1 ? "state" : "states"}, {left} left this year
+          </p>
         </section>
 
         <section className="rounded-2xl border border-[#E5DFFD] bg-white p-6 shadow-sm sm:p-8">
-          <div className="mb-4 flex items-baseline justify-between">
-            <h2 className="font-space-grotesk text-[20px] leading-[26px] tracking-[-0.01em] text-[#151E3C]">
-              Upcoming shows
-            </h2>
-            <span className="font-inter text-[12px] leading-[15px] text-[#151E3C]/50">
-              {upcoming.length} {upcoming.length === 1 ? "show" : "shows"}
-            </span>
-          </div>
+          <h2 className="mb-4 font-space-grotesk text-[20px] leading-[26px] tracking-[-0.01em] text-[#151E3C]">
+            Upcoming shows
+          </h2>
 
           {upcoming.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-[#CBBEFB] bg-[#FEF9FF] py-10 text-center">
-              <CalendarDays className="mx-auto mb-3 h-6 w-6 text-[#8B5CF6]/50" />
-              <p className="font-inter text-[14px] leading-[17px] text-[#151E3C]/60">
-                No upcoming shows linked to {sponsor.name} yet.
-              </p>
-            </div>
+            <p className="rounded-xl border border-dashed border-[#CBBEFB] bg-[#FEF9FF] py-8 text-center font-inter text-[14px] leading-[17px] text-[#151E3C]/60">
+              No shows yet.
+            </p>
           ) : (
             <div className="space-y-3">
               {upcoming.map((show, index) => (
@@ -220,10 +195,11 @@ export default async function SponsorPage({ params }: Params) {
                       </p>
                       {index === 0 && (
                         <span className="shrink-0 rounded-full bg-[#F0C040]/20 px-2 py-0.5 font-inter text-[11px] font-medium leading-[14px] text-[#9A7A26]">
-                          Next up
+                          Next
                         </span>
                       )}
                     </div>
+
                     {(show.city || show.state) && (
                       <p className="mt-0.5 flex items-center gap-1 font-inter text-[13px] leading-4 text-[#151E3C]/55">
                         <MapPin className="h-3.5 w-3.5 shrink-0" />
@@ -239,20 +215,15 @@ export default async function SponsorPage({ params }: Params) {
           )}
         </section>
 
-        <section className="flex flex-col items-start justify-between gap-4 rounded-2xl bg-[#151E3C] p-6 sm:flex-row sm:items-center sm:p-8">
-          <div>
-            <h2 className="font-space-grotesk text-[20px] leading-[26px] tracking-[-0.01em] text-[#FEF9FF]">
-              Want your brand here?
-            </h2>
-            <p className="mt-1 font-inter text-[14px] leading-5 text-[#FEF9FF]/60">
-              Become a sponsor and get your own profile on the Hobby Index.
-            </p>
-          </div>
-
-          <Link href="/sponsors/submit" className={primaryLinkClass}>
+        <p className="text-center font-inter text-[13px] leading-4 text-[#151E3C]/55">
+          Want your brand here?{" "}
+          <Link
+            href="/sponsors/submit"
+            className="text-[#8B5CF6] underline-offset-4 hover:underline"
+          >
             Become a sponsor
           </Link>
-        </section>
+        </p>
       </div>
     </div>
   );

@@ -71,6 +71,8 @@ export default function WriteReviewModal({
       return;
     }
 
+    setComment("");
+    setRating(0);
     onSuccess();
     onClose();
   };

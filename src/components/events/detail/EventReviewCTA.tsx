@@ -1,9 +1,11 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import WriteReviewModal from "./WriteReviewModal";
 
 export default function EventReviewCTA({ eventId }: { eventId: string }) {
+  const router = useRouter();
   const [open, setOpen] = useState(false);
 
   return (
@@ -29,7 +31,7 @@ export default function EventReviewCTA({ eventId }: { eventId: string }) {
         <WriteReviewModal
           eventId={eventId}
           onClose={() => setOpen(false)}
-          onSuccess={() => window.location.reload()}
+          onSuccess={() => router.refresh()}
         />
       )}
     </>

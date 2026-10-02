@@ -1,8 +1,57 @@
-import { format } from "date-fns";
+"use client";
+
+import { useState } from "react";
+import { format, parseISO } from "date-fns";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import type { Event } from "@/types";
 
-export default function RecommendedShowCard({ event }: { event: Event }) {
+interface Props {
+  event: Event;
+  isSaved: boolean;
+}
+
+export default function RecommendedShowCard({
+  event,
+  isSaved: initialSaved,
+}: Props) {
+  const router = useRouter();
+  const [isSaved, setIsSaved] = useState(initialSaved);
+  const [saving, setSaving] = useState(false);
+
+  async function handleSave() {
+    setSaving(true);
+    const wasSaved = isSaved;
+    setIsSaved(!wasSaved);
+
+    try {
+      const res = await fetch(`/api/events/${event.id}/save`, {
+        method: "POST",
+      });
+
+      if (res.status === 401) {
+        setIsSaved(wasSaved);
+        router.push(`/login?redirect=/events/${event.slug}`);
+        return;
+      }
+
+      if (!res.ok) {
+        setIsSaved(wasSaved);
+        toast.error("Something went wrong");
+        return;
+      }
+
+      const data: { saved: boolean } = await res.json();
+      setIsSaved(data.saved);
+    } catch {
+      setIsSaved(wasSaved);
+      toast.error("Something went wrong");
+    } finally {
+      setSaving(false);
+    }
+  }
+
   return (
     <div className="flex w-full flex-col md:w-[427px]">
       <div className="relative flex h-[152px] w-full md:h-[178px]">
@@ -36,13 +85,13 @@ export default function RecommendedShowCard({ event }: { event: Event }) {
 
         <div className="flex w-[107px] flex-col items-center justify-center gap-2 rounded-tr-lg border border-[#F2EFFE] bg-[#FEF9FF] px-2 py-3">
           <div className="text-base font-medium tracking-tight text-black">
-            {format(new Date(event.date_start), "d MMM")}
+            {format(parseISO(event.date_start), "d MMM")}
           </div>
           {event.date_end && event.date_end !== event.date_start && (
             <>
               <div className="h-px w-[26px] bg-[#CBBEFB]" />
               <div className="text-base font-medium tracking-tight text-black">
-                {format(new Date(event.date_end), "d MMM")}
+                {format(parseISO(event.date_end), "d MMM")}
               </div>
             </>
           )}
@@ -50,8 +99,12 @@ export default function RecommendedShowCard({ event }: { event: Event }) {
       </div>
 
       <div className="flex w-full">
-        <button className="flex-1 border border-[#F2EFFE] bg-[#FEF9FF] py-3 text-xs font-medium tracking-tight text-[#8B5CF6]">
-          Save
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex-1 border border-[#F2EFFE] bg-[#FEF9FF] py-3 text-xs font-medium tracking-tight text-[#8B5CF6] disabled:opacity-60"
+        >
+          {isSaved ? "Saved" : "Save"}
         </button>
         <Link
           href={`/events/${event.slug}`}
