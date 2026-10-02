@@ -67,7 +67,6 @@ export default function EventHero({ event, isSaved: initialSaved }: Props) {
         className="object-cover"
       />
 
-      {/* Guarantees the text stays readable no matter what the photo looks like behind it. */}
       <div className="absolute inset-0 bg-gradient-to-r from-[#151E3C]/85 via-[#151E3C]/45 to-transparent" />
 
       <div className="relative z-10 mx-auto flex min-h-[285px] max-w-[1320px] flex-col justify-center gap-5 px-6 py-14 md:px-[120px]">

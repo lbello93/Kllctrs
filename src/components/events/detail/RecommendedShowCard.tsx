@@ -63,7 +63,7 @@ export default function RecommendedShowCard({
           </div>
 
           <div className="absolute left-4 top-11 flex flex-col gap-2">
-            <h3 className="font-space-grotesk text-xl font-medium tracking-tight text-black">
+            <h3 className="line-clamp-1 font-space-grotesk text-xl font-medium tracking-tight text-black">
               {event.name}
             </h3>
           </div>
