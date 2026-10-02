@@ -16,10 +16,10 @@ export function ProgressBar({
   return (
     <div className="flex w-full flex-col gap-3">
       <div className="flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-widest text-white/40">
+        <span className="font-inter text-[12px] font-medium uppercase leading-[15px] tracking-widest text-[#FEF9FF]/50">
           Step {currentStep} of {totalSteps}
         </span>
-        <span className="text-xs font-medium text-white/40">
+        <span className="font-inter text-[12px] font-medium leading-[15px] text-[#FEF9FF]/50">
           {Math.round(progress)}%
         </span>
       </div>
@@ -33,7 +33,7 @@ export function ProgressBar({
         aria-label={`Onboarding progress: step ${currentStep} of ${totalSteps}`}
       >
         <motion.div
-          className="absolute inset-y-0 left-0 rounded-full bg-[#9C7CF7]"
+          className="absolute inset-y-0 left-0 rounded-full bg-[linear-gradient(94.43deg,#5B18BE_35.73%,#9C7CF7_100%)]"
           initial={false}
           animate={{ width: `${progress}%` }}
           transition={{ duration: 0.4, ease: "easeInOut" }}

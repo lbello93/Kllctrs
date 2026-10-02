@@ -1,4 +1,4 @@
-// Type scale and button styles from the KLLCTRS style guide.
+// Type scale and button from the KLLCTRS style guide.
 // Import these instead of repeating raw sizes in each step.
 
 export const displayXl =
