@@ -32,7 +32,7 @@ function DesktopCTASection() {
 
             {/* Buttons */}
             <div className="mt-8 flex gap-3 justify-center">
-              <Link href="/map" className="flex-1 max-w-[180px]">
+              <Link href="/maps" className="flex-1 max-w-[180px]">
                 <Button
                   variant="gold"
                   className="h-12 w-full rounded-xl font-semibold"
