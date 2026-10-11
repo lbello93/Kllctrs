@@ -4,17 +4,43 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { X, Send, Sparkles } from "lucide-react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
+import ReactMarkdown, { type Components } from "react-markdown";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
+  sources?: Array<{ title: string; url: string; type: "directory" | "official" | "listing" }>;
 }
 
 const SUGGESTIONS = [
-  "Card shows in Texas",
-  "Shops near me with Pokemon",
-  "Where can I get cards graded?",
+  "What card shows are coming up in California?",
+  "Find Pokémon card shops in New York",
+  "What brands have profiles on KLLCTRS?",
+  "Show me KLLCTRS articles about grading",
 ];
+
+function normalizeAssistantMarkdown(content: string) {
+  return content
+    .replace(/\\([\\`*_{}\[\]()#+\-.!|>])/g, "$1")
+    .replace(/\[([^\]]+)\]\(\[(?:https?:\/\/[^\]]+)\]\((https?:\/\/[^)]+)\)\)/g, "[$1]($2)");
+}
+
+const markdownComponents: Components = {
+  a: ({ href, children }) => {
+    const internal = Boolean(href?.startsWith("/") && !href.startsWith("//"));
+    return (
+      <a href={href} target={internal ? undefined : "_blank"} rel={internal ? undefined : "noreferrer"} className="font-medium text-violet-700 underline decoration-violet-300 underline-offset-2 hover:text-violet-900">
+        {children}
+      </a>
+    );
+  },
+  p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+  ul: ({ children }) => <ul className="mb-2 list-disc space-y-1 pl-5 last:mb-0">{children}</ul>,
+  ol: ({ children }) => <ol className="mb-2 list-decimal space-y-1 pl-5 last:mb-0">{children}</ol>,
+  li: ({ children }) => <li>{children}</li>,
+  h2: ({ children }) => <h2 className="mb-2 mt-3 font-semibold first:mt-0">{children}</h2>,
+  h3: ({ children }) => <h3 className="mb-2 mt-3 font-semibold first:mt-0">{children}</h3>,
+};
 
 export default function ChatWindow() {
   const [open, setOpen] = useState(false);
@@ -56,7 +82,11 @@ export default function ChatWindow() {
         });
         const data = await res.json();
         const reply = data.response ?? data.error ?? "Something went wrong.";
-        setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+        setMessages((prev) => [...prev, {
+          role: "assistant",
+          content: reply,
+          sources: Array.isArray(data.sources) ? data.sources : [],
+        }]);
       } catch {
         setMessages((prev) => [
           ...prev,
@@ -216,17 +246,37 @@ export default function ChatWindow() {
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.2 }}
-                  className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}
+                  className={`flex flex-col ${m.role === "user" ? "items-end" : "items-start"}`}
                 >
                   <div
-                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm whitespace-pre-wrap leading-relaxed ${
+                    className={`max-w-[85%] rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed ${
                       m.role === "user"
-                        ? "bg-[#5f2eea] text-white rounded-br-sm shadow-lg shadow-violet-500/20"
+                        ? "whitespace-pre-wrap bg-[#5f2eea] text-white rounded-br-sm shadow-lg shadow-violet-500/20"
                         : "bg-white border border-violet-100 text-[#1a0a3d] rounded-bl-sm shadow-sm"
                     }`}
                   >
-                    {m.content}
+                    {m.role === "assistant" ? (
+                      <ReactMarkdown components={markdownComponents}>
+                        {normalizeAssistantMarkdown(m.content)}
+                      </ReactMarkdown>
+                    ) : m.content}
                   </div>
+                  {m.role === "assistant" && Boolean(m.sources?.length) && (
+                    <div className="mt-2 flex max-w-[92%] flex-wrap gap-1.5">
+                      {m.sources?.map((source, sourceIndex) => (
+                        <a
+                          key={`${source.url}-${sourceIndex}`}
+                          href={source.url}
+                          target={source.url.startsWith("/") && !source.url.startsWith("//") ? undefined : "_blank"}
+                          rel={source.url.startsWith("/") && !source.url.startsWith("//") ? undefined : "noreferrer"}
+                          className="rounded-full border border-violet-100 bg-white px-2.5 py-1 text-[10px] text-violet-700 transition-colors hover:bg-violet-50"
+                          title={source.type === "official" ? "Official source" : source.type === "listing" ? "Live listing" : "KLLCTRS directory"}
+                        >
+                          {source.title}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                 </motion.div>
               ))}
 

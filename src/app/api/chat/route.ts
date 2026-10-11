@@ -16,14 +16,56 @@ import { mergeContext } from "@/lib/ai/context-merger";
 import type { Json } from "@/types/database";
 
 interface ChatSource {
-  tool: string;
-  args: Json;
-  count: number;
+  title: string;
+  url: string;
+  type: "directory" | "official" | "listing";
 }
 
 function toJson(value: unknown): Json {
   const serialized = JSON.stringify(value);
   return serialized === undefined ? null : (JSON.parse(serialized) as Json);
+}
+
+function collectSources(tool: string, value: unknown): ChatSource[] {
+  if (!value || typeof value !== "object") return [];
+  const result = value as Record<string, unknown>;
+  const sources: ChatSource[] = [];
+  const add = (title: unknown, url: unknown, type: ChatSource["type"]) => {
+    const isInternal = typeof url === "string" && url.startsWith("/") && !url.startsWith("//");
+    if (typeof title === "string" && typeof url === "string" && (isInternal || /^https?:\/\//i.test(url))) {
+      sources.push({ title, url, type });
+    }
+  };
+  const addRecords = (key: string, titleKey: string, urlKey: string, type: ChatSource["type"]) => {
+    const records = result[key];
+    if (!Array.isArray(records)) return;
+    for (const record of records) {
+      if (!record || typeof record !== "object") continue;
+      const item = record as Record<string, unknown>;
+      add(item[titleKey], item[urlKey], type);
+      if (key === "events") add(item.name, item.website, "official");
+      if (key === "sponsors") {
+        add(item.name, item.website, "official");
+        add(item.name ? `${String(item.name)} — source` : item.name, item.info_source_url, "official");
+        if (Array.isArray(item.upcoming_events)) {
+          for (const event of item.upcoming_events) {
+            if (event && typeof event === "object") {
+              const show = event as Record<string, unknown>;
+              add(show.name, show.directory_url, "directory");
+            }
+          }
+        }
+      }
+    }
+  };
+
+  if (tool === "search_events") addRecords("events", "name", "directory_url", "directory");
+  if (tool === "search_shops") addRecords("shops", "name", "directory_url", "directory");
+  if (tool === "search_sponsors") addRecords("sponsors", "name", "profile_url", "directory");
+  if (tool === "search_content") addRecords("articles", "title", "article_url", "directory");
+  if (tool === "search_ebay_prices") addRecords("listings", "title", "url", "listing");
+
+  return sources.filter((source, index, all) => all.findIndex((candidate) => candidate.url === source.url) === index).slice(0, 30);
 }
 
 // In-memory rate limit: 10 messages per minute per IP.
@@ -67,7 +109,7 @@ export async function POST(req: NextRequest) {
 
     const rateLimitKey =
       user?.id ??
-      req.headers.get("x-forwarded-for") ??
+      req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ??
       req.headers.get("x-real-ip") ??
       "anonymous";
 
@@ -82,12 +124,20 @@ export async function POST(req: NextRequest) {
     // Request
     //--------------------------------------------------
 
-    const {
-      message,
-      history = [],
-    } = await req.json();
+    const body: unknown = await req.json();
+    if (!body || typeof body !== "object") return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+    const payload = body as { message?: unknown; history?: unknown };
+    const message = typeof payload.message === "string" ? payload.message.trim() : "";
+    const history = Array.isArray(payload.history)
+      ? payload.history.slice(-8).flatMap((entry) => {
+          if (!entry || typeof entry !== "object") return [];
+          const item = entry as { role?: unknown; content?: unknown };
+          if ((item.role !== "user" && item.role !== "assistant") || typeof item.content !== "string") return [];
+          return [{ role: item.role, content: item.content.slice(0, 1500) }];
+        })
+      : [];
 
-    if (!message?.trim()) {
+    if (!message) {
       return NextResponse.json(
         {
           error: "Empty message",
@@ -97,6 +147,7 @@ export async function POST(req: NextRequest) {
         }
       );
     }
+    if (message.length > 1000) return NextResponse.json({ error: "Please keep messages under 1,000 characters." }, { status: 413 });
 
     //--------------------------------------------------
     // Conversation
@@ -159,11 +210,7 @@ const result =
     args: mergedArgs,
   });
 
-        sources.push({
-          tool: call.name,
-          args: toJson(call.args),
-          count: result.count,
-        });
+        sources.push(...collectSources(call.name, result.result));
 
         fnResponses.push({
           functionResponse: {
@@ -173,15 +220,14 @@ const result =
         });
       }
 
-      contents.push({
-        role: "model",
-
-        parts: response.functionCalls.map(
-          (call) => ({
-            functionCall: call,
-          })
-        ),
-      });
+      // Gemini tool-call parts may carry a thought_signature needed for the
+      // next turn. Keep the provider's original model message intact instead
+      // of reconstructing functionCall parts from response.functionCalls.
+      const modelMessage = response.candidates?.[0]?.content;
+      if (!modelMessage) {
+        throw new Error("Gemini returned function calls without the original model content.");
+      }
+      contents.push(modelMessage);
 
       contents.push({
         role: "user",

@@ -6,16 +6,7 @@ What is my card worth?
 
 Assistant:
 
-Use search_ebay_prices.
-
-After results
-
-• summarize
-• average
-• highest
-• lowest
-
-Explain market fluctuations.
+Use search_ebay_prices for current listing context. Explicitly call these active asking prices, not completed sales. Include listing links. Do not calculate an average or claim the listings establish value.
 
 ==============================
 

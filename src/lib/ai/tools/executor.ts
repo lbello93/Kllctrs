@@ -2,6 +2,7 @@ import { searchEvents } from "../services/events";
 import { searchShops } from "../services/shops";
 import { searchSponsors } from "../services/sponsors";
 import { searchEbayPrices } from "../services/ebay";
+import { searchContent } from "../services/content";
 
 
 interface ToolCall {
@@ -60,6 +61,17 @@ export async function executeTool(call: ToolCall): Promise<ExecutedToolResult> {
         const result = await searchSponsors({
           category: getString(args, "category"),
           keyword: getString(args, "keyword"),
+        });
+        return { result, count: result.total };
+      }
+
+    case "search_content":
+      {
+        const keyword = getString(args, "keyword");
+        if (!keyword) return { result: { found: false, total: 0, articles: [] }, count: 0 };
+        const result = await searchContent({
+          keyword,
+          category: getString(args, "category"),
         });
         return { result, count: result.total };
       }

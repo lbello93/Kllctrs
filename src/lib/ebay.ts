@@ -42,7 +42,7 @@ interface EbayItem {
   itemEndDate?: string
 }
 
-export async function searchEbaySoldListings(query: string, limit = 10): Promise<EbayItem[]> {
+export async function searchEbayListings(query: string, limit = 10): Promise<EbayItem[]> {
   const token = await getEbayToken()
 
   const params = new URLSearchParams({

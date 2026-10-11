@@ -30,7 +30,7 @@ export const tools: Tool[] = [{
     },
     {
       name: 'search_sponsors',
-      description: 'Search for industry sponsors and services like grading companies (PSA, Beckett, SGC), auction houses (Heritage, Goldin), manufacturers (Topps, Panini), or marketplaces. Use when user asks about grading, auctions, breaks, or specific company names.',
+      description: 'Search KLLCTRS brand profiles and upcoming events associated with a brand. Use for brand/company questions about graders, auction houses, manufacturers, marketplaces, and hobby services.',
       parameters: {
         type: Type.OBJECT,
         properties: {
@@ -40,8 +40,20 @@ export const tools: Tool[] = [{
       },
     },
     {
+      name: 'search_content',
+      description: 'Search published KLLCTRS articles and collector guides. Use when a user asks what KLLCTRS has published or asks for a relevant article.',
+      parameters: {
+        type: Type.OBJECT,
+        properties: {
+          keyword: { type: Type.STRING, description: 'Main topic or keywords to search in article titles and summaries' },
+          category: { type: Type.STRING, description: 'Optional article category' },
+        },
+        required: ['keyword'],
+      },
+    },
+    {
       name: 'search_ebay_prices',
-      description: 'Search recent eBay listings to find current market prices for trading cards or sports memorabilia. Use when users ask about card values, prices, or what something is selling for.',
+      description: 'Search current active eBay asking-price listings for a specific card or item. These are asking prices, not completed sales or sold comps. Use when users ask what a card is currently listed for.',
       parameters: {
         type: Type.OBJECT,
         properties: {

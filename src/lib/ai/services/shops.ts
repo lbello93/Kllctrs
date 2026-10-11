@@ -9,6 +9,7 @@ interface ShopSearchArgs {
 }
 
 export async function searchShops(args: ShopSearchArgs) {
+  const keyword = args.keyword?.trim().replace(/[^\p{L}\p{N}\s'-]/gu, " ").replace(/\s+/g, " ").slice(0, 80);
   let query = supabaseAdmin
     .from("shops")
     .select(`
@@ -20,7 +21,7 @@ export async function searchShops(args: ShopSearchArgs) {
       address,
       phone,
       website
-    `)
+    `, { count: "exact" })
     .eq("status", "approved")
     .order("name")
     .limit(20)
@@ -68,28 +69,23 @@ if (state) {
   // Keyword
   //--------------------------------------
 
-  if (args.keyword) {
-  query = query.or(`
-    name.ilike.%${args.keyword}%,
-    city.ilike.%${args.keyword}%,
-    address.ilike.%${args.keyword}%,
-    state.ilike.%${args.keyword}%
-  `);
-}
+  if (keyword) query = query.ilike("name", `%${keyword}%`);
 
   //--------------------------------------
 
-  const { data, error } = await query;
+  const { data, error, count } = await query;
 
 if (error) {
   throw error;
 }
 
-const shops = data ?? [];
+const shops = (data ?? []).map((shop) => ({ ...shop, directory_url: `/shops/${shop.slug}` }));
 
 return {
   found: shops.length > 0,
-  total: shops.length,
+  total: count ?? shops.length,
+  returned: shops.length,
+  truncated: (count ?? shops.length) > shops.length,
   shops,
 };
 }
