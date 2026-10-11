@@ -17,7 +17,6 @@ export default async function SponsorsPage() {
   const supabase = await createClient();
 
   const now = new Date();
-  const year = String(now.getFullYear());
   const today = now.toISOString().split("T")[0];
 
   const { data: sponsorRows } = await supabase
@@ -32,10 +31,9 @@ export default async function SponsorsPage() {
     sponsors.map(async (sponsor) => {
       const { data } = await supabase
         .from("events")
-        .select("id, name, slug, date_start, city, state")
+        .select("id, name, slug, date_start, city, state, venue_name, date_end")
         .eq("status", "approved")
         .contains("sponsors", [sponsor.name])
-        .gte("date_start", `${year}-01-01`)
         .order("date_start", { ascending: true });
 
       return (data ?? []) as SponsorShow[];
@@ -48,13 +46,12 @@ export default async function SponsorsPage() {
 
   sponsors.forEach((sponsor, index) => {
     const rows = showsPerSponsor[index];
-    const thisYear = rows.filter((e) => e.date_start.startsWith(year));
     const upcoming = rows.filter((e) => e.date_start >= today);
 
     stats[sponsor.id] = {
       upcoming,
-      left: thisYear.filter((e) => e.date_start >= today).length,
-      total: thisYear.length,
+      left: upcoming.length,
+      total: rows.length,
     };
 
     for (const show of upcoming) {

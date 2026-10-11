@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Check } from "lucide-react";
 
 interface CategorySelectorProps {
@@ -27,15 +27,11 @@ const ALL_CATEGORIES = [
 ];
 
 export default function CategorySelector({
-  selected = [],
+  selected,
   onChange,
 }: CategorySelectorProps) {
-  const [selectedCategories, setSelectedCategories] =
-    useState<string[]>(selected);
-
-  useEffect(() => {
-    setSelectedCategories(selected);
-  }, [selected]);
+  const [internalSelection, setInternalSelection] = useState<string[]>([]);
+  const selectedCategories = selected ?? internalSelection;
 
   function toggleCategory(category: string) {
     let updated: string[];
@@ -46,7 +42,7 @@ export default function CategorySelector({
       updated = [...selectedCategories, category];
     }
 
-    setSelectedCategories(updated);
+    if (selected === undefined) setInternalSelection(updated);
     onChange?.(updated);
   }
 

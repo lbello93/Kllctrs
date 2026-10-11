@@ -5,8 +5,7 @@ import { parseEventDetail } from "@/lib/tcdb/parser/detail-parser";
 import { createClient } from "@/lib/supabase/server";
 
 import { SportsCollectorDigestScraper } from "@/lib/tcdb/services/sports-collector-digest-scrapper";
-import { normalizeSportsEvents }
-from "../../../../../lib/tcdb/parser/sports-calender-normalizer";
+import { hasWrittenSourcePermission } from "@/lib/events/source-access";
 export async function POST(
   request: NextRequest
 ) {
@@ -62,9 +61,21 @@ if (
     const formData =
       await request.formData();
 
-    const provider =
-  (formData.get("provider") as string) ??
-  "tcdb";
+    const providerValue = formData.get("provider");
+    const provider = typeof providerValue === "string" && providerValue
+      ? providerValue
+      : "tcdb";
+
+    if (provider !== "tcdb" && provider !== "sportscollectorsdigest") {
+      return NextResponse.json({ success: false, error: "Unsupported event source." }, { status: 400 });
+    }
+
+    if (!hasWrittenSourcePermission(provider)) {
+      return NextResponse.json({
+        success: false,
+        error: `Event ingestion from ${provider} is disabled until written permission for Kllctrs' intended use is documented.`,
+      }, { status: 503 });
+    }
 
   console.log("Provider:", provider);
 

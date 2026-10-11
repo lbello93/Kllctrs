@@ -5,6 +5,7 @@ import { Container } from "@/components/layout/container";
 import { motion } from "framer-motion";
 import { FaXTwitter, FaInstagram, FaLinkedin } from "react-icons/fa6";
 import Image from "next/image";
+import type { IconType } from "react-icons";
 
 export function Footer() {
   const handleChatClick = () => {
@@ -213,7 +214,7 @@ function IconBtn({
   href,
   label,
 }: {
-  icon: any;
+  icon: IconType;
   href: string;
   label: string;
 }) {

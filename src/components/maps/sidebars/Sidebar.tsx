@@ -5,7 +5,7 @@ import EventCard from "../cards/EventCard";
 import ShopCard from "../cards/ShopCard";
 
 interface EventSidebarProps {
-  events: Event[];
+  events: Array<Event & { distanceMiles?: number }>;
   savedIds: string[];
   setSavedEventIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -18,7 +18,7 @@ export function EventSidebar({
   return (
     <div className="w-[352px] h-[560px] overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col gap-3">
-        {events.map((event: any) => (
+        {events.map((event) => (
           <EventCard
             key={event.id}
             event={event}
@@ -34,7 +34,7 @@ export function EventSidebar({
 }
 
 interface ShopSidebarProps {
-  shops: Shop[];
+  shops: Array<Shop & { distanceMiles?: number }>;
   savedIds: string[];
   setSavedShopIds: React.Dispatch<React.SetStateAction<string[]>>;
 }
@@ -47,7 +47,7 @@ export function ShopSidebar({
   return (
     <div className="w-[352px] h-[560px] overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col gap-3">
-        {shops.map((shop: any) => (
+        {shops.map((shop) => (
           <ShopCard
             key={shop.id}
             shop={shop}

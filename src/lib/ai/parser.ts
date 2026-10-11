@@ -1,4 +1,6 @@
-export function extractText(response: any): string {
+import type { GenerateContentResponse } from "@google/genai";
+
+export function extractText(response: GenerateContentResponse): string {
   let text = response.text;
 
   if (!text) {
@@ -7,7 +9,7 @@ export function extractText(response: any): string {
       [];
 
     text = parts
-      .map((part: any) => part.text ?? "")
+      .map((part) => part.text ?? "")
       .join("\n")
       .trim();
   }

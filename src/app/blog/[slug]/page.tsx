@@ -81,7 +81,7 @@ export default async function BlogPostPage({ params }: Params) {
     .eq("status", "published")
     .single();
 
-  if (!post) notFound();
+  if (!post?.title) notFound();
 
   const categoryKey = (post.category || "card")
     .toLowerCase()

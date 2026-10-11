@@ -6,9 +6,17 @@ export async function PATCH(req: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const body = await req.json();
+  const parsedBody: unknown = await req.json();
+  if (
+    typeof parsedBody !== "object" ||
+    parsedBody === null ||
+    Array.isArray(parsedBody)
+  ) {
+    return NextResponse.json({ error: "Invalid profile update" }, { status: 400 });
+  }
+  const body = parsedBody as Record<string, unknown>;
 
-  const update: Record<string, any> = { updated_at: new Date().toISOString() };
+  const update: Record<string, unknown> = { updated_at: new Date().toISOString() };
   if ("display_name" in body) update.display_name = body.display_name ?? null;
   if ("username" in body) update.username = body.username ?? null;
   if ("bio" in body) update.bio = body.bio ?? null;

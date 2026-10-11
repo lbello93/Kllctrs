@@ -4,46 +4,80 @@ import { searchSponsors } from "../services/sponsors";
 import { searchEbayPrices } from "../services/ebay";
 
 
-export async function executeTool(call: any) {
-  let result: any = {};
+interface ToolCall {
+  name: string;
+  args?: unknown;
+}
 
+interface ExecutedToolResult {
+  result: Record<string, unknown>;
+  count: number;
+}
+
+function getArgs(value: unknown): Record<string, unknown> {
+  return typeof value === "object" && value !== null
+    ? (value as Record<string, unknown>)
+    : {};
+}
+
+function getString(args: Record<string, unknown>, key: string): string | undefined {
+  const value = args[key];
+  return typeof value === "string" ? value : undefined;
+}
+
+export async function executeTool(call: ToolCall): Promise<ExecutedToolResult> {
+  const args = getArgs(call.args);
   switch (call.name) {
     case "search_events":
-  result = await searchEvents(call.args ?? {});
-
-  return {
-  result,
-  count: result.total,
-};
+      {
+        const result = await searchEvents({
+          state: getString(args, "state"),
+          city: getString(args, "city"),
+          keyword: getString(args, "keyword"),
+          dateFrom: getString(args, "dateFrom"),
+          dateTo: getString(args, "dateTo"),
+        });
+        return { result, count: result.total };
+      }
 
     case "search_shops":
-  result = await searchShops(call.args ?? {});
-
-  return {
-  result,
-  count: result.total,
-};
+      {
+        const specialty = getString(args, "specialty");
+        const result = await searchShops({
+          state: getString(args, "state"),
+          city: getString(args, "city"),
+          specialty:
+            specialty === "sports" || specialty === "pokemon" || specialty === "both"
+              ? specialty
+              : undefined,
+          keyword: getString(args, "keyword"),
+        });
+        return { result, count: result.total };
+      }
 
     case "search_sponsors":
-      result = await searchSponsors(call.args ?? {});
-      return {
-  result,
-  count: result.total,
-};
+      {
+        const result = await searchSponsors({
+          category: getString(args, "category"),
+          keyword: getString(args, "keyword"),
+        });
+        return { result, count: result.total };
+      }
 
     case "search_ebay_prices":
-      result = await searchEbayPrices(call.args ?? {});
-      return {
-  result,
-  count: result.total,
-};
+      {
+        const query = getString(args, "query");
+        if (!query) {
+          return {
+            result: { listings: [], count: 0, error: "A search query is required." },
+            count: 0,
+          };
+        }
+        const result = await searchEbayPrices({ query });
+        return { result, count: result.count };
+      }
 
     default:
-return {
-    result:{
-        error:"Unknown tool"
-    },
-    count:0
-}
+      return { result: { error: "Unknown tool" }, count: 0 };
   }
 }

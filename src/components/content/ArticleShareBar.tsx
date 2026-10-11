@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState, useSyncExternalStore } from "react";
 import { Link2, Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -23,12 +23,15 @@ function LinkedinIcon({ className }: { className?: string }) {
 }
 
 export default function ArticleShareBar({ title }: { title: string }) {
-  const [shareUrl, setShareUrl] = useState("");
+  const shareUrl = useSyncExternalStore(
+    (onStoreChange) => {
+      window.addEventListener("popstate", onStoreChange);
+      return () => window.removeEventListener("popstate", onStoreChange);
+    },
+    () => window.location.href,
+    () => "",
+  );
   const [copied, setCopied] = useState(false);
-
-  useEffect(() => {
-    setShareUrl(window.location.href);
-  }, []);
 
   async function handleCopy() {
     await navigator.clipboard.writeText(shareUrl);

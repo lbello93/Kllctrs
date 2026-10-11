@@ -26,6 +26,13 @@ interface Sponsor {
   tier?: string | null;
   description?: string | null;
   website?: string | null;
+  tagline?: string | null;
+  offerings?: string[] | null;
+  product_categories?: string[] | null;
+  target_audience?: string[] | null;
+  service_area?: string | null;
+  info_source_url?: string | null;
+  info_verified_at?: string | null;
   profile_views?: number | null;
   website_clicks?: number | null;
 }
@@ -99,6 +106,12 @@ export default function AdminSponsorsClient({ initialSponsors }: Props) {
       website: sp.website ?? "",
       tier: sp.tier ?? "",
       category: sp.category,
+      tagline: sp.tagline ?? "",
+      offerings: sp.offerings ?? [],
+      product_categories: sp.product_categories ?? [],
+      target_audience: sp.target_audience ?? [],
+      service_area: sp.service_area ?? "",
+      info_source_url: sp.info_source_url ?? "",
     });
   };
 
@@ -319,6 +332,31 @@ export default function AdminSponsorsClient({ initialSponsors }: Props) {
                     rows={2}
                     className="w-full px-3 py-2 rounded-xl border border-violet-200 bg-white text-[#1a0a3d] text-sm focus:outline-none focus:ring-2 focus:ring-violet-400/30 resize-none"
                   />
+                </div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+                  <div>
+                    <label className="text-xs font-medium text-[#4a3f6b]/50 block mb-1">One-line tagline</label>
+                    <input value={editData.tagline ?? ""} onChange={(e) => setEditData((p) => ({ ...p, tagline: e.target.value }))} maxLength={180} className={inputClass} placeholder="What this brand is known for" />
+                  </div>
+                  <div>
+                    <label className="text-xs font-medium text-[#4a3f6b]/50 block mb-1">Service area</label>
+                    <input value={editData.service_area ?? ""} onChange={(e) => setEditData((p) => ({ ...p, service_area: e.target.value }))} maxLength={240} className={inputClass} placeholder="Online nationwide, or regions served" />
+                  </div>
+                  {([
+                    ["offerings", "Products and services", "Grading, auctions, card supplies"],
+                    ["product_categories", "Collecting categories", "Sports cards, Pokémon, comics"],
+                    ["target_audience", "Who it serves", "New collectors, advanced collectors"],
+                  ] as const).map(([key, label, placeholder]) => (
+                    <div key={key}>
+                      <label className="text-xs font-medium text-[#4a3f6b]/50 block mb-1">{label} <span className="font-normal">(comma separated)</span></label>
+                      <textarea value={(editData[key] ?? []).join(", ")} onChange={(e) => setEditData((p) => ({ ...p, [key]: e.target.value.split(",").map((item) => item.trim()).filter(Boolean) }))} rows={2} className="w-full rounded-xl border border-violet-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-violet-400/30" placeholder={placeholder} />
+                    </div>
+                  ))}
+                  <div>
+                    <label className="text-xs font-medium text-[#4a3f6b]/50 block mb-1">Verification source URL</label>
+                    <input value={editData.info_source_url ?? ""} onChange={(e) => setEditData((p) => ({ ...p, info_source_url: e.target.value }))} className={inputClass} placeholder="https://official-brand-site.com/about" />
+                    {sp.info_verified_at && <p className="mt-1 text-[10px] text-[#4a3f6b]/45">Last recorded check: {new Date(sp.info_verified_at).toLocaleDateString()}</p>}
+                  </div>
                 </div>
                 <div className="flex gap-2">
                   <button

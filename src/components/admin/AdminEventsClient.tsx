@@ -15,12 +15,77 @@ import {
   Trash2,
   ExternalLink,
   Loader2,
-  Clock,
 } from "lucide-react";
 
 interface Props {
   initialEvents: Event[];
   currentStatus: string;
+}
+
+interface ReviewEvidence {
+  provider: string;
+  sourceUrl: string | null;
+  observedAt: string;
+  contentHash: string;
+  categories: string[];
+  missingRequiredFields: string[];
+  warnings: string[];
+  sponsorClaims: Array<{ name: string; sourceUrl: string | null; sourceSnippet: string | null }>;
+  possibleDuplicateOf: { id: string; name: string } | null;
+}
+
+function asRecord(value: unknown): Record<string, unknown> | null {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+    ? value as Record<string, unknown>
+    : null;
+}
+
+function safeHttpUrl(value: string | null): string | null {
+  if (!value) return null;
+  try {
+    const parsed = new URL(value);
+    return parsed.protocol === "https:" || parsed.protocol === "http:" ? parsed.toString() : null;
+  } catch {
+    return null;
+  }
+}
+
+function readReviewEvidence(event: Event): ReviewEvidence | null {
+  const socialLinks = asRecord(event.social_links);
+  const ingestion = asRecord(socialLinks?.kllctrs_ingestion);
+  const source = asRecord(ingestion?.source);
+  const quality = asRecord(ingestion?.quality);
+  const duplicate = asRecord(ingestion?.possibleDuplicateOf);
+  if (!source || typeof source.provider !== "string") return null;
+
+  const sponsorClaims = Array.isArray(ingestion?.sponsorClaims)
+    ? ingestion.sponsorClaims.flatMap((claim) => {
+        const item = asRecord(claim);
+        return item && typeof item.name === "string"
+          ? [{
+              name: item.name,
+              sourceUrl: typeof item.sourceUrl === "string" ? item.sourceUrl : null,
+              sourceSnippet: typeof item.sourceSnippet === "string" ? item.sourceSnippet : null,
+            }]
+          : [];
+      })
+    : [];
+  const stringArray = (value: unknown) =>
+    Array.isArray(value) ? value.filter((item): item is string => typeof item === "string") : [];
+
+  return {
+    provider: source.provider,
+    sourceUrl: typeof source.sourceUrl === "string" ? source.sourceUrl : null,
+    observedAt: typeof source.observedAt === "string" ? source.observedAt : "",
+    contentHash: typeof source.contentHash === "string" ? source.contentHash : "",
+    categories: stringArray(ingestion?.categories),
+    missingRequiredFields: stringArray(quality?.missingRequiredFields),
+    warnings: stringArray(quality?.warnings),
+    sponsorClaims,
+    possibleDuplicateOf: duplicate && typeof duplicate.id === "string" && typeof duplicate.name === "string"
+      ? { id: duplicate.id, name: duplicate.name }
+      : null,
+  };
 }
 
 const TABS = [
@@ -182,6 +247,53 @@ export default function AdminEventsClient({
                         .replace(/\/$/, "")}
                     </a>
                   )}
+
+                  {(() => {
+                    const evidence = readReviewEvidence(event);
+                    if (!evidence) return null;
+                    const sourceUrl = safeHttpUrl(evidence.sourceUrl);
+                    return (
+                      <div className="mt-3 rounded-xl border border-violet-100 bg-violet-50/50 p-3 text-xs text-[#4a3f6b]/70">
+                        <p className="font-bold text-[#1a0a3d]">Ingestion evidence · {evidence.provider}</p>
+                        {evidence.possibleDuplicateOf && (
+                          <p className="mt-1 rounded-lg bg-amber-100 px-2 py-1 text-amber-900">
+                            Possible duplicate of{" "}
+                            <Link href={`/admin/events/${evidence.possibleDuplicateOf.id}/edit`} className="font-semibold underline">
+                              {evidence.possibleDuplicateOf.name}
+                            </Link>
+                          </p>
+                        )}
+                        {sourceUrl && (
+                          <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-flex items-center gap-1 text-[#5f2eea] hover:underline">
+                            View source <ExternalLink className="h-3 w-3" />
+                          </a>
+                        )}
+                        {evidence.observedAt && <p className="mt-1">Observed {new Date(evidence.observedAt).toLocaleString()}</p>}
+                        {evidence.contentHash && <p className="mt-1 break-all font-mono text-[10px]">Content hash: {evidence.contentHash}</p>}
+                        {evidence.categories.length > 0 && <p className="mt-1">Categories: {evidence.categories.join(", ")}</p>}
+                        {evidence.sponsorClaims.length > 0 && (
+                          <div className="mt-2">
+                            <p className="font-semibold">Unverified sponsor claims</p>
+                            {evidence.sponsorClaims.map((claim, index) => (
+                              <p key={`${claim.name}-${index}`} className="mt-1">
+                                {claim.name}{claim.sourceSnippet ? ` — “${claim.sourceSnippet}”` : " — source excerpt unavailable"}
+                                {safeHttpUrl(claim.sourceUrl) && (
+                                  <> · <a href={safeHttpUrl(claim.sourceUrl)!} target="_blank" rel="noopener noreferrer" className="text-[#5f2eea] hover:underline">claim source</a></>
+                                )}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                        {(evidence.missingRequiredFields.length > 0 || evidence.warnings.length > 0) && (
+                          <ul className="mt-2 list-disc pl-4 text-amber-800">
+                            {[...evidence.missingRequiredFields.map((field) => `Missing ${field}`), ...evidence.warnings].map((warning, index) => (
+                              <li key={`${warning}-${index}`}>{warning}</li>
+                            ))}
+                          </ul>
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {/* Actions */}

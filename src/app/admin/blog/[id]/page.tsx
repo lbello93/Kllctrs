@@ -17,5 +17,14 @@ export default async function AdminBlogEditPage({ params }: Params) {
 
   if (!post) notFound();
 
-  return <AdminBlogEditClient post={post} />;
+  return (
+    <AdminBlogEditClient
+      post={{
+        ...post,
+        title: post.title ?? "",
+        slug: post.slug ?? "",
+        status: post.status ?? "draft",
+      }}
+    />
+  );
 }

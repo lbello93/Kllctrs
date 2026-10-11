@@ -12,6 +12,21 @@ import MapFilters from "../filters/MapFilters";
 import NearMeBanner from "../filters/NearMeBanner";
 import { useUserLocation } from "@/hooks/useUserLocation";
 import { getDistanceMiles } from "@/lib/geo/distance";
+import type { Event, Shop } from "@/types";
+
+type EventWithDistance = Event & { distanceMiles?: number };
+type ShopWithDistance = Shop & { distanceMiles?: number };
+
+interface MapSectionProps {
+  mode: "shows" | "shops";
+  setMode: (mode: "shows" | "shops") => void;
+  events: Event[];
+  shops: Shop[];
+  savedEventIds: string[];
+  setSavedEventIds: React.Dispatch<React.SetStateAction<string[]>>;
+  savedShopIds: string[];
+  setSavedShopIds: React.Dispatch<React.SetStateAction<string[]>>;
+}
 
 interface MapViewProps {
   mode: "shows" | "shops";
@@ -24,12 +39,12 @@ interface MapViewProps {
   category: string;
   setCategory: (value: string) => void;
   categories: string[];
-  filteredEvents: any[];
-  filteredShops: any[];
-  selectedEvent: any;
-  setSelectedEvent: (event: any) => void;
-  selectedShop: any;
-  setSelectedShop: (shop: any) => void;
+  filteredEvents: EventWithDistance[];
+  filteredShops: ShopWithDistance[];
+  selectedEvent: EventWithDistance | null;
+  setSelectedEvent: (event: EventWithDistance | null) => void;
+  selectedShop: ShopWithDistance | null;
+  setSelectedShop: (shop: ShopWithDistance | null) => void;
   savedEventIds: string[];
   setSavedEventIds: React.Dispatch<React.SetStateAction<string[]>>;
   savedShopIds: string[];
@@ -292,9 +307,9 @@ export default function MapSection({
   setSavedEventIds,
   savedShopIds,
   setSavedShopIds,
-}: any) {
-  const [selectedEvent, setSelectedEvent] = useState<any>(null);
-  const [selectedShop, setSelectedShop] = useState<any>(null);
+}: MapSectionProps) {
+  const [selectedEvent, setSelectedEvent] = useState<EventWithDistance | null>(null);
+  const [selectedShop, setSelectedShop] = useState<ShopWithDistance | null>(null);
 
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
@@ -306,10 +321,10 @@ export default function MapSection({
     requestLocation,
   } = useUserLocation();
 
-  const eventsWithDistance = useMemo(() => {
+  const eventsWithDistance = useMemo<EventWithDistance[]>(() => {
     if (!userLocation) return events;
 
-    return events.map((event: any) => {
+    return events.map((event) => {
       const lat = Number(event.lat);
       const lng = Number(event.lng);
       if (isNaN(lat) || isNaN(lng)) return event;
@@ -326,10 +341,10 @@ export default function MapSection({
     });
   }, [events, userLocation]);
 
-  const shopsWithDistance = useMemo(() => {
+  const shopsWithDistance = useMemo<ShopWithDistance[]>(() => {
     if (!userLocation) return shops;
 
-    return shops.map((shop: any) => {
+    return shops.map((shop) => {
       const lat = Number(shop.lat);
       const lng = Number(shop.lng);
       if (isNaN(lat) || isNaN(lng)) return shop;
@@ -347,7 +362,7 @@ export default function MapSection({
   }, [shops, userLocation]);
 
   const filteredEvents = eventsWithDistance
-    .filter((event: any) => {
+    .filter((event) => {
       const matchesSearch =
         search === "" ||
         event.name?.toLowerCase().includes(search.toLowerCase());
@@ -355,14 +370,14 @@ export default function MapSection({
         city === "" || event.city?.toLowerCase() === city.toLowerCase();
       return matchesSearch && matchesCity;
     })
-    .sort((a: any, b: any) =>
+    .sort((a, b) =>
       a.distanceMiles == null || b.distanceMiles == null
         ? 0
         : a.distanceMiles - b.distanceMiles,
     );
 
   const filteredShops = shopsWithDistance
-    .filter((shop: any) => {
+    .filter((shop) => {
       const matchesSearch =
         search === "" ||
         shop.name?.toLowerCase().includes(search.toLowerCase());
@@ -371,20 +386,24 @@ export default function MapSection({
       const matchesCategory = category === "" || shop.specialty === category;
       return matchesSearch && matchesCity && matchesCategory;
     })
-    .sort((a: any, b: any) =>
+    .sort((a, b) =>
       a.distanceMiles == null || b.distanceMiles == null
         ? 0
         : a.distanceMiles - b.distanceMiles,
     );
 
-  const cities = (
+  const cities: string[] = (
     mode === "shows"
-      ? [...new Set(events.map((e: any) => e.city))]
-      : [...new Set(shops.map((s: any) => s.city))]
+      ? [...new Set<string>(events.map((event) => event.city))]
+      : [...new Set<string>(shops.map((shop) => shop.city))]
   ).sort();
 
-  const categories = [
-    ...new Set(shops.map((shop: any) => shop.specialty).filter(Boolean)),
+  const categories: string[] = [
+    ...new Set<string>(
+      shops
+        .map((shop) => shop.specialty)
+        .filter((specialty: unknown): specialty is string => typeof specialty === "string" && specialty.length > 0),
+    ),
   ].sort();
 
   const sharedProps: MapViewProps = {

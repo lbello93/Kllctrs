@@ -34,5 +34,11 @@ export default async function ContentHubPage() {
     console.error("Error fetching content:", error);
   }
 
-  return <ContentHubClient initialContent={content ?? []} />;
+  const publishableContent = (content ?? []).flatMap((item) =>
+    item.title && item.slug
+      ? [{ ...item, title: item.title, slug: item.slug }]
+      : [],
+  );
+
+  return <ContentHubClient initialContent={publishableContent} />;
 }

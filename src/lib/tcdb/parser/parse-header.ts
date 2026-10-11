@@ -45,7 +45,7 @@ export function parseHeader(raw: string): ParsedHeader | null {
     // Remove month
     //----------------------------------------
 
-    let remaining = raw.substring(month.length).trim();
+    const remaining = raw.substring(month.length).trim();
 
     //----------------------------------------
     // Find State

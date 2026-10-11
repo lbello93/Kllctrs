@@ -51,13 +51,13 @@ export async function triggerEventAlerts(event: EventData) {
         status: 'sent',
       })
       sent++
-    } catch (e: any) {
+    } catch (e: unknown) {
       await supabaseAdmin.from('email_log').insert({
         user_id: user.id,
         event_id: event.id,
         email_type: 'event_alert',
         status: 'failed',
-        error_message: e.message,
+        error_message: e instanceof Error ? e.message : "Unknown alert error",
       })
       skipped++
     }

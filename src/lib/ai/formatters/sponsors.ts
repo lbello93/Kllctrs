@@ -1,4 +1,11 @@
-export function formatSponsors(sponsors: any[]) {
+interface FormattedSponsor {
+  name: string;
+  category: string;
+  description?: string | null;
+  website?: string | null;
+}
+
+export function formatSponsors(sponsors: FormattedSponsor[]) {
   if (!sponsors || sponsors.length === 0) {
     return `
 No sponsors were found.

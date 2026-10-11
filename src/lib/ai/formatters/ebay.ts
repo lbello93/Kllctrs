@@ -1,4 +1,11 @@
-export function formatEbayListings(listings: any[]) {
+interface EbayListing {
+  title: string;
+  price: string;
+  condition: string;
+  url: string;
+}
+
+export function formatEbayListings(listings: EbayListing[]) {
   if (!listings || listings.length === 0) {
     return `
 No recent eBay listings were found.

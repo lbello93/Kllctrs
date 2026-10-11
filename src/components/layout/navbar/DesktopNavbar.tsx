@@ -4,12 +4,14 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { motion } from "framer-motion";
+import type { User } from "@supabase/supabase-js";
+import type { NavLink } from "./navbar-data";
 
 interface DesktopNavbarProps {
   pathname: string;
-  navLinks: any[];
+  navLinks: NavLink[];
 
-  user?: any;
+  user?: User | null;
   isAdmin?: boolean;
   isPro?: boolean;
   isScrolled?: boolean;

@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Check, Star, Zap, Lock, Heart, ArrowRight } from "lucide-react";
 import { unica, inter } from "@/lib/fonts";
 import { useMemo } from "react";
+import type { User } from "@supabase/supabase-js";
 const FREE_FEATURES = [
   "Shows & Shops Map (unlimited)",
   "Sponsor directory browsing",
@@ -33,7 +34,7 @@ const PRO_FEATURES = [
 
 export default function PricingPage() {
   const supabase = useMemo(() => createClient(), []);
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
   const [isPro, setIsPro] = useState(false);
   const [supportAmount, setSupportAmount] = useState("4.99");
   const [activating, setActivating] = useState(false);
@@ -292,7 +293,7 @@ export default function PricingPage() {
                         marginBottom: 24,
                       }}
                     >
-                      You're on Pro Beta. Enjoy the full experience.
+                      You&apos;re on Pro Beta. Enjoy the full experience.
                     </p>
                   </motion.div>
                 ) : (
@@ -319,7 +320,7 @@ export default function PricingPage() {
                         marginBottom: 24,
                       }}
                     >
-                      Pay what you think it's worth when we launch — min
+                       Pay what you think it&apos;s worth when we launch — min
                       $4.99/mo.
                     </p>
                   </motion.div>
@@ -375,7 +376,7 @@ export default function PricingPage() {
                         marginBottom: 12,
                       }}
                     >
-                      When we launch, pay what you think it's worth. Min
+                       When we launch, pay what you think it&apos;s worth. Min
                       $4.99/mo.
                     </p>
                     <div className="flex items-center gap-2">
@@ -453,7 +454,7 @@ export default function PricingPage() {
                       textAlign: "center",
                     }}
                   >
-                    No credit card required. Beta access is free. You'll be
+                     No credit card required. Beta access is free. You&apos;ll be
                     notified before any charges.
                   </p>
                 </div>
@@ -469,7 +470,7 @@ export default function PricingPage() {
                   <p
                     style={{ color: "#fde047", fontWeight: 900, fontSize: 14 }}
                   >
-                    You're a Pro Beta member ✦
+                     You&apos;re a Pro Beta member ✦
                   </p>
                   <p
                     style={{
@@ -478,7 +479,7 @@ export default function PricingPage() {
                       marginTop: 4,
                     }}
                   >
-                    We'll notify you before the subscription model goes live.
+                     We&apos;ll notify you before the subscription model goes live.
                   </p>
                 </div>
               )}
@@ -512,7 +513,7 @@ export default function PricingPage() {
             }}
           >
             Everyone who activates Pro Beta gets free access for the entire beta
-            period. When we launch a paid subscription, we'll give you plenty of
+             period. When we launch a paid subscription, we&apos;ll give you plenty of
             notice and a special rate as a thank-you for being early.
           </p>
         </motion.div>
@@ -570,7 +571,7 @@ export default function PricingPage() {
               }}
             >
               Start with the free plan. No credit card required. Upgrade
-              whenever you're ready.
+               whenever you&apos;re ready.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               {!user ? (

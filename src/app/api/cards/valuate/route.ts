@@ -17,6 +17,13 @@ interface ValuationResult {
   recentSales: Array<{ label: string; price: string }>;
 }
 
+interface EbayComparable {
+  title: string;
+  price: number;
+  condition: string;
+  date?: string | null;
+}
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
@@ -75,7 +82,7 @@ export async function POST(req: NextRequest) {
       body.ebayComps && body.ebayComps.length > 0
         ? body.ebayComps
             .map(
-              (c: any) =>
+              (c: EbayComparable) =>
                 `- ${c.title} | $${c.price} | ${c.condition} | ${c.date ?? "N/A"}`
             )
             .join("\n")

@@ -88,7 +88,7 @@ export default async function EventDetailPage({ params }: Params) {
     .order("date_start", { ascending: true })
     .limit(3);
 
-  let nearbyEvents = (sameStateRows ?? []) as Event[];
+  const nearbyEvents = (sameStateRows ?? []) as Event[];
 
   if (nearbyEvents.length < 2) {
     const { data: fallbackRows } = await supabase

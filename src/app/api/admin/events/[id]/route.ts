@@ -2,6 +2,7 @@ import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
 import { triggerEventAlerts } from '@/lib/alerts'
+import type { TablesUpdate } from '@/types/database'
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -20,9 +21,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params
  const body = await request.json();
 
-const update: Record<string, unknown> = {
+const update: TablesUpdate<'events'> = {
   name: body.name,
-  description: body.description,
   slug: body.slug,
   date_start: body.date_start,
   date_end: body.date_end,
@@ -54,8 +54,9 @@ if (
 }
 
 Object.keys(update).forEach((key) => {
-  if (update[key] === undefined) {
-    delete update[key];
+  const field = key as keyof typeof update;
+  if (update[field] === undefined) {
+    delete update[field];
   }
 });
   if (Object.keys(update).length === 0) {

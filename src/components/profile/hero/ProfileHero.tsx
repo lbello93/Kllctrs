@@ -5,10 +5,12 @@ import type { ReactNode } from "react";
 import { CalendarDays, MapPin } from "lucide-react";
 import ProfileAvatar from "./ProfileAvatar";
 import EditProfileButton from "../edit/EditProfileButton";
+import type { User } from "@supabase/supabase-js";
+import type { Profile } from "@/lib/profile/types";
 
 interface Props {
-  user: any;
-  profile: any;
+  user: User;
+  profile: Profile;
   onEdit: () => void;
 }
 

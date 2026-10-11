@@ -1,12 +1,14 @@
-import { SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 
-import type { DatabaseEvent } from "../models/database-event";
-import type { EventInsertRow } from "../types/supabase";
+import type { EventInsertRow } from "@/lib/events/supabase-mapper";
+import { findEventIdentityMatch } from "@/lib/events/deduplication";
+import type { EventCandidate } from "@/lib/events/ingestion-contract";
 
 export class EventRepository {
 
   constructor(
-    private readonly supabase: SupabaseClient
+    private readonly supabase: SupabaseClient<Database>
   ) {}
 
   //--------------------------------------------------
@@ -51,61 +53,6 @@ export class EventRepository {
     }
 
     return data;
-
-  }
-
-  //--------------------------------------------------
-  // Exists By Source ID
-  //--------------------------------------------------
-
-  async existsBySourceId(
-    provider: string,
-    sourceId: string
-  ): Promise<boolean> {
-
-    const { count, error } =
-      await this.supabase
-        .from("events")
-        .select("*", {
-          count: "exact",
-          head: true,
-        })
-        .eq("source", provider)
-        .eq(
-          "metadata->>source_event_id",
-          sourceId
-        );
-
-    if (error) {
-      throw error;
-    }
-
-    return (count ?? 0) > 0;
-
-  }
-
-  //--------------------------------------------------
-  // Exists By Hash
-  //--------------------------------------------------
-
-  async existsByHash(
-    hash: string
-  ): Promise<boolean> {
-
-    const { count, error } =
-      await this.supabase
-        .from("events")
-        .select("*", {
-          head: true,
-          count: "exact",
-        })
-        .eq("dedupe_hash", hash);
-
-    if (error) {
-      throw error;
-    }
-
-    return (count ?? 0) > 0;
 
   }
 
@@ -241,54 +188,8 @@ export class EventRepository {
     return data;
 
   }
-  async findBySourceId(
-  provider: string,
-  sourceEventId: string
-) {
-  const { data, error } = await this.supabase
-    .from("events")
-    .select("*")
-    .eq("source", provider)
-    .eq("source_event_id", sourceEventId)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
-}
-async findByHash(
-  hash: string
-) {
-  const { data, error } = await this.supabase
-    .from("events")
-    .select("*")
-    .eq("dedupe_hash", hash)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
-}
-async findBySlugAndDate(
-  slug: string,
-  dateStart: string
-) {
-  const { data, error } = await this.supabase
-    .from("events")
-    .select("*")
-    .eq("slug", slug)
-    .eq("date_start", dateStart)
-    .maybeSingle();
-
-  if (error) {
-    throw error;
-  }
-
-  return data;
+async findPossibleDuplicates(candidate: EventCandidate) {
+  return findEventIdentityMatch(this.supabase, candidate);
 }
 
 }

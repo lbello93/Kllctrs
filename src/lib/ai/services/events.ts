@@ -1,7 +1,15 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { normalizeState } from "../utils/state";
 
-export async function searchEvents(args: any) {
+interface EventSearchArgs {
+  state?: string;
+  city?: string;
+  keyword?: string;
+  dateFrom?: string;
+  dateTo?: string;
+}
+
+export async function searchEvents(args: EventSearchArgs) {
   let query = supabaseAdmin
     .from("events")
     .select(

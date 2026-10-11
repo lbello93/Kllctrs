@@ -5,6 +5,7 @@ import { supabaseAdmin } from "@/lib/supabase/admin";
 
 import { SYSTEM_PROMPT } from "@/lib/ai/prompts/system";
 import { ai, GEMINI_MODEL } from "@/lib/ai/config";
+import type { Content, Part } from "@google/genai";
 import { tools } from "@/lib/ai/tools/definitions";
 import { executeTool } from "@/lib/ai/tools/executor";
 import { buildConversation } from "@/lib/ai/history";
@@ -12,11 +13,17 @@ import { extractText } from "@/lib/ai/parser";
 
 import { buildContext } from "@/lib/ai/context-builder";
 import { mergeContext } from "@/lib/ai/context-merger";
+import type { Json } from "@/types/database";
 
 interface ChatSource {
   tool: string;
-  args: unknown;
+  args: Json;
   count: number;
+}
+
+function toJson(value: unknown): Json {
+  const serialized = JSON.stringify(value);
+  return serialized === undefined ? null : (JSON.parse(serialized) as Json);
 }
 
 // In-memory rate limit: 10 messages per minute per IP.
@@ -97,7 +104,7 @@ export async function POST(req: NextRequest) {
 
     const context =
   buildContext(history);
-     const contents = buildConversation(
+     const contents: Content[] = buildConversation(
   message,
   history
 );
@@ -135,14 +142,11 @@ export async function POST(req: NextRequest) {
     ) {
       safety++;
 
-      const fnResponses: Array<{
-        functionResponse: {
-          name: string;
-          response: unknown;
-        };
-      }> = [];
+      const fnResponses: Part[] = [];
 
       for (const call of response.functionCalls) {
+        if (!call.name) continue;
+
         const mergedArgs =
   mergeContext(
     call.args ?? {},
@@ -151,19 +155,19 @@ export async function POST(req: NextRequest) {
 
 const result =
   await executeTool({
-    ...call,
+    name: call.name,
     args: mergedArgs,
   });
 
         sources.push({
           tool: call.name,
-          args: call.args,
+          args: toJson(call.args),
           count: result.count,
         });
 
         fnResponses.push({
           functionResponse: {
-            name: call.name!,
+            name: call.name,
             response: result.result,
           },
         });
@@ -177,12 +181,12 @@ const result =
             functionCall: call,
           })
         ),
-      } as any);
+      });
 
       contents.push({
         role: "user",
         parts: fnResponses,
-      } as any);
+      });
 
       response =
         await ai.models.generateContent({
@@ -221,7 +225,7 @@ const result =
 
         bot_response: text,
 
-        sources,
+        sources: toJson(sources),
       });
 
     //--------------------------------------------------

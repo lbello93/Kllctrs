@@ -1,6 +1,7 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
 import ProfileClient from "../../components/profile/ProfileClient";
+import type { Event, Shop } from "@/types";
 
 export const metadata = {
   title: "Profile | KLLCTRS",
@@ -30,7 +31,7 @@ export default async function ProfilePage() {
 
   const isAdmin = profile?.role === "admin";
   // Fetch saved shops
-  let savedShops: any[] = [];
+  let savedShops: Shop[] = [];
 
   if (profile?.saved_shops?.length) {
     const { data, error: shopsError } = await supabase
@@ -42,7 +43,7 @@ export default async function ProfilePage() {
       console.error(shopsError);
     }
 
-    savedShops = data ?? [];
+    savedShops = (data ?? []) as Shop[];
   }
 
   /////// events
@@ -51,14 +52,14 @@ export default async function ProfilePage() {
   const { data: savedEvents } =
     savedEventIds.length > 0
       ? await supabase.from("events").select("*").in("id", savedEventIds)
-      : { data: [] };
+      : { data: [] as Event[] };
 
   return (
     <ProfileClient
       user={user}
-      profile={profile}
+      profile={profile ? { ...profile, favorite_categories: profile.favorite_categories ?? [] } : null}
       savedShops={savedShops ?? []}
-      savedEvents={savedEvents ?? []}
+      savedEvents={(savedEvents ?? []) as Event[]}
     />
   );
 }

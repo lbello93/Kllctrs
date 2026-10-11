@@ -1,4 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "@/types/database";
 
 import { EventRepository } from "../repositories/event-repository";
 
@@ -38,7 +39,7 @@ export function createImportPipeline() {
   //--------------------------------------------------
 
   const supabase =
-    createClient(
+    createClient<Database>(
       supabaseUrl,
       serviceRoleKey
     );

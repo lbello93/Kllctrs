@@ -1,4 +1,5 @@
 // Event, Shop, Sponsor, User, Content interfaces
+import type { Json } from "./database";
 
 
 export interface Event {
@@ -21,11 +22,11 @@ export interface Event {
   contact_phone?: string | null
   contact_email?: string | null
   autograph_guests?: string | null
-  social_links?: Record<string, string>
-  sponsors?: string[]
-  source?: string
-  status?: string
-  created_at?: string
+  social_links?: Json | null
+  sponsors?: string[] | null
+  source?: string | null
+  status?: string | null
+  created_at?: string | null
 }
 
 export interface Shop {
@@ -41,10 +42,11 @@ export interface Shop {
   phone?: string | null
   website?: string | null
   google_place_id?: string | null
-  specialty?: 'sports' | 'pokemon' | 'both'
-  hours?: Record<string, string>
-  status?: string
-  created_at?: string
+  specialty?: string | null
+  source?: string | null
+  hours?: Json | null
+  status?: string | null
+  created_at?: string | null
 }
 
 export interface Sponsor {

@@ -87,6 +87,12 @@ export default function SponsorCard({ sponsor, stats }: Props) {
         </div>
       </div>
 
+      {sponsor.description && (
+        <p className="line-clamp-2 min-h-10 font-inter text-[13px] leading-5 text-[#151E3C]/65">
+          {sponsor.description}
+        </p>
+      )}
+
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between">
           <h3 className="font-inter text-[12px] font-semibold leading-[15px] text-[#8B5CF6]">

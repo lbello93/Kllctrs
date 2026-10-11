@@ -1,92 +1,28 @@
-import type { DatabaseEvent } from "../models/database-event";
+import type { EventCandidate } from "@/lib/events/ingestion-contract";
 import { EventRepository } from "../repositories/event-repository";
-import { mapToSupabaseEvent } from "../pipeline/supabase-mapper";
 
 export interface DuplicateCheckResult {
   duplicate: boolean;
-
+  needsReview?: boolean;
   reason?: string;
-
-  existingEvent?: unknown;
+  existingEvent?: { id: string; name: string; slug: string };
 }
 
 export class DuplicateCheckerService {
-  constructor(
-    private readonly repository: EventRepository
-  ) {}
+  constructor(private readonly repository: EventRepository) {}
 
-  /**
-   * Checks whether an event already exists.
-   *
-   * Priority:
-   * 1. Source Provider + Source Event ID
-   * 2. Dedupe Hash
-   * 3. Slug + Start Date
-   */
-  async check(
-    event: DatabaseEvent
-  ): Promise<DuplicateCheckResult> {
+  async check(candidate: EventCandidate): Promise<DuplicateCheckResult> {
+    const existingEvent = await this.repository.findPossibleDuplicates(candidate);
 
-    //--------------------------------------------------
-    // Source Provider + Source Event ID
-    //--------------------------------------------------
-
-    const existingBySource =
-      await this.repository.findBySourceId(
-        event.source_provider,
-        event.source_event_id
-      );
-
-    if (existingBySource) {
-      return {
-        duplicate: true,
-        reason: "Event already exists (Source ID).",
-        existingEvent: existingBySource,
-      };
-    }
-
-    //--------------------------------------------------
-    // Dedupe Hash
-    //--------------------------------------------------
-
-    const mapped =
-      mapToSupabaseEvent(event);
-
-    const existingByHash =
-      await this.repository.findByHash(
-        mapped.dedupe_hash
-      );
-
-    if (existingByHash) {
-      return {
-        duplicate: true,
-        reason: "Duplicate event detected (Hash).",
-        existingEvent: existingByHash,
-      };
-    }
-
-    //--------------------------------------------------
-    // Slug + Date
-    //--------------------------------------------------
-
-    const existingBySlug =
-      await this.repository.findBySlugAndDate(
-        event.slug,
-        event.date_start
-      );
-
-    if (existingBySlug) {
-      return {
-        duplicate: true,
-        reason: "Duplicate event detected (Slug + Date).",
-        existingEvent: existingBySlug,
-      };
-    }
-
-    //--------------------------------------------------
-
-    return {
-      duplicate: false,
-    };
+    return existingEvent
+      ? {
+          duplicate: true,
+          needsReview: existingEvent.match === "needs_review",
+          reason: existingEvent.match === "exact"
+            ? "Matching event identity already exists."
+            : "Possible duplicate: name, date, and location match; venue details need review.",
+          existingEvent: existingEvent.event,
+        }
+      : { duplicate: false };
   }
 }

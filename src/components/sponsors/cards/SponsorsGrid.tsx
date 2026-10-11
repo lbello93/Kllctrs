@@ -1,4 +1,4 @@
-import SponsorsCard from "./SponsorsCard";
+import SponsorCard from "../SponsorCard";
 import type { SponsorRow, SponsorStats } from "../shared";
 
 interface Props {
@@ -14,7 +14,7 @@ export default function SponsorsGrid({ sponsors, stats }: Props) {
       <div className="mx-auto max-w-[1320px] px-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
           {sponsors.map((sponsor) => (
-            <SponsorsCard
+            <SponsorCard
               key={sponsor.id}
               sponsor={sponsor}
               stats={stats[sponsor.id] ?? EMPTY_STATS}

@@ -1,6 +1,10 @@
 import { searchEbaySoldListings } from "@/lib/ebay";
 
-export async function searchEbayPrices(args: any) {
+interface EbaySearchArgs {
+  query: string;
+}
+
+export async function searchEbayPrices(args: EbaySearchArgs) {
   try {
     const items = await searchEbaySoldListings(
       args.query,
@@ -19,14 +23,11 @@ export async function searchEbayPrices(args: any) {
       listings,
       count: listings.length,
     };
-  } catch (error: any) {
-    
-
+  } catch (error: unknown) {
     return {
       listings: [],
       count: 0,
-      error: error.message,
+      error: error instanceof Error ? error.message : "eBay search failed",
     };
-    
   }
 }

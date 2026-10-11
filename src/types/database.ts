@@ -517,11 +517,18 @@ export type Database = {
           founded_year: number | null
           headquarters: string | null
           id: string
+          info_source_url: string | null
+          info_verified_at: string | null
           logo_url: string | null
           name: string
+          offerings: string[]
           profile_views: number | null
+          product_categories: string[]
           slug: string
           status: string | null
+          service_area: string | null
+          tagline: string | null
+          target_audience: string[]
           updated_at: string | null
           verified: boolean | null
           website: string | null
@@ -537,11 +544,18 @@ export type Database = {
           founded_year?: number | null
           headquarters?: string | null
           id?: string
+          info_source_url?: string | null
+          info_verified_at?: string | null
           logo_url?: string | null
           name: string
+          offerings?: string[]
           profile_views?: number | null
+          product_categories?: string[]
           slug: string
           status?: string | null
+          service_area?: string | null
+          tagline?: string | null
+          target_audience?: string[]
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
@@ -557,15 +571,61 @@ export type Database = {
           founded_year?: number | null
           headquarters?: string | null
           id?: string
+          info_source_url?: string | null
+          info_verified_at?: string | null
           logo_url?: string | null
           name?: string
+          offerings?: string[]
           profile_views?: number | null
+          product_categories?: string[]
           slug?: string
           status?: string | null
+          service_area?: string | null
+          tagline?: string | null
+          target_audience?: string[]
           updated_at?: string | null
           verified?: boolean | null
           website?: string | null
           website_clicks?: number | null
+        }
+        Relationships: []
+      }
+      brand_engagements: {
+        Row: {
+          collecting_categories: string[]
+          consented_at: string
+          created_at: string
+          event_ids: string[]
+          id: string
+          preferred_channels: string[]
+          product_interests: string[]
+          purchase_frequency: string | null
+          region: string | null
+          sponsor_id: string
+        }
+        Insert: {
+          collecting_categories?: string[]
+          consented_at: string
+          created_at?: string
+          event_ids?: string[]
+          id?: string
+          preferred_channels?: string[]
+          product_interests?: string[]
+          purchase_frequency?: string | null
+          region?: string | null
+          sponsor_id: string
+        }
+        Update: {
+          collecting_categories?: string[]
+          consented_at?: string
+          created_at?: string
+          event_ids?: string[]
+          id?: string
+          preferred_channels?: string[]
+          product_interests?: string[]
+          purchase_frequency?: string | null
+          region?: string | null
+          sponsor_id?: string
         }
         Relationships: []
       }

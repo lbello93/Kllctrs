@@ -1,4 +1,6 @@
 import type { DatabaseEvent } from "../../models/database-event";
+import { createHash } from "node:crypto";
+import { createEventSlug } from "@/lib/events/ingestion-contract";
 
 export interface ParsedSportsEvent {
 
@@ -87,14 +89,10 @@ function buildDate(
 
 }
 
-function slugify(text: string) {
-
-    return text
-        .toLowerCase()
-        .replace(/&/g, "and")
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-|-$/g, "");
-
+function stableSourceId(event: ParsedSportsEvent, date: string): string {
+    return createHash("sha256")
+        .update(`${date}|${event.state}|${event.city}|${event.raw}`)
+        .digest("hex");
 }
 
 export function normalizeEvent(
@@ -112,18 +110,23 @@ export function normalizeEvent(
         source_provider: "sportscollectorsdigest",
 
         source_event_id:
-            crypto.randomUUID(),
+            stableSourceId(event, date),
 
         source_url:
             "https://sportscollectorsdigest.com/collecting-101/show-calendar",
 
         name:
-            event.venue ?? "Sports Card Show",
+            event.venue || `Card Show - ${event.city}, ${event.state}`,
 
         slug:
-            slugify(
-                event.venue ?? "show"
-            ),
+            createEventSlug({
+                name: event.venue || `Card Show - ${event.city}, ${event.state}`,
+                dateStart: date,
+                city: event.city,
+                state: event.state,
+                venueName: event.venue ?? null,
+                venueAddress: event.address ?? null,
+            }),
 
         description:
             event.raw,

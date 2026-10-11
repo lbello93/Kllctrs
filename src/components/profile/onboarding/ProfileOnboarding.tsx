@@ -20,16 +20,18 @@ import NotificationStep from "./steps/NotificationStep";
 import FinishStep from "./steps/FinishStep";
 import { validateBasicInfo } from "@/lib/profile/validation";
 import { StepLayout } from "./shared/StepLayout";
+import type { User } from "@supabase/supabase-js";
+import type { Profile } from "@/lib/profile/types";
 
 interface ProfileOnboardingProps {
-  user: any;
-  profile: any;
+  user: User;
+  profile: Profile | null;
   isEditing?: boolean;
   onExit?: () => void;
   startAtStep?: OnboardingStep;
 }
 
-function profileToOnboardingData(profile: any): OnboardingData {
+function profileToOnboardingData(profile: Profile | null): OnboardingData {
   return {
     display_name: profile?.display_name ?? undefined,
     username: profile?.username ?? undefined,

@@ -106,8 +106,8 @@ No markdown code fence, no preamble, just the raw JSON.`
     }
 
     return NextResponse.json({ draft }, { status: 201 })
-  } catch (e: any) {
+  } catch (e: unknown) {
     console.error('[blog/generate] error:', e)
-    return NextResponse.json({ error: e.message ?? 'Generation failed' }, { status: 500 })
+    return NextResponse.json({ error: e instanceof Error ? e.message : 'Generation failed' }, { status: 500 })
   }
 }

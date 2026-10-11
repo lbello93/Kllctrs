@@ -6,6 +6,7 @@ interface EbayItem {
   price: { value: string; currency: string };
   condition: string;
   itemEndDate?: string;
+  itemCreationDate?: string;
   image?: { imageUrl: string };
   itemWebUrl: string;
 }
@@ -43,9 +44,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ comps: [], error: "eBay search failed" });
     }
 
-    const data = await res.json();
+    const data: { itemSummaries?: EbayItem[] } = await res.json();
 
-    const comps = (data.itemSummaries ?? []).slice(0, 6).map((item: any) => ({
+    const comps = (data.itemSummaries ?? []).slice(0, 6).map((item) => ({
       title: item.title,
       price: parseFloat(item.price?.value ?? "0"),
       currency: item.price?.currency ?? "USD",

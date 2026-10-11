@@ -1,6 +1,11 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
-export async function searchSponsors(args: any) {
+interface SponsorSearchArgs {
+  category?: string;
+  keyword?: string;
+}
+
+export async function searchSponsors(args: SponsorSearchArgs) {
   let query = supabaseAdmin
     .from("sponsors")
     .select(`

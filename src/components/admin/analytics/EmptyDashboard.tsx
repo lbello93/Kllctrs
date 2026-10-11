@@ -11,7 +11,7 @@ export default function EmptyDashboard() {
         </div>
         <h2 className="text-xl font-black text-[#1a0a3d]">No analytics yet</h2>
         <p className="mt-2 text-sm text-[#4a3f6b]/50">
-          Once visitors start using your platform, you'll see page views,
+          Once visitors start using your platform, you&apos;ll see page views,
           countries, cities, and visitor trends here.
         </p>
       </div>

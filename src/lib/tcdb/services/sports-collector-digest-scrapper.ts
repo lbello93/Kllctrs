@@ -11,8 +11,13 @@ export class SportsCollectorDigestScraper {
         const response = await fetch(this.url,{
             headers:{
                 "User-Agent":"Mozilla/5.0"
-            }
+            },
+            signal: AbortSignal.timeout(20_000),
         });
+
+        if (!response.ok) {
+            throw new Error(`Sports Collector Digest returned ${response.status}.`);
+        }
 
         const html = await response.text();
 

@@ -63,8 +63,10 @@ function TypeWriter() {
     } else if (deleting && displayed.length > 0) {
       timeout = setTimeout(() => setDisplayed(displayed.slice(0, -1)), 45);
     } else {
-      setDeleting(false);
-      setIndex((i) => (i + 1) % TYPEWRITER_WORDS.length);
+      timeout = setTimeout(() => {
+        setDeleting(false);
+        setIndex((i) => (i + 1) % TYPEWRITER_WORDS.length);
+      }, 80);
     }
 
     return () => clearTimeout(timeout);

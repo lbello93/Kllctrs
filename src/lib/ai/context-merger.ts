@@ -1,7 +1,7 @@
 import { ChatContext } from "./context";
 
 export function mergeContext(
-  args: any,
+  args: Record<string, unknown>,
   context: ChatContext
 ) {
   return {

@@ -37,6 +37,9 @@ interface Props {
 export default function SponsorsClients({ sponsors, stats, summary }: Props) {
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("all");
+  const [productCategory, setProductCategory] = useState("all");
+  const [upcomingOnly, setUpcomingOnly] = useState(false);
+  const productCategories = useMemo(() => [...new Set(sponsors.flatMap((sponsor) => sponsor.product_categories ?? []))].sort((a, b) => a.localeCompare(b)), [sponsors]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
@@ -44,15 +47,18 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
     return sponsors.filter((sponsor) => {
       const matchesCategory =
         category === "all" || sponsor.category === category;
+      const matchesProduct = productCategory === "all" || (sponsor.product_categories ?? []).includes(productCategory);
+      const matchesEvents = !upcomingOnly || (stats[sponsor.id]?.upcoming.length ?? 0) > 0;
       const matchesSearch =
         !query ||
         sponsor.name.toLowerCase().includes(query) ||
         sponsor.category.toLowerCase().includes(query) ||
-        (sponsor.description ?? "").toLowerCase().includes(query);
+        [sponsor.description, sponsor.tagline, sponsor.service_area, sponsor.headquarters, ...(sponsor.offerings ?? []), ...(sponsor.product_categories ?? []), ...(sponsor.target_audience ?? [])]
+          .some((value) => (value ?? "").toLowerCase().includes(query));
 
-      return matchesCategory && matchesSearch;
+      return matchesCategory && matchesProduct && matchesEvents && matchesSearch;
     });
-  }, [sponsors, search, category]);
+  }, [sponsors, stats, search, category, productCategory, upcomingOnly]);
 
   const numbers = [
     { value: summary.brands, label: "Brands" },
@@ -158,6 +164,15 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
               />
             )}
           </div>
+        </div>
+        <div className="mt-4 flex flex-wrap items-center gap-2">
+          <span className="mr-1 font-inter text-[11px] font-medium uppercase tracking-wide text-[#151E3C]/45">Refine by</span>
+          <select aria-label="Filter by collecting category" value={productCategory} onChange={(event) => setProductCategory(event.target.value)} className="h-9 rounded-full border border-[#E5DFFD] bg-white px-3 font-inter text-[12px] text-[#151E3C] outline-none focus:border-[#8B5CF6]">
+            <option value="all">All collecting categories</option>
+            {productCategories.map((item) => <option key={item} value={item}>{item}</option>)}
+          </select>
+          <button type="button" aria-pressed={upcomingOnly} onClick={() => setUpcomingOnly((value) => !value)} className={`h-9 rounded-full border px-3 font-inter text-[12px] transition ${upcomingOnly ? "border-[#6C36CE] bg-[#6C36CE] text-white" : "border-[#E5DFFD] bg-white text-[#151E3C] hover:border-[#8B5CF6]"}`}>Brands with upcoming events</button>
+          {(productCategory !== "all" || upcomingOnly) && <button type="button" onClick={() => { setProductCategory("all"); setUpcomingOnly(false); }} className="font-inter text-[12px] text-[#6C36CE] underline">Clear filters</button>}
         </div>
       </section>
 

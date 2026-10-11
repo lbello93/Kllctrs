@@ -11,51 +11,30 @@ export type OnboardingStep =
   | "basic"
   | "location"
   | "collector"
+  | "experience"
   | "games"
   | "notifications"
   | "finish";
 
-export interface Profile {
-  id: string;
+import type { User } from "@supabase/supabase-js";
+import type { Event, Shop } from "@/types";
+import type { Tables } from "@/types/database";
 
-  display_name: string | null;
-
-  avatar_url: string | null;
-
-  city: string | null;
-
-  state: string | null;
-
-  favorite_categories: string[];
-
-  grading_preference?: string | null;
-
-  years_collecting?: number | null;
-
-  saved_events?: any[];
-
-  saved_shops?: any[];
-
-  // ---------- NEW FIELDS ----------
-
+export type Profile = Tables<"profiles"> & {
   username?: string | null;
-
-  bio?: string | null;
-
   country?: string | null;
-
   timezone?: string | null;
-
   collector_type?: CollectorType | null;
-
   favorite_games?: string[];
-
-  notifications?: string[];
-
+  event_notifications?: boolean;
+  shop_notifications?: boolean;
+  community_notifications?: boolean;
+  marketing_notifications?: boolean;
+  terms_accepted?: boolean;
+  terms_accepted_at?: string | null;
   profile_completed?: boolean;
-
   completed_at?: string | null;
-}
+};
 
 export interface OnboardingData {
   avatar_url?: string;
@@ -84,8 +63,8 @@ export interface OnboardingData {
 }
 
 export interface ProfileClientProps {
-  user: any;
+  user: User;
   profile: Profile | null;
-  savedShops: any[];
-  savedEvents: any[];
+  savedShops: Shop[];
+  savedEvents: Event[];
 }

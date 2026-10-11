@@ -1,4 +1,4 @@
-// @ts-ignore
+// @ts-expect-error pdf-parse exposes this internal entry point without a declaration.
 import pdfParse from "pdf-parse/lib/pdf-parse.js";
 
 

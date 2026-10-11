@@ -1,6 +1,6 @@
 import { ChatContext } from "./context";
 
-export function buildContext(history: any[]): ChatContext {
+export function buildContext(history: Array<{ content: string }>): ChatContext {
   const context: ChatContext = {};
 
   for (const message of history) {

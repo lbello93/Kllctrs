@@ -1,15 +1,7 @@
 import type { ParsedCalendarEvent } from "../types";
 import type { ParsedEventDetail } from "../parser/detail-parser";
 import type { DatabaseEvent } from "../models/database-event";
-
-function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/&/g, "and")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
+import { createEventSlug } from "@/lib/events/ingestion-contract";
 
 function detectSocialLinks(website?: string) {
   return {
@@ -57,7 +49,14 @@ export function buildDatabaseEvent(
 
     name: detail.title || calendar.title,
 
-    slug: slugify(detail.title || calendar.title),
+    slug: createEventSlug({
+      name: detail.title || calendar.title,
+      dateStart: calendar.startDate,
+      city: detail.city || calendar.city,
+      state: detail.state || calendar.state,
+      venueName: detail.venueName,
+      venueAddress: detail.streetAddress,
+    }),
 
     description: detail.description,
 

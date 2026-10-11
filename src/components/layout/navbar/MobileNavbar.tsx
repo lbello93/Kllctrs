@@ -4,11 +4,13 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { Menu, X } from "lucide-react";
+import type { User } from "@supabase/supabase-js";
+import type { NavLink } from "./navbar-data";
 
 interface MobileNavbarProps {
   pathname: string;
-  navLinks: any[];
-  user?: any;
+  navLinks: NavLink[];
+  user?: User | null;
   isPro?: boolean;
   onSignOut?: () => void;
 }

@@ -11,6 +11,8 @@ export interface BatchImportSummary {
 
   duplicates: number;
 
+  needsReview: number;
+
   validationFailed: number;
 
   failed: number;
@@ -114,6 +116,9 @@ export class BatchImporterService {
         r => r.duplicate
       ).length;
 
+    const needsReview =
+      results.filter((result) => result.needsReview).length;
+
     const validationFailed =
       results.filter(
         r =>
@@ -139,6 +144,8 @@ export class BatchImporterService {
       imported,
 
       duplicates,
+
+      needsReview,
 
       validationFailed,
 

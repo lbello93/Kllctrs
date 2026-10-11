@@ -27,9 +27,17 @@ export default async function AdminBlogPage({ searchParams }: SearchParams) {
     .order("date_start", { ascending: true })
     .limit(20);
 
+  const editablePosts = (posts ?? []).map((post) => ({
+    ...post,
+    title: post.title ?? "",
+    slug: post.slug ?? "",
+    status: post.status ?? filterStatus,
+    created_at: post.created_at ?? "",
+  }));
+
   return (
     <AdminBlogClient
-      initialPosts={posts ?? []}
+      initialPosts={editablePosts}
       availableEvents={events ?? []}
       currentStatus={filterStatus}
     />

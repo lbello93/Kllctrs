@@ -107,7 +107,6 @@ export default function CardValuation() {
 
   useEffect(() => {
     if (!loading) {
-      setLoadingStep(0);
       if (stepTimerRef.current) clearTimeout(stepTimerRef.current);
       return;
     }
@@ -118,7 +117,6 @@ export default function CardValuation() {
         advanceStep(step + 1);
       }, LOADING_STEPS[step].duration);
     };
-    setLoadingStep(0);
     advanceStep(0);
     return () => {
       if (stepTimerRef.current) clearTimeout(stepTimerRef.current);
@@ -130,6 +128,7 @@ export default function CardValuation() {
 
   const analyze = async () => {
     if (!form.cardName.trim()) return;
+    setLoadingStep(0);
     setLoading(true);
     setError("");
     setResult(null);
@@ -491,7 +490,7 @@ export default function CardValuation() {
                       Daily Limit Reached
                     </h3>
                     <p className="text-sm text-[#4a3f6b]/60 mb-5">
-                      You've used all 3 free appraisals for today. Upgrade for
+                      You&apos;ve used all 3 free appraisals for today. Upgrade for
                       unlimited valuations.
                     </p>
                     <Link href="/pricing">

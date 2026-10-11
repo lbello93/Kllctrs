@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
+import type { TablesUpdate } from '@/types/database'
 
 async function requireAdmin() {
   const supabase = await createClient()
@@ -19,7 +20,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   const { id } = await params
   const body = await request.json()
 
-  const update: Record<string, unknown> = {}
+  const update: TablesUpdate<'content'> = {}
   if (typeof body.title === 'string') update.title = body.title
   if (typeof body.body === 'string') update.body = body.body
   if (typeof body.meta_description === 'string') update.meta_description = body.meta_description

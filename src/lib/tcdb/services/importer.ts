@@ -6,7 +6,9 @@ import { DuplicateCheckerService } from "./duplicate-checker";
 import { GeocoderService } from "./geocoder";
 
 import { validateEvent } from "../pipeline/validator";
-import { mapToSupabaseEvent } from "../pipeline/supabase-mapper";
+import { databaseEventToCandidate } from "@/lib/events/tcdb-adapter";
+import type { EventCandidate } from "@/lib/events/ingestion-contract";
+import { mapCandidateToEventInsert } from "@/lib/events/supabase-mapper";
 
 export interface ImportResult {
 
@@ -16,6 +18,10 @@ export interface ImportResult {
 
   duplicate: boolean;
 
+  needsReview?: boolean;
+
+  matchedEvent?: unknown;
+
   message: string;
 
   eventId?: string;
@@ -23,6 +29,8 @@ export interface ImportResult {
   validation?: ReturnType<typeof validateEvent>;
 
   event?: DatabaseEvent;
+
+  candidate?: EventCandidate;
 
   error?: unknown;
 
@@ -46,20 +54,30 @@ export class ImporterService {
 
   ): Promise<ImportResult> {
 
+    let candidate: EventCandidate | undefined;
+
     try {
 
         //---------------------------------------
         // Geocode
         //---------------------------------------
   
-        const geocoded =
-          await this.geocoder.geocode(event);
+      let geocoded = event;
+      try {
+        geocoded = await this.geocoder.geocode(event);
+      } catch (geocodingError) {
+        console.warn("Event geocoding failed; continuing with source data.", {
+          sourceId: event.source_event_id,
+          error: geocodingError instanceof Error ? geocodingError.message : String(geocodingError),
+        });
+      }
+      candidate = databaseEventToCandidate(geocoded);
       //---------------------------------------
       // Validation
       //---------------------------------------
 
       const validation =
-        validateEvent(event);
+        validateEvent(geocoded);
 
       if (!validation.valid) {
 
@@ -75,6 +93,8 @@ export class ImporterService {
 
           validation,
 
+          candidate,
+
           event,
 
         };
@@ -88,10 +108,10 @@ export class ImporterService {
 
       const duplicate =
         await this.duplicateChecker.check(
-          geocoded
+          candidate
         );
 
-      if (duplicate.duplicate) {
+      if (duplicate.duplicate && !duplicate.needsReview) {
 
         return {
 
@@ -101,11 +121,17 @@ export class ImporterService {
 
           duplicate: true,
 
+          needsReview: duplicate.needsReview ?? false,
+
+          matchedEvent: duplicate.existingEvent,
+
           message:
             duplicate.reason ??
             "Duplicate event.",
 
           validation,
+
+          candidate,
 
           event: geocoded,
 
@@ -113,14 +139,20 @@ export class ImporterService {
 
       }
 
+      const possibleDuplicateOf = duplicate.needsReview && duplicate.existingEvent
+        ? {
+            id: duplicate.existingEvent.id,
+            name: duplicate.existingEvent.name,
+            slug: duplicate.existingEvent.slug,
+          }
+        : undefined;
+
       //---------------------------------------
       // Map
       //---------------------------------------
 
       const row =
-        mapToSupabaseEvent(
-          geocoded
-        );
+        mapCandidateToEventInsert(candidate, { possibleDuplicateOf });
 
       //---------------------------------------
       // Insert
@@ -141,10 +173,18 @@ export class ImporterService {
 
         duplicate: false,
 
+        needsReview: Boolean(possibleDuplicateOf),
+
+        matchedEvent: possibleDuplicateOf ? duplicate.existingEvent : undefined,
+
         message:
-          "Event imported successfully.",
+          possibleDuplicateOf
+            ? "Possible duplicate added to the admin review queue."
+            : "Event imported successfully.",
 
         validation,
+
+        candidate,
 
         event: geocoded,
 
@@ -165,6 +205,7 @@ export class ImporterService {
         ? error.message
         : String(error),
     event,
+    candidate,
     error,
   };
 }

@@ -8,7 +8,18 @@ function formatDate(date: string) {
   });
 }
 
-export function formatEvents(events: any[]) {
+interface FormattedEvent {
+  name: string;
+  date_start: string;
+  date_end?: string | null;
+  city: string;
+  state: string;
+  venue_name?: string | null;
+  website?: string | null;
+  slug: string;
+}
+
+export function formatEvents(events: FormattedEvent[]) {
   if (!events || events.length === 0) {
     return `
 No upcoming events were found.

@@ -31,6 +31,10 @@ export class GeocoderService {
     event: DatabaseEvent
   ): Promise<DatabaseEvent> {
 
+    if (!event.venue_address?.trim() || !process.env.GEOAPIFY_API_KEY) {
+      return event;
+    }
+
     const address =
       this.buildAddress(event);
 

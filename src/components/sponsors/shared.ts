@@ -1,6 +1,20 @@
 import type { Sponsor } from "@/types";
 
-export type SponsorRow = Sponsor & { tier?: string | null };
+export type SponsorRow = Sponsor & {
+  tier?: string | null;
+  banner_url?: string | null;
+  founded_year?: number | null;
+  headquarters?: string | null;
+  verified?: boolean | null;
+  logo_url?: string | null;
+  tagline?: string | null;
+  offerings?: string[] | null;
+  product_categories?: string[] | null;
+  target_audience?: string[] | null;
+  service_area?: string | null;
+  info_source_url?: string | null;
+  info_verified_at?: string | null;
+};
 
 export interface SponsorShow {
   id: string;
@@ -9,6 +23,20 @@ export interface SponsorShow {
   date_start: string;
   city: string | null;
   state: string | null;
+  venue_name?: string | null;
+  date_end?: string | null;
+}
+
+export interface SponsorSocial {
+  id: string;
+  platform: string;
+  url: string;
+}
+
+export interface SponsorImage {
+  id: string;
+  image_url: string;
+  alt_text: string | null;
 }
 
 export interface SponsorStats {

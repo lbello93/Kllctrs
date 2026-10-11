@@ -10,7 +10,6 @@ import {
   Loader2,
   Database,
   SkipForward,
-  RefreshCw,
   ChevronDown,
   ChevronUp,
 } from "lucide-react";
@@ -119,13 +118,13 @@ export default function AdminScraperClient() {
       });
       const data = await res.json();
       setResult(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setResult({
         success: false,
         scraped: 0,
         inserted: 0,
         skipped: 0,
-        errors: [err.message],
+        errors: [err instanceof Error ? err.message : "Scraper request failed"],
         message: "Scraper failed to run.",
       });
     } finally {
@@ -141,8 +140,8 @@ export default function AdminScraperClient() {
           Event Scraper
         </h1>
         <p className="text-sm text-[#4a3f6b]/60 mt-1">
-          Scrapes TCDB.com for upcoming card shows by state — adds them as
-          pending events for review
+          Automated source collection is paused until we have permission or an
+          approved data feed. New records will remain pending review.
         </p>
       </div>
 
@@ -154,25 +153,25 @@ export default function AdminScraperClient() {
           </div>
           <div>
             <p className="text-sm font-black text-[#1a0a3d]">
-              Source: Trading Card Database (TCDB)
+              Source access status
             </p>
             <p className="text-xs text-[#4a3f6b]/40">
-              tcdb.com/CardShows.cfm — comprehensive US card show listings
+              TCDB prohibits scraping and commercial reuse without consent. CardShowHub requires written permission for automation. Sports Collectors Digest access is unverified; ingestion is gated for all three sources.
             </p>
           </div>
         </div>
         <div className="flex flex-wrap gap-2 text-xs text-[#4a3f6b]/50">
           <span className="bg-violet-50 border border-violet-100 px-2 py-1 rounded-lg">
-            Scrapes future events only
+            Scheduled ingestion unavailable
           </span>
           <span className="bg-violet-50 border border-violet-100 px-2 py-1 rounded-lg">
-            Skips duplicates automatically
+            Source permission required
           </span>
           <span className="bg-violet-50 border border-violet-100 px-2 py-1 rounded-lg">
-            All events added as "pending" for your review
+            All events added as &quot;pending&quot; for your review
           </span>
           <span className="bg-violet-50 border border-violet-100 px-2 py-1 rounded-lg">
-            ~300ms delay between states
+            Organizer submissions remain available
           </span>
         </div>
       </div>
@@ -186,18 +185,21 @@ export default function AdminScraperClient() {
           <div className="flex gap-2">
             <button
               onClick={selectTop}
+              disabled
               className="text-xs px-2.5 py-1 rounded-lg border border-violet-200 text-[#5f2eea] hover:bg-violet-50 cursor-pointer transition-colors"
             >
               Top 10
             </button>
             <button
               onClick={selectAll}
+              disabled
               className="text-xs px-2.5 py-1 rounded-lg border border-violet-200 text-[#5f2eea] hover:bg-violet-50 cursor-pointer transition-colors"
             >
               All
             </button>
             <button
               onClick={selectNone}
+              disabled
               className="text-xs px-2.5 py-1 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 cursor-pointer transition-colors"
             >
               None
@@ -213,6 +215,7 @@ export default function AdminScraperClient() {
               <button
                 key={s}
                 onClick={() => toggleState(s)}
+                disabled
                 className={`text-xs font-bold px-2.5 py-1.5 rounded-lg border transition-all cursor-pointer ${
                   isSelected
                     ? "bg-[#5f2eea] text-white border-[#5f2eea] shadow-sm shadow-violet-500/20"
@@ -228,15 +231,14 @@ export default function AdminScraperClient() {
         </div>
 
         <p className="text-[10px] text-[#4a3f6b]/30 mt-3">
-          Highlighted states have highest card show volume · estimated{" "}
-          {Math.ceil(selectedStates.length * 1.5)}s run time
+          State selection is paused until an authorized source feed is configured.
         </p>
       </div>
 
       {/* Run button */}
       <motion.button
         onClick={runScraper}
-        disabled={running || selectedStates.length === 0}
+        disabled
         whileHover={{ scale: 1.01 }}
         whileTap={{ scale: 0.98 }}
         className="w-full h-12 rounded-xl font-black text-sm text-white flex items-center justify-center gap-2 border-0 shadow-xl shadow-violet-500/25 disabled:opacity-40 cursor-pointer"
@@ -249,8 +251,7 @@ export default function AdminScraperClient() {
           </>
         ) : (
           <>
-            <Play className="w-4 h-4" /> Run Scraper ({selectedStates.length}{" "}
-            states)
+            <Play className="w-4 h-4" /> Source access required
           </>
         )}
       </motion.button>

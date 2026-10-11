@@ -31,6 +31,12 @@ function isValidCoordinate(value?: number): boolean {
   return typeof value === "number" && !Number.isNaN(value);
 }
 
+function isValidDate(value: string): boolean {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
+  const date = new Date(`${value}T00:00:00.000Z`);
+  return !Number.isNaN(date.getTime()) && date.toISOString().slice(0, 10) === value;
+}
+
 export function validateEvent(
   event: DatabaseEvent
 ): ValidationResult {
@@ -61,14 +67,6 @@ export function validateEvent(
     errors.push("Missing end date.");
   }
 
-  if (!event.venue_name.trim()) {
-    errors.push("Missing venue name.");
-  }
-
-  if (!event.venue_address.trim()) {
-    errors.push("Missing venue address.");
-  }
-
   if (!event.city.trim()) {
     errors.push("Missing city.");
   }
@@ -77,17 +75,19 @@ export function validateEvent(
     errors.push("Missing state.");
   }
 
-  if (!event.country.trim()) {
-    errors.push("Missing country.");
+  if (!isValidDate(event.date_start)) {
+    errors.push("Invalid start date.");
+  }
+  if (!isValidDate(event.date_end)) errors.push("Invalid end date.");
+  if (isValidDate(event.date_start) && isValidDate(event.date_end) && event.date_end < event.date_start) {
+    errors.push("End date is before start date.");
   }
 
-  if (!event.source_event_id.trim()) {
-    errors.push("Missing source event id.");
-  }
-
-  if (!event.source_url.trim()) {
-    errors.push("Missing source url.");
-  }
+  if (!event.venue_name.trim()) warnings.push("Venue name needs review.");
+  if (!event.venue_address.trim()) warnings.push("Venue address needs review.");
+  if (!event.source_event_id.trim()) warnings.push("Source record ID is unavailable.");
+  if (!event.source_url.trim()) warnings.push("Source URL is unavailable.");
+  if (!/^[A-Z]{2}$/.test(event.state)) warnings.push("State code needs review.");
 
   //----------------------------------
   // ZIP Code

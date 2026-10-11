@@ -4,10 +4,11 @@ import { useState } from "react";
 
 import MapHero from "./sections/MapHero";
 import MapSection from "./sections/MapSection";
+import type { Event, Shop } from "@/types";
 
 interface MapsClientProps {
-  events: any[];
-  shops: any[];
+  events: Event[];
+  shops: Shop[];
   savedEventIds: string[];
   savedShopIds: string[];
 }

@@ -1,6 +1,14 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { normalizeState } from "../utils/state";
-export async function searchShops(args: any) {
+
+interface ShopSearchArgs {
+  state?: string;
+  city?: string;
+  specialty?: "sports" | "pokemon" | "both";
+  keyword?: string;
+}
+
+export async function searchShops(args: ShopSearchArgs) {
   let query = supabaseAdmin
     .from("shops")
     .select(`

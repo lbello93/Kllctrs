@@ -1,5 +1,5 @@
-import { Type } from "@google/genai";
-export const tools = [{
+import { Type, type Tool } from "@google/genai";
+export const tools: Tool[] = [{
   functionDeclarations: [
     {
       name: 'search_events',

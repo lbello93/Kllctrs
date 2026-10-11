@@ -1,6 +1,9 @@
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
+import { createOrganizerSubmissionCandidate } from '@/lib/events/organizer-submission-adapter'
+import { findEventIdentityMatch } from '@/lib/events/deduplication'
+import { mapCandidateToEventInsert } from '@/lib/events/supabase-mapper'
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
@@ -35,29 +38,33 @@ export async function POST(request: NextRequest) {
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-  const body = await request.json()
-
-  const safe = {
-    name: body.name,
-    slug: body.slug,
-    date_start: body.date_start,
-    date_end: body.date_end || null,
-    city: body.city,
-    state: body.state,
-    venue_name: body.venue_name || null,
-    venue_address: body.venue_address || null,
-    zip_code: body.zip_code || null,
-    website: body.website || null,
-    venue_website: body.venue_website || null,
-    vendor_tables: body.vendor_tables || null,
-    contact_name: body.contact_name || null,
-    contact_phone: body.contact_phone || null,
-    contact_email: body.contact_email || null,
-    autograph_guests: body.autograph_guests || null,
-    status: 'pending',
-    submitted_by: user.id,
-    source: 'user',
+  const body: unknown = await request.json()
+  const candidate = createOrganizerSubmissionCandidate(body, user.id)
+  if (!candidate?.quality.readyForReview || !candidate.event.name || !candidate.event.dateStart || !candidate.event.city || !candidate.event.state) {
+    return NextResponse.json({ error: 'Name, valid start date, city, and state are required.' }, { status: 400 })
   }
+  let possibleMatch: Awaited<ReturnType<typeof findEventIdentityMatch>>
+  try {
+    possibleMatch = await findEventIdentityMatch(supabaseAdmin, candidate)
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Event lookup failed.' }, { status: 500 })
+  }
+  if (possibleMatch?.match === 'same_source' || possibleMatch?.match === 'exact') {
+    return NextResponse.json({
+      error: 'A matching event already exists.',
+      eventId: possibleMatch.event.id,
+      match: possibleMatch.match,
+    }, { status: 409 })
+  }
+
+  const possibleDuplicateOf = possibleMatch?.match === 'needs_review'
+    ? {
+        id: possibleMatch.event.id,
+        name: possibleMatch.event.name,
+        slug: possibleMatch.event.slug,
+      }
+    : undefined
+  const safe = mapCandidateToEventInsert(candidate, { submittedBy: user.id, possibleDuplicateOf })
 
   const { data, error } = await supabaseAdmin
     .from('events')
@@ -66,5 +73,10 @@ export async function POST(request: NextRequest) {
     .single()
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ event: data }, { status: 201 })
+  return NextResponse.json({
+    event: data,
+    candidate,
+    needsReview: Boolean(possibleDuplicateOf),
+    possibleDuplicateOf: possibleDuplicateOf ?? null,
+  }, { status: possibleDuplicateOf ? 202 : 201 })
 }
