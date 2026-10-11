@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { format } from "date-fns";
+import { differenceInCalendarDays, format, parseISO } from "date-fns";
 import {
   Bookmark,
   BookmarkCheck,
@@ -92,6 +92,18 @@ export default function EventCard({
   const dateLabel = sameDay
     ? format(new Date(event.date_start), "MMM d, yyyy")
     : `${format(new Date(event.date_start), "MMM d")} – ${format(new Date(event.date_end!), "MMM d, yyyy")}`;
+  const today = new Date();
+  const eventStart = parseISO(event.date_start.slice(0, 10));
+  const eventEnd = parseISO((event.date_end || event.date_start).slice(0, 10));
+  const daysUntil = differenceInCalendarDays(eventStart, today);
+  const eventStatus =
+    eventEnd < new Date(today.getFullYear(), today.getMonth(), today.getDate())
+      ? "Past"
+      : daysUntil > 0
+        ? `${daysUntil} ${daysUntil === 1 ? "day" : "days"} left`
+        : daysUntil === 0
+          ? "Today"
+          : "Happening now";
 
   return (
     <div className="w-full overflow-hidden rounded-2xl border border-[#F2EFFE] bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:shadow-md">
@@ -99,7 +111,7 @@ export default function EventCard({
         {/* Badges */}
         <div className="mb-3 flex flex-wrap items-center gap-2">
           <span className="rounded-full bg-[#F0C040]/15 px-3 py-1 text-xs font-semibold text-[#8a6600]">
-            Upcoming
+            {eventStatus}
           </span>
 
           {distanceMiles != null && (

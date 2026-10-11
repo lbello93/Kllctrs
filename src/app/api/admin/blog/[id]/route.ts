@@ -24,6 +24,12 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
   if (typeof body.title === 'string') update.title = body.title
   if (typeof body.body === 'string') update.body = body.body
   if (typeof body.meta_description === 'string') update.meta_description = body.meta_description
+  if (typeof body.category === 'string' && ['card', 'brands', 'editorial', 'community', 'market_intel'].includes(body.category)) {
+    update.category = body.category
+  }
+  if (body.social_drafts && typeof body.social_drafts === 'object' && !Array.isArray(body.social_drafts)) {
+    update.social_drafts = body.social_drafts
+  }
   if (body.status && ['draft', 'published', 'archived'].includes(body.status)) {
     update.status = body.status
     if (body.status === 'published') update.published_at = new Date().toISOString()

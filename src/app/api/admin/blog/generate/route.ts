@@ -90,6 +90,7 @@ No markdown code fence, no preamble, just the raw JSON.`
       .from('content')
       .insert({
         type: 'blog',
+        category: 'card',
         title: parsed.title,
         slug,
         body: parsed.body,

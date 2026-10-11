@@ -14,6 +14,10 @@ interface Props {
 
   cities: string[];
 
+  month: string;
+  setMonth: (value: string) => void;
+  months: Array<{ value: string; label: string }>;
+
   category: string;
   setCategory: (value: string) => void;
 
@@ -28,11 +32,14 @@ export default function MapFilters({
   city,
   setCity,
   cities,
+  month,
+  setMonth,
+  months,
   category,
   setCategory,
   categories,
 }: Props) {
-  const hasActiveFilters = search !== "" || city !== "" || category !== "";
+  const hasActiveFilters = search !== "" || city !== "" || category !== "" || (mode === "shows" && month !== "");
 
   return (
     <div className="mx-auto flex max-w-[900px] flex-col items-center gap-5">
@@ -86,6 +93,17 @@ export default function MapFilters({
         </div>
 
         {/* Category only makes sense for shops, so it only appears in shop mode */}
+        {mode === "shows" && (
+          <div className="flex w-[170px] flex-col gap-1.5">
+            <label className="text-xs font-medium text-[#4a3f6b]/50">Event month</label>
+            <select value={month} onChange={(e) => setMonth(e.target.value)} className="h-11 rounded-[10px] border border-[#B39EF9] bg-white px-3 text-sm text-[#1E1E1E]">
+              <option value="">All dates</option>
+              {months.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+            </select>
+          </div>
+        )}
+
+        {/* Category only makes sense for shops, so it only appears in shop mode */}
         {mode === "shops" && (
           <div className="flex w-[160px] flex-col gap-1.5">
             <label className="text-xs font-medium text-[#4a3f6b]/50">
@@ -129,6 +147,7 @@ export default function MapFilters({
               setSearch("");
               setCity("");
               setCategory("");
+              if (mode === "shows") setMonth("");
             }}
             className="flex h-11 items-center gap-1.5 rounded-[10px] px-3 text-sm font-medium text-[#8B5CF6] hover:bg-[#F2EFFE] transition-colors"
           >

@@ -29,3 +29,7 @@ alter table public.sponsors
   add column if not exists service_area text,
   add column if not exists info_source_url text,
   add column if not exists info_verified_at timestamptz;
+
+alter table public.content
+  add column if not exists social_drafts jsonb,
+  add column if not exists source_links jsonb;

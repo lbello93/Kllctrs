@@ -89,6 +89,11 @@ export default async function BlogPostPage({ params }: Params) {
   const categoryConfig = CATEGORY_CONFIG[categoryKey] ?? CATEGORY_CONFIG.card;
   const readingMinutes = estimateReadingTime(post.body ?? "");
   const headings = extractHeadings(post.body ?? "");
+  const sourceLinks = Array.isArray(post.source_links)
+    ? post.source_links.filter((item): item is { title: string; url: string; checked_at?: string } =>
+        !!item && typeof item === "object" && !Array.isArray(item) &&
+        typeof item.title === "string" && typeof item.url === "string" && /^https?:\/\//i.test(item.url))
+    : [];
 
   let sourceEvent = null;
   if (post.source_event_id) {
@@ -217,6 +222,18 @@ export default async function BlogPostPage({ params }: Params) {
               </div>
             </div>
           </div>
+
+          {sourceLinks.length > 0 && (
+            <aside className="rounded-2xl border border-violet-100 bg-white/80 p-6 shadow-lg shadow-violet-200/20" aria-label="Article sources">
+              <h2 className="text-sm font-black text-[#1a0a3d]">Sources & further reading</h2>
+              <p className="mt-1 text-xs text-[#4a3f6b]/50">Links checked when this article was researched. Sale details can change as new information emerges.</p>
+              <ul className="mt-4 space-y-2">
+                {sourceLinks.map((source) => (
+                  <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-[#5f2eea] hover:underline">{source.title}<ExternalLink className="h-3.5 w-3.5 shrink-0" /></a></li>
+                ))}
+              </ul>
+            </aside>
+          )}
 
           {/* Source event CTA */}
           {sourceEvent && (

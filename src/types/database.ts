@@ -52,6 +52,8 @@ export type Database = {
           meta_description: string | null
           published_at: string | null
           slug: string | null
+          social_drafts: Json | null
+          source_links: Json | null
           source_event_id: string | null
           status: string | null
           title: string | null
@@ -68,6 +70,8 @@ export type Database = {
           meta_description?: string | null
           published_at?: string | null
           slug?: string | null
+          social_drafts?: Json | null
+          source_links?: Json | null
           source_event_id?: string | null
           status?: string | null
           title?: string | null
@@ -84,6 +88,8 @@ export type Database = {
           meta_description?: string | null
           published_at?: string | null
           slug?: string | null
+          social_drafts?: Json | null
+          source_links?: Json | null
           source_event_id?: string | null
           status?: string | null
           title?: string | null

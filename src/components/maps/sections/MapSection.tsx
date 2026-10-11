@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { format } from "date-fns";
 import { Calendar, Search, ShoppingBag } from "lucide-react";
 
 import EventMap from "@/components/maps/map/EventMap";
@@ -36,6 +37,9 @@ interface MapViewProps {
   city: string;
   setCity: (value: string) => void;
   cities: string[];
+  month: string;
+  setMonth: (value: string) => void;
+  months: Array<{ value: string; label: string }>;
   category: string;
   setCategory: (value: string) => void;
   categories: string[];
@@ -63,6 +67,9 @@ function DesktopMapView(props: MapViewProps) {
     city,
     setCity,
     cities,
+    month,
+    setMonth,
+    months,
     category,
     setCategory,
     categories,
@@ -93,10 +100,15 @@ function DesktopMapView(props: MapViewProps) {
         city={city}
         setCity={setCity}
         cities={cities}
+        month={month}
+        setMonth={setMonth}
+        months={months}
         category={category}
         setCategory={setCategory}
         categories={categories}
       />
+
+      {mode === "shows" && <p className="mt-3 text-center text-sm text-[#4a3f6b]/60" aria-live="polite">Showing <strong className="text-[#151E3C]">{filteredEvents.length}</strong> approved shows{month ? ` in ${months.find((item) => item.value === month)?.label ?? month}` : " across all dates"}. Use the map and list to explore current directory listings.</p>}
 
       <div className="flex gap-6 mt-6">
         <div className="flex-1 h-[560px] rounded-[10px] overflow-hidden">
@@ -144,6 +156,9 @@ function MobileMapView(props: MapViewProps) {
     city,
     setCity,
     cities,
+    month,
+    setMonth,
+    months,
     category,
     setCategory,
     categories,
@@ -222,6 +237,11 @@ function MobileMapView(props: MapViewProps) {
             </select>
           )}
 
+          {mode === "shows" && <select aria-label="Event month" value={month} onChange={(e) => setMonth(e.target.value)} className="h-11 rounded-xl border border-gray-200 bg-white px-3 text-sm">
+            <option value="">All dates</option>
+            {months.map((item) => <option key={item.value} value={item.value}>{item.label}</option>)}
+          </select>}
+
           <select
             value={city}
             onChange={(e) => setCity(e.target.value)}
@@ -236,6 +256,8 @@ function MobileMapView(props: MapViewProps) {
           </select>
         </div>
       </div>
+
+      {mode === "shows" && <p className="mx-5 mt-3 text-xs text-[#4a3f6b]/60" aria-live="polite">Showing <strong className="text-[#151E3C]">{filteredEvents.length}</strong> approved shows{month ? ` in ${months.find((item) => item.value === month)?.label ?? month}` : " across all dates"}.</p>}
 
       {/* MAP */}
       <div className="mt-5 px-4">
@@ -261,6 +283,11 @@ function MobileMapView(props: MapViewProps) {
       {/* MOBILE CAROUSEL */}
       <div className="mt-5 overflow-x-auto">
         <div className="flex gap-3 px-4 pb-2">
+          {mode === "shows" && filteredEvents.length === 0 && (
+            <p className="w-full rounded-xl border border-dashed border-violet-200 bg-white p-5 text-sm leading-relaxed text-[#4a3f6b]/70">
+              No approved shows match these filters. Try another month or clear your search and city filters.
+            </p>
+          )}
           {mode === "shows"
             ? filteredEvents.map((event) => (
                 <div
@@ -314,6 +341,22 @@ export default function MapSection({
   const [search, setSearch] = useState("");
   const [city, setCity] = useState("");
   const [category, setCategory] = useState("");
+  const [eventMonth, setEventMonth] = useState(() => {
+    const now = new Date();
+    return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+  });
+  const months = useMemo(() => {
+    const now = new Date();
+    return Array.from({ length: 12 }, (_, offset) => {
+      const year = now.getFullYear();
+      const monthIndex = now.getMonth() + offset;
+      const yearForMonth = year + Math.floor(monthIndex / 12);
+      const monthForYear = monthIndex % 12;
+      const value = `${yearForMonth}-${String(monthForYear + 1).padStart(2, "0")}`;
+      const label = format(new Date(Date.UTC(yearForMonth, monthForYear, 15)), "MMMM yyyy");
+      return { value, label };
+    });
+  }, []);
 
   const {
     location: userLocation,
@@ -361,20 +404,37 @@ export default function MapSection({
     });
   }, [shops, userLocation]);
 
+  const today = new Date();
+  const todayKey = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
   const filteredEvents = eventsWithDistance
     .filter((event) => {
+      const eventEnd = event.date_end || event.date_start;
+      const [year, month] = eventMonth ? eventMonth.split("-").map(Number) : [];
+      const monthStart = eventMonth ? `${eventMonth}-01` : "";
+      const monthEnd = eventMonth
+        ? `${eventMonth}-${String(new Date(year, month, 0).getDate()).padStart(2, "0")}`
+        : "";
+      const matchesMonth = !eventMonth || (eventEnd >= monthStart && event.date_start <= monthEnd);
       const matchesSearch =
         search === "" ||
         event.name?.toLowerCase().includes(search.toLowerCase());
       const matchesCity =
         city === "" || event.city?.toLowerCase() === city.toLowerCase();
-      return matchesSearch && matchesCity;
+      return matchesMonth && matchesSearch && matchesCity;
     })
-    .sort((a, b) =>
-      a.distanceMiles == null || b.distanceMiles == null
-        ? 0
-        : a.distanceMiles - b.distanceMiles,
-    );
+    .sort((a, b) => {
+      const aStart = a.date_start.slice(0, 10);
+      const bStart = b.date_start.slice(0, 10);
+      const aEnd = (a.date_end || a.date_start).slice(0, 10);
+      const bEnd = (b.date_end || b.date_start).slice(0, 10);
+      const aIsUpcoming = aEnd >= todayKey;
+      const bIsUpcoming = bEnd >= todayKey;
+
+      if (aIsUpcoming !== bIsUpcoming) return aIsUpcoming ? -1 : 1;
+      return aIsUpcoming
+        ? aStart.localeCompare(bStart)
+        : bStart.localeCompare(aStart);
+    });
 
   const filteredShops = shopsWithDistance
     .filter((shop) => {
@@ -414,6 +474,9 @@ export default function MapSection({
     city,
     setCity,
     cities,
+    month: eventMonth,
+    setMonth: setEventMonth,
+    months,
     category,
     setCategory,
     categories,

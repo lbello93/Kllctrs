@@ -18,6 +18,11 @@ export function EventSidebar({
   return (
     <div className="w-[352px] h-[560px] overflow-y-auto overflow-x-hidden">
       <div className="flex flex-col gap-3">
+        {events.length === 0 && (
+          <p className="rounded-xl border border-dashed border-violet-200 bg-violet-50/50 p-5 text-sm leading-relaxed text-[#4a3f6b]/70">
+            No approved shows match these filters. Try another month or clear your search and city filters.
+          </p>
+        )}
         {events.map((event) => (
           <EventCard
             key={event.id}

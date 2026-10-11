@@ -57,6 +57,9 @@ export default function AdminBlogClient({
   const [posts, setPosts] = useState<Post[]>(initialPosts);
   const [busy, setBusy] = useState<string | null>(null);
   const [generating, setGenerating] = useState(false);
+  const [newsTopic, setNewsTopic] = useState("");
+  const [newsSourceUrl, setNewsSourceUrl] = useState("");
+  const [generatingNews, setGeneratingNews] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState("");
 
   const handleGenerate = async () => {
@@ -76,6 +79,28 @@ export default function AdminBlogClient({
     setPosts((prev) => [data.draft, ...prev]);
     setSelectedEvent("");
     toast.success("Draft generated! Switch to Drafts tab to review.");
+  };
+
+  const handleGenerateNews = async () => {
+    if (!newsTopic.trim()) return;
+    setGeneratingNews(true);
+    try {
+      const res = await fetch("/api/admin/blog/generate-news", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic: newsTopic.trim(), source_url: newsSourceUrl.trim() || undefined }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? "News research failed");
+      setPosts((prev) => [data.draft, ...prev]);
+      setNewsTopic("");
+      setNewsSourceUrl("");
+      toast.success("Cited Market Intel draft created. Review its sources before publishing.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "News research failed");
+    } finally {
+      setGeneratingNews(false);
+    }
   };
 
   const handleAction = async (
@@ -118,6 +143,21 @@ export default function AdminBlogClient({
       </div>
 
       {/* Generate new draft + Upload PDF, side by side */}
+      <div className="rounded-2xl border border-fuchsia-100 bg-white/90 p-5 shadow-lg shadow-fuchsia-200/20">
+        <div className="mb-4 flex items-start gap-3">
+          <div className="rounded-xl bg-fuchsia-50 p-2 text-fuchsia-600"><Newspaper className="h-5 w-5" /></div>
+          <div><h2 className="text-sm font-black text-[#1a0a3d]">Latest in the hobby · Market Intel</h2><p className="mt-1 text-xs text-[#4a3f6b]/55">Research a recent sale, release, record, or collector trend and create a source-linked article draft.</p></div>
+        </div>
+        <div className="grid gap-3 md:grid-cols-[1fr_1fr_auto] md:items-end">
+          <div><label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">Story topic</label><input value={newsTopic} onChange={(event) => setNewsTopic(event.target.value)} maxLength={240} placeholder="e.g. Recent record price for a vintage rookie card" className={inputClass} /></div>
+          <div><label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">Starting source (optional)</label><input value={newsSourceUrl} onChange={(event) => setNewsSourceUrl(event.target.value)} type="url" placeholder="Auction house or news URL" className={inputClass} /></div>
+          <motion.button onClick={handleGenerateNews} disabled={newsTopic.trim().length < 5 || generatingNews} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="h-10 px-5 rounded-xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-lg shadow-fuchsia-500/20 disabled:opacity-40 cursor-pointer bg-gradient-to-r from-fuchsia-600 to-violet-600">
+            {generatingNews ? <><Loader2 className="h-4 w-4 animate-spin" /> Researching…</> : <><Sparkles className="h-4 w-4" /> Research & draft</>}
+          </motion.button>
+        </div>
+        <p className="mt-3 text-[11px] text-[#4a3f6b]/45">Search-grounded research saves source links and check time with the draft. Verify sale status, price, card details, and dates before publishing.</p>
+      </div>
+
       <div className="grid gap-4 md:grid-cols-2">
         <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5">
           <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-4">
