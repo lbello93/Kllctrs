@@ -31,11 +31,6 @@ export default async function MapsPage() {
     savedEventIds = profile?.saved_events ?? [];
     savedShopIds = profile?.saved_shops ?? [];
   }
-  console.log("EVENTS:", events?.length);
-  console.log("SHOPS:", shops?.length);
-  console.log("SAVED EVENTS:", savedEventIds.length);
-  console.log("SAVED SHOPS:", savedShopIds.length);
-
   return (
     <MapsClient
       events={events ?? []}

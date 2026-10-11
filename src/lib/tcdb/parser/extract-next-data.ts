@@ -1,16 +1,5 @@
 
-import * as cheerio from "cheerio";
-
-export function parseSportsCalendar(html: string) {
-    const $ = cheerio.load(html);
-
-    console.log("HTML Length:", html.length);
-
-    console.log(
-        "__NEXT_DATA__ Exists:",
-        $("#__NEXT_DATA__").length
-    );
-
+export function parseSportsCalendar(_html: string) {
     return [];
 }
 

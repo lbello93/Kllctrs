@@ -26,8 +26,6 @@
 
 // const { id } = await params;
 
-// console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-// console.log("SERVICE ROLE EXISTS:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
 
 // const { data: shop, error } = await supabaseAdmin
 //   .from("shops")
@@ -35,8 +33,6 @@
 //   .eq("id", id)
 //   .single();
 
-// console.log("SHOP:", shop);
-// console.log("ERROR:", error);
 
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
@@ -50,17 +46,11 @@ export default async function Page({
 }) {
   const { id } = await params;
 
-  console.log("URL:", process.env.NEXT_PUBLIC_SUPABASE_URL);
-  console.log("SERVICE ROLE EXISTS:", !!process.env.SUPABASE_SERVICE_ROLE_KEY);
-
   const { data: shop, error } = await supabaseAdmin
     .from("shops")
     .select("*")
     .eq("id", id)
     .single();
-
-  console.log("SHOP:", shop);
-  console.log("ERROR:", error);
 
   if (!shop) {
     return (

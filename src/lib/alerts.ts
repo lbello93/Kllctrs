@@ -63,6 +63,5 @@ export async function triggerEventAlerts(event: EventData) {
     }
   }
 
-  console.log(`[alerts] Event "${event.name}" — sent: ${sent}, skipped: ${skipped}`)
   return { sent, skipped }
 }

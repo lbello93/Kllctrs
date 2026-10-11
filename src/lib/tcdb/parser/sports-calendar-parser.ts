@@ -3,7 +3,6 @@ import { parseEvent } from "./parse-event";
 
 export class SportsCollectorDigestScrapper {
   async scrape() {
-    console.log("=== USING THIS SCRAPER FILE ===");
     const response = await fetch(
       "https://sportscollectorsdigest.com/collecting-101/show-calendar"
     );
@@ -156,10 +155,6 @@ export function buildRawEvents(
 
         if (!match) {
 
-    console.log("FAILED:");
-    console.log(clean);
-    console.log("----------------");
-
     continue;
 }
         events.push({
@@ -202,7 +197,6 @@ export function parseSportsCalendar(
     const paragraphs =
         extractParagraphs(nextData);
 
-    console.log("Paragraphs:", paragraphs.length);
 
     //---------------------------------------
     // Build Raw Events
@@ -211,7 +205,6 @@ export function parseSportsCalendar(
     const rawEvents =
         buildRawEvents(paragraphs);
 
-    console.log("Raw Events:", rawEvents.length);
     //---------------------------------------
     // Parse Events
     //---------------------------------------
@@ -220,13 +213,6 @@ export function parseSportsCalendar(
     .map((event) => {
 
         const parsed = parseEvent(event);
-
-        if (!parsed) {
-            console.log("PARSE FAILED");
-            console.log(event.raw);
-            console.log("----------------");
-        }
-
         return parsed;
     })
     .filter(
@@ -236,7 +222,6 @@ export function parseSportsCalendar(
             event !== null
     );
     
-    console.log("Parsed Events:", parsedEvents.length);
 
     //---------------------------------------
 

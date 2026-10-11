@@ -24,14 +24,6 @@ export async function GET(request: Request) {
   try {
     const scraped = await new SportsCollectorDigestScraper().scrape();
     const report = await createImportPipeline().importDatabaseEvents(scraped.events);
-    console.info("Scheduled Sports Collector Digest ingestion", {
-      discovered: scraped.events.length,
-      imported: report.imported,
-      duplicates: report.duplicates,
-      needsReview: report.needsReview,
-      failed: report.failed,
-      validationFailed: report.validationFailed,
-    });
     return NextResponse.json({ provider: "sportscollectorsdigest", ...report });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);

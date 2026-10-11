@@ -27,8 +27,6 @@ export class SportsCollectorDigestScraper {
 const databaseEvents =
     buildSportsDatabaseEvents(parsedEvents);
 
-console.log("Database Events:", databaseEvents.length);
-
 return {
 
     success: true,

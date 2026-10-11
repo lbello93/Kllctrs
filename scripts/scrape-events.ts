@@ -35,7 +35,6 @@ function extractStaticMapCoords(html: string): { lat: number; lng: number } | nu
 }
 
 async function scrapeEvent(url: string) {
-  console.log(`Fetching: ${url}`);
 
   const res = await fetch(url, { headers: HEADERS });
   if (!res.ok) {
@@ -47,7 +46,6 @@ async function scrapeEvent(url: string) {
   const pageText = $("body").text().replace(/\s+/g, " ").trim();
   const coords = extractStaticMapCoords(html);
 
-  console.log("Sending to Claude for extraction...");
 
   const message = await anthropic.messages.create({
     model: "claude-haiku-4-5-20251001",
@@ -75,7 +73,6 @@ async function scrapeEvent(url: string) {
     source_url: url,
   };
 
-  console.log(JSON.stringify(result, null, 2));
   return result;
 }
 

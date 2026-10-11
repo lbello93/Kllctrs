@@ -77,7 +77,6 @@ if (
       }, { status: 503 });
     }
 
-  console.log("Provider:", provider);
 
   //------------------------------------------------
 // Sports Collector Digest Import
@@ -91,18 +90,8 @@ if (provider === "sportscollectorsdigest") {
     const scrapeResult =
         await scraper.scrape();
 
-    console.log(
-        "Scraped:",
-        scrapeResult.events.length
-    );
-
     const databaseEvents =
         scrapeResult.events;
-
-    console.log(
-        "Database Events:",
-        databaseEvents.length
-    );
 
     const pipeline =
         createImportPipeline();

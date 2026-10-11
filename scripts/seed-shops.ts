@@ -92,14 +92,12 @@ function extractAddressParts(place: PlaceResult): { state: string; city: string;
 }
 
 async function main() {
-  console.log('🌱 Seeding shops from Google Places...\n')
 
   const allPlaces = new Map<string, PlaceResult>()
 
   for (const metro of SEARCH_TARGETS) {
     for (const q of QUERIES) {
       const query = `${q} ${metro}`
-      console.log(`→ ${query}`)
       const results = await searchPlaces(query)
       for (const p of results) {
         if (!allPlaces.has(p.id)) allPlaces.set(p.id, p)
@@ -108,7 +106,6 @@ async function main() {
     }
   }
 
-  console.log(`\n📦 Found ${allPlaces.size} unique shops. Inserting...\n`)
 
   let inserted = 0
   let skipped = 0
@@ -153,7 +150,6 @@ async function main() {
     }
   }
 
-  console.log(`\n✅ Done. Inserted/updated: ${inserted}, skipped: ${skipped}, failed: ${failed}`)
 }
 
 main().catch(e => {

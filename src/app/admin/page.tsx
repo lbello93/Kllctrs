@@ -34,10 +34,6 @@ export default async function AdminOverviewPage() {
     .eq("id", user.id)
     .single();
 
-  // console.log("USER:", user.email);
-  // console.log("PROFILE:", profile);
-  // console.log("ROLE:", profile?.role);
-
   // if (profile?.role !== "admin") {
   //   redirect("/");
   // }

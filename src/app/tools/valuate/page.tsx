@@ -144,7 +144,6 @@ export default function CardValuation() {
       });
       const compsData = await compsRes.json();
       const comps: EbayComp[] = compsData.comps ?? [];
-      console.log("eBay comps:", compsData); // debug
       setEbayComps(comps);
 
       // Step 2: AI valuation using the comps
