@@ -134,10 +134,6 @@ export default async function SponsorPage({ params }: Params) {
         </Link>
 
         <section className="overflow-hidden rounded-2xl border border-[#E5DFFD] bg-white shadow-sm">
-          <div className="relative h-36 bg-[#151E3C] sm:h-52">
-            {sponsor.banner_url && <Image src={sponsor.banner_url} alt="" fill sizes="(max-width: 1024px) 100vw, 1024px" className="object-cover" />}
-            <div className="absolute inset-0 bg-gradient-to-t from-[#151E3C]/75 to-transparent" />
-          </div>
           <div className="p-6 sm:p-8">
           <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
             <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-full border border-[#F2EFFE] bg-[#FEF9FF]">

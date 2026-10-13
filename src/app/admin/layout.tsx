@@ -9,11 +9,10 @@ import {
   Trophy,
   Users,
   FileText,
-  Newspaper,
   Shield,
-  Rss,
   Upload,
   BarChart3,
+  Sparkles,
 } from "lucide-react";
 
 const NAV = [
@@ -51,6 +50,12 @@ const NAV = [
     href: "/admin/sponsors",
     label: "Sponsors",
     icon: Trophy,
+  },
+
+  {
+    href: "/admin/content-studio",
+    label: "Content Studio",
+    icon: Sparkles,
   },
 
   {

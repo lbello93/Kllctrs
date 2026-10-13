@@ -7,7 +7,7 @@ import { motion } from "framer-motion";
 import { toast } from "sonner";
 import {
   Newspaper,
-  Sparkles,
+  FileText,
   Loader2,
   ExternalLink,
   Pencil,
@@ -15,6 +15,7 @@ import {
   Eye,
   CheckCircle2,
   BookOpen,
+  Sparkles,
 } from "lucide-react";
 import ArticleUploadCard from "@/components/admin/content/ArticleUploadCard";
 
@@ -133,13 +134,14 @@ export default function AdminBlogClient({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
         <h1 className="text-2xl font-black text-[#1a0a3d] tracking-tight">
-          Blog
+          <span className="block">Blog</span>
+          <span className="mt-1 block text-sm font-normal text-[#4a3f6b]/60">Generate, review, and publish collector content</span>
         </h1>
-        <p className="text-sm text-[#4a3f6b]/60 mt-1">
-          Generate, review, and publish AI-written event coverage
-        </p>
+        <Link href="/admin/content-studio" className="inline-flex h-10 items-center justify-center gap-2 self-start rounded-xl bg-[#5B18BE] px-4 text-sm font-bold text-white transition hover:bg-[#48129A] sm:self-auto">
+          <Sparkles className="h-4 w-4" /> Open Content Studio
+        </Link>
       </div>
 
       {/* Generate new draft + Upload PDF, side by side */}
@@ -152,7 +154,7 @@ export default function AdminBlogClient({
           <div><label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">Story topic</label><input value={newsTopic} onChange={(event) => setNewsTopic(event.target.value)} maxLength={240} placeholder="e.g. Recent record price for a vintage rookie card" className={inputClass} /></div>
           <div><label className="text-xs font-medium text-[#4a3f6b]/60 block mb-1.5">Starting source (optional)</label><input value={newsSourceUrl} onChange={(event) => setNewsSourceUrl(event.target.value)} type="url" placeholder="Auction house or news URL" className={inputClass} /></div>
           <motion.button onClick={handleGenerateNews} disabled={newsTopic.trim().length < 5 || generatingNews} whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} className="h-10 px-5 rounded-xl text-sm font-black text-white flex items-center justify-center gap-2 shadow-lg shadow-fuchsia-500/20 disabled:opacity-40 cursor-pointer bg-gradient-to-r from-fuchsia-600 to-violet-600">
-            {generatingNews ? <><Loader2 className="h-4 w-4 animate-spin" /> Researching…</> : <><Sparkles className="h-4 w-4" /> Research & draft</>}
+            {generatingNews ? <><Loader2 className="h-4 w-4 animate-spin" /> Researching…</> : <><FileText className="h-4 w-4" /> Research & draft</>}
           </motion.button>
         </div>
         <p className="mt-3 text-[11px] text-[#4a3f6b]/45">Search-grounded research saves source links and check time with the draft. Verify sale status, price, card details, and dates before publishing.</p>
@@ -198,7 +200,7 @@ export default function AdminBlogClient({
                 </>
               ) : (
                 <>
-                  <Sparkles className="w-4 h-4" /> Generate Draft
+                  <FileText className="w-4 h-4" /> Generate Draft
                 </>
               )}
             </motion.button>

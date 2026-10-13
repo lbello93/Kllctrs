@@ -2,7 +2,7 @@
 
 import type { ReactNode } from "react";
 import { motion, useReducedMotion } from "framer-motion";
-import { MapPin, Sparkles, Store, Users } from "lucide-react";
+import { MapPin, Lightbulb, Store, Users } from "lucide-react";
 import { bodyM } from "@/components/profile/onboarding/shared/onboardingStyles";
 
 type Tone = "purple" | "gold" | "pink";
@@ -34,7 +34,7 @@ const FEATURES: Feature[] = [
     tone: "purple",
   },
   {
-    icon: <Sparkles className="h-5 w-5" />,
+    icon: <Lightbulb className="h-5 w-5" />,
     title: "Personalized Recommendations",
     description: "Get suggestions based on what you collect.",
     tone: "pink",

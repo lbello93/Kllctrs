@@ -148,7 +148,7 @@ export default function SubmitEventForm({
       return;
     }
 
-    setTimeout(() => router.push("/dashboard"), 2500);
+    setTimeout(() => router.push("/maps"), 2500);
   };
 
   if (success) {

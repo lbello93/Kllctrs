@@ -58,7 +58,7 @@ export async function sendEventAlert(
 
       <p style="margin-top: 32px; font-size: 12px; color: #475569;">
         You're receiving this because you track card shows in ${event.state} on KLLCTBLS.
-        <br/>Update your preferences anytime at kllctbls.com/dashboard/preferences
+        <br/>Update your preferences anytime from your KLLCTRS profile.
       </p>
     </div>
   `

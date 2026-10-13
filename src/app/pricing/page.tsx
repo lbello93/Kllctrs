@@ -185,7 +185,7 @@ export default function PricingPage() {
             </ul>
 
             {isPro ? (
-              <Link href="/tools/valuate">
+              <Link href="/maps">
                 <button
                   className="w-full rounded-xl font-bold transition-colors"
                   style={{
@@ -196,7 +196,7 @@ export default function PricingPage() {
                     border: "1px solid #ddd6fe",
                   }}
                 >
-                  Try Valuation Tool
+                  Explore the Map
                 </button>
               </Link>
             ) : (
@@ -593,7 +593,7 @@ export default function PricingPage() {
                   </motion.button>
                 </Link>
               ) : (
-                <Link href="/tools/valuate">
+                <Link href="/maps">
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
@@ -607,7 +607,7 @@ export default function PricingPage() {
                       boxShadow: "0 4px 16px rgba(245,197,24,0.35)",
                     }}
                   >
-                    Try Valuation Tool
+                    Explore Events
                   </motion.button>
                 </Link>
               )}

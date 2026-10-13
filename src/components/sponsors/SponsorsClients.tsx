@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { Search, X } from "lucide-react";
+import { ArrowRight, Search, X } from "lucide-react";
 
 import SponsorCard from "./SponsorCard";
 import {
@@ -28,6 +28,12 @@ const CATEGORIES = [
 
 const EMPTY_STATS: SponsorStats = { upcoming: [], left: 0, total: 0 };
 
+function matchesBrandCategory(brandCategory: string, selectedCategory: string) {
+  if (selectedCategory === "grading") return ["grading", "grading_company"].includes(brandCategory);
+  if (selectedCategory === "manufacturer") return ["manufacturer", "card_manufacturer"].includes(brandCategory);
+  return brandCategory === selectedCategory;
+}
+
 interface Props {
   sponsors: SponsorRow[];
   stats: Record<string, SponsorStats>;
@@ -40,13 +46,21 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
   const [productCategory, setProductCategory] = useState("all");
   const [upcomingOnly, setUpcomingOnly] = useState(false);
   const productCategories = useMemo(() => [...new Set(sponsors.flatMap((sponsor) => sponsor.product_categories ?? []))].sort((a, b) => a.localeCompare(b)), [sponsors]);
+  const categoryCounts = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const sponsor of sponsors) {
+      const key = sponsor.category.toLowerCase();
+      counts.set(key, (counts.get(key) ?? 0) + 1);
+    }
+    return counts;
+  }, [sponsors]);
 
   const filtered = useMemo(() => {
     const query = search.trim().toLowerCase();
 
     return sponsors.filter((sponsor) => {
       const matchesCategory =
-        category === "all" || sponsor.category === category;
+        category === "all" || matchesBrandCategory(sponsor.category, category);
       const matchesProduct = productCategory === "all" || (sponsor.product_categories ?? []).includes(productCategory);
       const matchesEvents = !upcomingOnly || (stats[sponsor.id]?.upcoming.length ?? 0) > 0;
       const matchesSearch =
@@ -65,6 +79,13 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
     { value: summary.shows, label: "Shows" },
     { value: summary.states, label: "States" },
   ];
+
+  const selectedCategory = CATEGORIES.find((item) => item.value === category);
+  const categoryLabel = selectedCategory?.label ?? "this category";
+  const isCategoryEmpty = category !== "all" && !sponsors.some((sponsor) => matchesBrandCategory(sponsor.category, category));
+  const suggestedBrands = sponsors
+    .filter((sponsor) => category === "all" || (isCategoryEmpty ? sponsor.category !== category : true))
+    .slice(0, 3);
 
   return (
     <main className="min-h-screen bg-[#FEF9FF]">
@@ -132,6 +153,15 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
                   className={`-ml-px h-8 whitespace-nowrap border border-[#8B5CF6] px-3 font-inter text-[11px] font-normal transition-all duration-200 first:ml-0 ${active ? "bg-[#8B5CF6] text-white" : "bg-[#FEF9FF] text-[#151E3C] hover:bg-[#F2EFFE]"} ${index === 0 ? "rounded-l-[20px]" : index === CATEGORIES.length - 1 ? "rounded-r-[20px]" : "rounded-none"}`}
                 >
                   {item.label}
+                  {item.value !== "all" && (
+                    <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[9px] ${active ? "bg-white/20 text-white" : "bg-[#F2EFFE] text-[#5B18BE]"}`}>
+                      {item.value === "grading"
+                        ? (categoryCounts.get("grading") ?? 0) + (categoryCounts.get("grading_company") ?? 0)
+                        : item.value === "manufacturer"
+                          ? (categoryCounts.get("manufacturer") ?? 0) + (categoryCounts.get("card_manufacturer") ?? 0)
+                          : categoryCounts.get(item.value) ?? 0}
+                    </span>
+                  )}
                 </button>
               );
             })}
@@ -178,23 +208,59 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
 
       <section className="mx-auto max-w-[1320px] px-6 py-8">
         {filtered.length === 0 ? (
-          <div className="mx-auto flex max-w-md flex-col items-center gap-3 rounded-2xl border border-[#E5DFFD] bg-white px-6 py-12 text-center">
-            <h2 className="font-space-grotesk text-[20px] leading-[26px] text-[#151E3C]">
-              No sponsors found
-            </h2>
-            <p className="font-inter text-[14px] leading-5 text-[#151E3C]/60">
-              Try another search or category.
-            </p>
-            <button
-              type="button"
-              onClick={() => {
-                setSearch("");
-                setCategory("all");
-              }}
-              className="font-inter text-[14px] leading-[17px] text-[#8B5CF6] underline-offset-4 hover:underline"
-            >
-              Show all
-            </button>
+          <div className="space-y-8">
+            <div className="relative mx-auto flex max-w-3xl flex-col items-center overflow-hidden rounded-3xl border border-[#E5DFFD] bg-white px-6 py-10 text-center shadow-[0_18px_55px_rgba(21,30,60,0.06)] sm:px-10 sm:py-12">
+              <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#8B5CF6] via-[#B39EF9] to-[#F0C040]" />
+              <p className="font-inter text-[11px] font-semibold uppercase tracking-[0.16em] text-[#8B5CF6]">
+                {isCategoryEmpty ? "A space for the hobby" : "No exact matches"}
+              </p>
+              <h2 className="mt-2 font-space-grotesk text-2xl font-semibold leading-tight text-[#151E3C] sm:text-3xl">
+                {isCategoryEmpty ? `${categoryLabel} brands are missing from the directory` : "We couldn’t find a brand match"}
+              </h2>
+              <p className="mt-3 max-w-xl font-inter text-sm leading-6 text-[#596078] sm:text-base">
+                {isCategoryEmpty
+                  ? `We haven’t listed any ${categoryLabel.toLowerCase()} brands yet. Help grow the KLLCTRS hobby index by suggesting a brand, or explore the companies already here.`
+                  : category !== "all"
+                    ? `No ${categoryLabel.toLowerCase()} brands match the current search and filters. Clear them to browse the full category.`
+                    : "Try a different search or clear your filters to browse all brands in the KLLCTRS hobby index."}
+              </p>
+              <div className="mt-7 flex w-full flex-col justify-center gap-3 sm:w-auto sm:flex-row">
+                <Link href="/sponsors/submit" className={primaryLinkClass}>
+                  Suggest a brand <ArrowRight className="h-4 w-4" />
+                </Link>
+                <button
+                  type="button"
+                  onClick={() => {
+                    setSearch("");
+                    setCategory("all");
+                    setProductCategory("all");
+                    setUpcomingOnly(false);
+                  }}
+                  className="inline-flex h-10 items-center justify-center rounded-[10px] border border-[#D8C9FF] bg-white px-4 font-inter text-sm font-medium text-[#5B18BE] transition hover:bg-[#F8F5FF]"
+                >
+                  Browse all brands
+                </button>
+              </div>
+            </div>
+
+            {suggestedBrands.length > 0 && (
+              <div>
+                <div className="mb-4 flex flex-wrap items-end justify-between gap-3">
+                  <div>
+                    <p className="font-inter text-[11px] font-semibold uppercase tracking-[0.14em] text-[#8B5CF6]">Keep exploring</p>
+                    <h3 className="mt-1 font-space-grotesk text-xl font-semibold text-[#151E3C]">Brands already in the hobby index</h3>
+                  </div>
+                  <button type="button" onClick={() => { setSearch(""); setCategory("all"); setProductCategory("all"); setUpcomingOnly(false); }} className="inline-flex items-center gap-1 font-inter text-sm font-medium text-[#6C36CE] hover:underline">
+                    View all {sponsors.length} brands <ArrowRight className="h-4 w-4" />
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                  {suggestedBrands.map((sponsor) => (
+                    <SponsorCard key={sponsor.id} sponsor={sponsor} stats={stats[sponsor.id] ?? EMPTY_STATS} />
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">

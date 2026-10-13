@@ -23,6 +23,7 @@ export default function DesktopNavbar({
   pathname,
   navLinks,
   user,
+  isAdmin,
   isPro,
   isScrolled,
   onSignOut,
@@ -83,6 +84,11 @@ export default function DesktopNavbar({
 
         {/* RIGHT SIDE */}
         <div className="flex items-center gap-3 min-w-fit">
+          {isAdmin && (
+            <Link href="/admin" className="h-8 rounded-xl border border-violet-200 px-3 py-2 text-xs font-semibold text-violet-800 transition hover:bg-violet-50">
+              Admin
+            </Link>
+          )}
           {/* EMAIL */}
           {user?.email && (
             <span className="max-w-[180px]  truncate text-xs text-zinc-500">

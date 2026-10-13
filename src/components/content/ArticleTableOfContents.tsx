@@ -41,23 +41,23 @@ export default function ArticleTableOfContents({
   if (headings.length < 2) return null;
 
   return (
-    <div className="rounded-2xl border border-violet-100 bg-white/80 p-5 backdrop-blur-sm">
-      <p className="mb-3 text-[10px] font-black uppercase tracking-[0.25em] text-[#5f2eea]">
+    <div className="rounded-2xl border border-[#E5DFFD] bg-white p-5 shadow-[0_8px_28px_rgba(21,30,60,0.05)]">
+      <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#5B18BE]">
         In This Article
       </p>
-      <nav className="space-y-1.5">
+      <nav aria-label="Article contents" className="max-h-[calc(100vh-9rem)] space-y-1.5 overflow-y-auto">
         {headings.map((h) => (
           <a
             key={h.id}
             href={`#${h.id}`}
             className={`flex items-center gap-1.5 text-sm transition-colors ${
               activeId === h.id
-                ? "font-bold text-[#5f2eea]"
-                : "text-[#4a3f6b]/60 hover:text-[#1a0a3d]"
+                ? "font-semibold text-[#5B18BE]"
+                : "text-[#596078] hover:text-[#151E3C]"
             } ${h.level === 3 ? "pl-4" : ""}`}
           >
             <ChevronRight className="h-3 w-3 shrink-0" />
-            {h.text}
+            <span className="min-w-0 break-words">{h.text}</span>
           </a>
         ))}
       </nav>

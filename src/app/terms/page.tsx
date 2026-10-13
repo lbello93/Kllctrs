@@ -25,39 +25,40 @@ const SECTIONS = [
 
 export default function TermsPage() {
   return (
-    <div className="min-h-screen bg-white">
-      <div className="border-b border-zinc-100 bg-zinc-50/50">
-        <div className="mx-auto max-w-5xl px-6 py-10 sm:px-8">
+  <div className="min-h-screen bg-[#faf8ff] pb-16 pt-24 text-[#15162b]">
+      <div className="mx-auto max-w-6xl px-5 sm:px-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-zinc-500 transition hover:text-zinc-900"
+            className="inline-flex items-center gap-2 text-sm font-medium text-violet-700 transition hover:text-violet-900"
           >
             <ArrowLeft className="h-4 w-4" />
             Home
           </Link>
 
-          <h1 className="mt-6 text-3xl font-bold tracking-tight text-zinc-900 sm:text-4xl">
+          <div className="mt-7 rounded-3xl border border-violet-100 bg-white px-6 py-8 shadow-[0_14px_50px_rgba(41,25,80,0.06)] sm:px-10 sm:py-10">
+          <p className="text-xs font-bold uppercase tracking-[0.2em] text-violet-600">KLLCTRS · Legal</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight text-[#171936] sm:text-5xl">
             Terms of Service
           </h1>
-          <p className="mt-2 text-sm text-zinc-500">
+          <p className="mt-3 inline-flex rounded-full bg-violet-50 px-3 py-1.5 text-sm text-violet-800">
             Last updated: May 2, 2026
           </p>
+          </div>
         </div>
-      </div>
 
-      <div className="mx-auto max-w-5xl px-6 py-12 sm:px-8">
-        <div className="flex flex-col gap-10 lg:flex-row lg:gap-16">
+      <div className="mx-auto max-w-6xl px-5 py-8 sm:px-8">
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-[250px_minmax(0,1fr)] lg:gap-8">
           {/* Section nav */}
-          <nav className="lg:sticky lg:top-8 lg:h-fit lg:w-56 lg:shrink-0">
-            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+          <nav className="rounded-2xl border border-violet-100 bg-white p-5 shadow-sm lg:sticky lg:top-24 lg:h-fit">
+            <p className="mb-3 text-xs font-semibold uppercase tracking-widest text-violet-500">
               On this page
             </p>
-            <ul className="space-y-1 text-sm">
+            <ul className="grid max-h-[55vh] grid-cols-1 gap-1 overflow-y-auto text-sm">
               {SECTIONS.map((section) => (
                 <li key={section.id}>
                   <a
                     href={`#${section.id}`}
-                    className="block rounded-lg px-3 py-1.5 text-zinc-500 transition hover:bg-zinc-50 hover:text-zinc-900"
+                    className="block rounded-lg px-3 py-2 text-zinc-600 transition hover:bg-violet-50 hover:text-violet-800"
                   >
                     {section.title}
                   </a>
@@ -67,7 +68,7 @@ export default function TermsPage() {
           </nav>
 
           {/* Content */}
-          <article className="min-w-0 flex-1 space-y-10">
+          <article className="min-w-0 space-y-3 rounded-2xl border border-violet-100 bg-white p-5 shadow-sm sm:p-9">
             <Section id="acceptance" title="1. Acceptance">
               <p>
                 By accessing or using KLLCTBLS, you agree to these Terms of
@@ -169,7 +170,7 @@ export default function TermsPage() {
               <p>
                 We may suspend or terminate your account at any time for
                 violation of these terms or for any reason at our discretion.
-                You may delete your account at any time through your dashboard
+                You may delete your account at any time through your profile
                 settings.
               </p>
             </Section>
@@ -220,10 +221,10 @@ function Section({
 }) {
   return (
     <section id={id} className="scroll-mt-8">
-      <h2 className="text-xl font-semibold tracking-tight text-zinc-900">
+      <h2 className="border-b border-violet-100 pb-3 text-lg font-semibold tracking-tight text-[#171936] sm:text-xl">
         {title}
       </h2>
-      <div className="mt-3 space-y-3 text-[15px] leading-relaxed text-zinc-600">
+      <div className="mt-3 space-y-3 border-b border-zinc-100 pb-6 text-[15px] leading-7 text-zinc-600 last:border-0">
         {children}
       </div>
     </section>

@@ -51,7 +51,7 @@ export default function NotFound() {
           </div>
 
           <nav aria-label="Popular KLLCTRS destinations" className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-sm font-medium text-[#5B18BE]">
-            <Link className="underline decoration-[#CBBEFB] underline-offset-4 hover:text-[#151E3C]" href="/events">Events</Link>
+            <Link className="underline decoration-[#CBBEFB] underline-offset-4 hover:text-[#151E3C]" href="/maps">Events</Link>
             <Link className="underline decoration-[#CBBEFB] underline-offset-4 hover:text-[#151E3C]" href="/shops">Shops</Link>
             <Link className="underline decoration-[#CBBEFB] underline-offset-4 hover:text-[#151E3C]" href="/blog">Collector stories</Link>
           </nav>

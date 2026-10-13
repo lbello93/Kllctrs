@@ -29,12 +29,16 @@ export function Navbar() {
       } = await supabase.auth.getUser();
 
       setUser(user);
-
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-
-      setIsAdmin(session?.user?.app_metadata?.role === "admin");
+      if (user) {
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("role")
+          .eq("id", user.id)
+          .maybeSingle();
+        setIsAdmin(profile?.role === "admin" || user.app_metadata?.role === "admin");
+      } else {
+        setIsAdmin(false);
+      }
       setIsPro(user?.user_metadata?.subscription_tier === "pro_beta");
     };
 
@@ -48,6 +52,18 @@ export function Navbar() {
       setUser(currentUser);
 
       setIsAdmin(session?.user?.app_metadata?.role === "admin");
+      if (currentUser) {
+        window.setTimeout(async () => {
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("role")
+            .eq("id", currentUser.id)
+            .maybeSingle();
+          setIsAdmin(profile?.role === "admin" || currentUser.app_metadata?.role === "admin");
+        }, 0);
+      } else {
+        setIsAdmin(false);
+      }
 
       setIsPro(currentUser?.user_metadata?.subscription_tier === "pro_beta");
 
@@ -96,6 +112,7 @@ export function Navbar() {
           navLinks={navLinks}
           user={user}
           isPro={isPro}
+          isAdmin={isAdmin}
           onSignOut={handleSignOut}
         />
       </div>

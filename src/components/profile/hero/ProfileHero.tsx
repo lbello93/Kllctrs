@@ -79,12 +79,15 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
       <div className="absolute inset-0 bg-[#151E3C]/60 md:hidden" />
       <div className="absolute inset-0 hidden bg-gradient-to-r from-[#151E3C]/90 via-[#151E3C]/60 to-transparent md:block" />
 
-      <div className="relative z-10 mx-auto flex min-h-[380px] max-w-7xl flex-col justify-end gap-6 px-6 pb-10 pt-32 md:flex-row md:items-end md:justify-start md:gap-8 md:px-10">
-        <ProfileAvatar avatarUrl={profile?.avatar_url} />
+      <div className="relative z-10 mx-auto flex min-h-[390px] max-w-7xl flex-col justify-end gap-5 px-5 pb-8 pt-28 sm:px-8 sm:pb-10 md:min-h-[370px] md:flex-row md:items-end md:gap-7 md:px-10">
+        <div className="shrink-0 self-start md:self-end">
+          <ProfileAvatar avatarUrl={profile?.avatar_url} />
+        </div>
 
-        <div className="min-w-0 flex-1">
+        <div className="min-w-0 flex-1 md:pb-1">
+          <p className="mb-2 font-inter text-[11px] font-semibold uppercase tracking-[0.18em] text-[#D9CCFF]">Collector profile</p>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="font-unica-one text-[40px] leading-[44px] tracking-[-0.01em] text-[#FEF9FF] md:text-[48px] md:leading-[57px]">
+            <h1 className="break-words font-unica-one text-[38px] leading-[42px] tracking-[-0.01em] text-[#FEF9FF] sm:text-[44px] sm:leading-[49px] md:text-[48px] md:leading-[54px]">
               {displayName}
             </h1>
 
@@ -95,7 +98,7 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
             )}
           </div>
 
-          <div className="mt-2 flex flex-wrap items-center gap-x-5 gap-y-1 font-inter text-[14px] leading-[17px] text-[#FEF9FF]/80">
+          <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-2 font-inter text-[13px] leading-5 text-[#FEF9FF]/85 sm:text-[14px]">
             {location && (
               <span className="flex items-center gap-1.5">
                 <MapPin className="h-3.5 w-3.5" />
@@ -112,13 +115,13 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
           </div>
 
           {profile?.bio && (
-            <p className="mt-4 max-w-xl font-inter text-[14px] leading-6 text-[#FEF9FF]/75">
+            <p className="mt-4 max-w-2xl font-inter text-[14px] leading-6 text-[#FEF9FF]/80">
               {profile.bio}
             </p>
           )}
 
           {(collectorTypeLabel || games.length > 0) && (
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="mt-5 flex max-w-2xl flex-wrap gap-2">
               {collectorTypeLabel && (
                 <Chip tone="gold">{collectorTypeLabel}</Chip>
               )}
@@ -131,7 +134,7 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
 
         <EditProfileButton
           onClick={onEdit}
-          className="self-start md:self-end"
+          className="self-start border-white/30 bg-[#FEF9FF] !text-[#151E3C] shadow-md hover:!bg-white md:mb-1 md:ml-2 md:self-end"
         />
       </div>
     </section>

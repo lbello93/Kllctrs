@@ -11,6 +11,7 @@ import {
   Phone,
   ExternalLink,
   Navigation,
+  Store,
 } from "lucide-react";
 
 interface Params {
@@ -71,6 +72,14 @@ export default async function ShopDetailPage({ params }: Params) {
   }
 
   const sh = shop as Shop;
+  const websiteUrl = sh.website
+    ? /^https?:\/\//i.test(sh.website)
+      ? sh.website
+      : `https://${sh.website}`
+    : null;
+  const shopSpecialty = sh.specialty
+    ? specialtyLabel[sh.specialty] ?? sh.specialty
+    : "Collectibles shop";
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -99,207 +108,146 @@ export default async function ShopDetailPage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-gradient-to-br from-[#f4f3fb] via-[#ede9ff] to-[#f4f3fb] pt-24">
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-[10%] right-[15%] w-[500px] h-[500px] bg-violet-200/40 rounded-full blur-[150px]" />
-          <div className="absolute bottom-[20%] left-[10%] w-[400px] h-[400px] bg-fuchsia-200/30 rounded-full blur-[120px]" />
-        </div>
+      <div className="min-h-screen bg-[#F7F5FC] pb-16 pt-24">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+          <Link
+            href="/maps"
+            className="mb-5 inline-flex min-h-10 items-center gap-2 rounded-full border border-[#E5DFFD] bg-white px-4 text-sm font-medium text-[#5B18BE] transition hover:border-[#B39EF9] hover:bg-[#F8F5FF]"
+          >
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" />
+            Back to map
+          </Link>
 
-        {/* Header */}
-        <div className="relative z-10 border-b border-violet-100 bg-white/70 backdrop-blur-xl">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <Link
-              href="/shops"
-              className="inline-flex items-center gap-1.5 text-sm text-[#5f2eea] hover:text-[#4a1fa8] font-medium transition-colors"
-            >
-              <ArrowLeft className="w-4 h-4" /> All Shops
-            </Link>
-          </div>
-        </div>
-
-        {/* Hero */}
-        <div className="relative z-10 border-b border-violet-100 bg-white/50 backdrop-blur-sm">
-          <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4">
-              <div className="flex-1">
-                <div className="flex flex-wrap items-center gap-2 mb-3">
-                  <span className="inline-flex items-center text-xs font-medium bg-violet-50 text-[#5f2eea] border border-violet-200 px-2.5 py-1 rounded-full">
-                    {sh.state}
-                  </span>
-                  {sh.specialty && (
-                    <span className="inline-flex items-center text-xs font-medium bg-[#f4f3fb] text-[#4a3f6b]/60 border border-violet-100 px-2.5 py-1 rounded-full">
-                      {specialtyLabel[sh.specialty] ?? sh.specialty}
+          <section className="overflow-hidden rounded-3xl border border-[#E5DFFD] bg-white shadow-[0_12px_40px_rgba(21,30,60,0.06)]">
+            <div className="bg-gradient-to-r from-[#F2EFFE] via-[#FEF9FF] to-[#FFF8E8] p-5 sm:p-8">
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-center">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-2xl border border-white bg-white text-[#6C36CE] shadow-sm sm:h-20 sm:w-20">
+                  <Store className="h-8 w-8 sm:h-9 sm:w-9" aria-hidden="true" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <div className="mb-2 flex flex-wrap gap-2">
+                    <span className="rounded-full border border-[#D8C9FF] bg-white/80 px-3 py-1 text-xs font-semibold text-[#5B18BE]">
+                      {shopSpecialty}
                     </span>
-                  )}
-                </div>
-                <h1 className="text-3xl md:text-4xl font-black text-[#1a0a3d] tracking-tight mb-2">
-                  {sh.name}
-                </h1>
-                <div className="flex items-center gap-1 text-[#4a3f6b]/50 text-sm">
-                  <MapPin className="w-3.5 h-3.5" />
-                  {sh.city}, {sh.state}
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 shrink-0">
-                <div className="rounded-xl border border-violet-200 p-1.5 bg-white/80">
-                  <SaveButton
-                    eventId={sh.id}
-                    initialSaved={isSaved}
-                    type="shop"
-                  />
-                </div>
-                {sh.website && (
-                  <a
-                    href={sh.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 h-10 px-5 rounded-xl text-sm font-black text-white border-0 shadow-lg shadow-violet-500/20"
-                    style={{
-                      background: "linear-gradient(135deg, #5f2eea, #4a1fa8)",
-                    }}
-                  >
-                    Visit Website <ExternalLink className="w-3.5 h-3.5" />
-                  </a>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Body */}
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Left — map + address */}
-            <div className="lg:col-span-2 space-y-6">
-              {sh.lat && sh.lng ? (
-                <div
-                  className="rounded-2xl overflow-hidden border border-violet-100 shadow-xl shadow-violet-200/30"
-                  style={{ height: "360px" }}
-                >
-                  <EventDetailMap lat={sh.lat} lng={sh.lng} name={sh.name} />
-                </div>
-              ) : (
-                <div className="rounded-2xl border border-violet-100 bg-white/80 p-8 text-center">
-                  <MapPin className="w-8 h-8 text-[#5f2eea]/20 mx-auto mb-2" />
-                  <p className="text-sm text-[#4a3f6b]/40">
-                    Location coordinates not available
+                    <span className="rounded-full border border-[#F0D99A] bg-white/80 px-3 py-1 text-xs font-semibold text-[#80621B]">
+                      {sh.city}, {sh.state}
+                    </span>
+                  </div>
+                  <h1 className="break-words font-space-grotesk text-3xl font-bold leading-tight tracking-[-0.03em] text-[#151E3C] sm:text-4xl">
+                    {sh.name}
+                  </h1>
+                  <p className="mt-3 max-w-3xl text-sm leading-6 text-[#46506B] sm:text-base">
+                    Explore {sh.name}, a {shopSpecialty.toLowerCase()} in {sh.city}, {sh.state}. Find its location and contact details, then save it to your KLLCTRS profile for your next hobby trip.
                   </p>
                 </div>
-              )}
-
-              {sh.address && (
-                <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5">
-                  <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-3">
-                    Address
-                  </h2>
-                  <p className="text-sm text-[#4a3f6b]/70 leading-relaxed">
-                    {sh.address}
-                    {sh.zip_code && (
-                      <>
-                        <br />
-                        {sh.zip_code}
-                      </>
-                    )}
-                  </p>
-                  {sh.lat && sh.lng && (
+                <div className="flex flex-wrap items-center gap-2 sm:shrink-0 sm:flex-col sm:items-stretch">
+                  <div className="inline-flex min-h-11 items-center justify-center rounded-xl border border-[#D8C9FF] bg-white px-2">
+                    <SaveButton eventId={sh.id} initialSaved={isSaved} type="shop" />
+                  </div>
+                  {websiteUrl && (
                     <a
-                      href={`https://www.google.com/maps/search/?api=1&query=${sh.lat},${sh.lng}`}
+                      href={websiteUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 text-sm text-[#5f2eea] hover:text-[#4a1fa8] font-medium mt-3 transition-colors"
+                      className="inline-flex min-h-11 items-center justify-center gap-2 rounded-xl bg-[#6C36CE] px-4 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5423AD]"
                     >
-                      <Navigation className="w-3.5 h-3.5" /> Open in Google Maps
+                      <Globe className="h-4 w-4" aria-hidden="true" />
+                      Visit website
+                      <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
                     </a>
                   )}
                 </div>
-              )}
+              </div>
             </div>
 
-            {/* Right — sidebar */}
-            <div>
-              <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5 sticky top-28">
-                <h2 className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-4">
-                  Quick Facts
-                </h2>
+            <div className="grid gap-5 p-4 sm:gap-6 sm:p-6 lg:grid-cols-[minmax(0,1.6fr)_minmax(280px,0.9fr)] lg:p-8">
+              <section className="min-w-0" aria-labelledby="shop-location-heading">
+                <div className="mb-3">
+                  <p className="font-inter text-[11px] font-semibold uppercase tracking-[0.15em] text-[#8B5CF6]">Find the shop</p>
+                  <h2 id="shop-location-heading" className="mt-1 font-space-grotesk text-xl font-semibold text-[#151E3C]">Location</h2>
+                </div>
+                {sh.lat != null && sh.lng != null ? (
+                  <div className="h-[280px] overflow-hidden rounded-2xl border border-[#E5DFFD] bg-[#F2EFFE] sm:h-[360px]">
+                    <EventDetailMap lat={sh.lat} lng={sh.lng} name={sh.name} />
+                  </div>
+                ) : (
+                  <div className="flex min-h-[220px] flex-col items-center justify-center rounded-2xl border border-dashed border-[#D8C9FF] bg-[#FAF8FF] p-6 text-center">
+                    <MapPin className="mb-3 h-8 w-8 text-[#8B5CF6]" aria-hidden="true" />
+                    <p className="font-space-grotesk text-base font-semibold text-[#151E3C]">Map location unavailable</p>
+                    <p className="mt-1 text-sm leading-5 text-[#596078]">Use the address details to find this shop.</p>
+                  </div>
+                )}
+              </section>
 
-                <div className="space-y-4">
-                  <div>
-                    <div className="text-[10px] font-medium text-[#4a3f6b]/40 uppercase tracking-wider mb-1">
-                      Location
-                    </div>
-                    <div className="text-sm font-bold text-[#1a0a3d]">
-                      {sh.city}, {sh.state}
+              <aside className="min-w-0 rounded-2xl border border-[#E5DFFD] bg-[#FCFBFE] p-5 sm:p-6" aria-labelledby="visit-shop-heading">
+                <p className="font-inter text-[11px] font-semibold uppercase tracking-[0.15em] text-[#8B5CF6]">Plan a visit</p>
+                <h2 id="visit-shop-heading" className="mt-1 font-space-grotesk text-xl font-semibold text-[#151E3C]">Shop details</h2>
+
+                <div className="mt-5 space-y-5">
+                  <div className="flex items-start gap-3">
+                    <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[#6C36CE]" aria-hidden="true" />
+                    <div className="min-w-0">
+                      <p className="text-xs font-semibold uppercase tracking-wide text-[#777B8D]">Address</p>
+                      <p className="mt-1 break-words text-sm leading-6 text-[#26304B]">
+                        {sh.address || `${sh.city}, ${sh.state}`}
+                        {sh.zip_code ? `, ${sh.zip_code}` : ""}
+                      </p>
+                      {sh.lat != null && sh.lng != null && (
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${sh.lat},${sh.lng}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="mt-2 inline-flex items-center gap-1.5 text-sm font-semibold text-[#6C36CE] hover:underline"
+                        >
+                          <Navigation className="h-3.5 w-3.5" aria-hidden="true" />
+                          Get directions
+                        </a>
+                      )}
                     </div>
                   </div>
 
-                  {sh.specialty && (
-                    <>
-                      <div className="border-t border-violet-100" />
-                      <div>
-                        <div className="text-[10px] font-medium text-[#4a3f6b]/40 uppercase tracking-wider mb-1">
-                          Specialty
-                        </div>
-                        <div className="text-sm font-bold text-[#1a0a3d]">
-                          {specialtyLabel[sh.specialty] ?? sh.specialty}
-                        </div>
-                      </div>
-                    </>
-                  )}
-
                   {sh.phone && (
-                    <>
-                      <div className="border-t border-violet-100" />
-                      <div>
-                        <div className="text-[10px] font-medium text-[#4a3f6b]/40 uppercase tracking-wider mb-1">
-                          Phone
-                        </div>
-                        <a
-                          href={`tel:${sh.phone}`}
-                          className="inline-flex items-center gap-1.5 text-sm font-bold text-[#5f2eea] hover:text-[#4a1fa8] transition-colors"
-                        >
-                          <Phone className="w-3.5 h-3.5" /> {sh.phone}
-                        </a>
+                    <div className="flex items-start gap-3 border-t border-[#E9E3F4] pt-4">
+                      <Phone className="mt-0.5 h-4 w-4 shrink-0 text-[#6C36CE]" aria-hidden="true" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-[#777B8D]">Call ahead</p>
+                        <a href={`tel:${sh.phone}`} className="mt-1 inline-block break-all text-sm font-semibold text-[#6C36CE] hover:underline">{sh.phone}</a>
                       </div>
-                    </>
+                    </div>
                   )}
 
-                  {sh.website && (
-                    <>
-                      <div className="border-t border-violet-100" />
-                      <div>
-                        <div className="text-[10px] font-medium text-[#4a3f6b]/40 uppercase tracking-wider mb-1">
-                          Website
-                        </div>
-                        <a
-                          href={sh.website}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 text-sm font-medium text-[#5f2eea] hover:text-[#4a1fa8] break-all transition-colors"
-                        >
-                          <Globe className="w-3.5 h-3.5 shrink-0" />
-                          {sh.website
-                            .replace(/^https?:\/\/(www\.)?/, "")
-                            .replace(/\/$/, "")}
+                  <div className="flex items-start gap-3 border-t border-[#E9E3F4] pt-4">
+                    <Store className="mt-0.5 h-4 w-4 shrink-0 text-[#6C36CE]" aria-hidden="true" />
+                    <div>
+                      <p className="text-xs font-semibold uppercase tracking-wide text-[#777B8D]">Shop focus</p>
+                      <p className="mt-1 text-sm font-medium text-[#26304B]">{shopSpecialty}</p>
+                    </div>
+                  </div>
+
+                  {websiteUrl && (
+                    <div className="flex items-start gap-3 border-t border-[#E9E3F4] pt-4">
+                      <Globe className="mt-0.5 h-4 w-4 shrink-0 text-[#6C36CE]" aria-hidden="true" />
+                      <div className="min-w-0">
+                        <p className="text-xs font-semibold uppercase tracking-wide text-[#777B8D]">Website</p>
+                        <a href={websiteUrl} target="_blank" rel="noopener noreferrer" className="mt-1 block break-all text-sm font-medium text-[#6C36CE] hover:underline">
+                          {sh.website?.replace(/^https?:\/\/(www\.)?/i, "").replace(/\/$/, "")}
                         </a>
                       </div>
-                    </>
+                    </div>
                   )}
                 </div>
-              </div>
+              </aside>
             </div>
-          </div>
+          </section>
 
-          {/* Bottom CTA */}
-          <div className="mt-8 rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-6 text-center">
-            <p className="text-sm text-[#4a3f6b]/40 mb-2">
-              Looking for more shops?
-            </p>
-            <Link
-              href="/shops"
-              className="text-sm text-[#5f2eea] hover:text-[#4a1fa8] font-bold transition-colors"
-            >
-              Browse all card shops →
+          <div className="mt-6 flex flex-col gap-3 rounded-2xl border border-[#E5DFFD] bg-white p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+            <div>
+              <h2 className="font-space-grotesk text-lg font-semibold text-[#151E3C]">Discover more around you</h2>
+              <p className="mt-1 text-sm text-[#596078]">Explore nearby shops and upcoming collector shows on the KLLCTRS map.</p>
+            </div>
+            <Link href="/maps" className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#151E3C] px-5 text-sm font-semibold text-white transition hover:bg-[#26345D]">
+              <MapPin className="h-4 w-4" aria-hidden="true" />
+              Explore the map
             </Link>
           </div>
         </div>

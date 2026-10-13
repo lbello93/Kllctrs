@@ -34,6 +34,7 @@ export function Footer() {
                   src="/footer/Gem_Pink.png"
                   alt="KLLCTRS"
                   fill
+                  sizes="124px"
                   className="object-contain"
                   priority
                 />
@@ -109,17 +110,7 @@ export function Footer() {
                 <button
                   type="button"
                   onClick={handleChatClick}
-                  className="
-                    font-['Inter']
-                    text-left
-                    text-sm
-                    font-normal
-                    leading-[140%]
-                    text-[#FEF9FF]
-                    transition
-                    hover:opacity-70
-                    focus:outline-none
-                  "
+                  className="font-['Inter'] text-left text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70 focus:outline-none"
                 >
                   AI Chatbot
                 </button>
@@ -127,15 +118,7 @@ export function Footer() {
                 {/* Email Alerts */}
                 <Link
                   href="#"
-                  className="
-                    font-['Inter']
-                    text-sm
-                    font-normal
-                    leading-[140%]
-                    text-[#FEF9FF]
-                    transition
-                    hover:opacity-70
-                  "
+                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
                 >
                   Email Alerts
                 </Link>
@@ -143,15 +126,7 @@ export function Footer() {
                 {/* Newsletter */}
                 <Link
                   href="#"
-                  className="
-                    font-['Inter']
-                    text-sm
-                    font-normal
-                    leading-[140%]
-                    text-[#FEF9FF]
-                    transition
-                    hover:opacity-70
-                  "
+                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
                 >
                   Newsletter
                 </Link>
@@ -189,15 +164,7 @@ function FooterColumn({
           <Link
             key={item.label}
             href={item.href}
-            className="
-              font-['Inter']
-              text-sm
-              font-normal
-              leading-[140%]
-              text-[#FEF9FF]
-              transition
-              hover:opacity-70
-            "
+            className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
           >
             {item.label}
           </Link>

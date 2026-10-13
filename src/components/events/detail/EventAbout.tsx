@@ -5,9 +5,10 @@ export default function EventAbout({ event }: { event: Event }) {
   const details = event.autograph_guests?.trim();
 
   return (
-    <div className="flex flex-col gap-3 md:w-[750px] md:gap-12">
+    <section className="min-w-0 rounded-2xl border border-[#E9E3F4] bg-white p-5 shadow-[0_12px_36px_rgba(21,30,60,0.04)] sm:p-7">
       <div className="flex flex-col gap-3">
-        <h2 className="font-space-grotesk text-2xl font-bold tracking-tight text-[#151E3C] md:text-[32px]">
+        <p className="font-inter text-xs font-semibold uppercase tracking-[0.14em] text-[#8B5CF6]">The event</p>
+        <h2 className="font-space-grotesk text-2xl font-bold tracking-tight text-[#151E3C] sm:text-[28px]">
           About The Show
         </h2>
         {tag && (
@@ -17,9 +18,9 @@ export default function EventAbout({ event }: { event: Event }) {
         )}
       </div>
 
-      <p className="whitespace-pre-line text-base leading-5 text-[#151E3C]">
+      <p className="mt-5 whitespace-pre-line break-words text-sm leading-7 text-[#46506B] sm:text-base">
         {details || "Details for this show are still being added."}
       </p>
-    </div>
+    </section>
   );
 }

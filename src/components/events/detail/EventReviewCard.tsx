@@ -3,9 +3,9 @@ import type { EventReview } from "@/types";
 
 export default function EventReviewCard({ review }: { review: EventReview }) {
   return (
-    <div className="flex flex-col gap-5 rounded-lg bg-[#FEF9FF] px-6 py-3">
-      <div className="flex items-center gap-4">
-        <div className="h-9 w-9 shrink-0 overflow-hidden rounded-full bg-[#D9D9D9]">
+    <article className="flex min-w-0 flex-col gap-4 rounded-xl border border-[#EEE9F7] bg-[#FAF8FF] p-4 sm:p-5">
+      <div className="flex min-w-0 items-center gap-3">
+        <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#E5DFFD]">
           {review.reviewer_avatar_url && (
             <img
               src={review.reviewer_avatar_url}
@@ -14,8 +14,8 @@ export default function EventReviewCard({ review }: { review: EventReview }) {
             />
           )}
         </div>
-        <div className="flex flex-col gap-0.5">
-          <span className="font-space-grotesk text-base font-bold tracking-tight text-black">
+        <div className="flex min-w-0 flex-col gap-1">
+          <span className="break-words font-space-grotesk text-sm font-bold tracking-tight text-[#151E3C] sm:text-base">
             {review.reviewer_name}
           </span>
           <div className="flex items-center gap-1">
@@ -31,7 +31,7 @@ export default function EventReviewCard({ review }: { review: EventReview }) {
           </div>
         </div>
       </div>
-      <p className="text-xs leading-3 text-[#151E3C]">{review.comment}</p>
-    </div>
+      <p className="break-words text-sm leading-6 text-[#46506B]">{review.comment}</p>
+    </article>
   );
 }

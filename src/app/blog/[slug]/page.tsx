@@ -130,28 +130,24 @@ export default async function BlogPostPage({ params }: Params) {
       <ArticleProgressBar />
       <BackToTopButton />
 
-      <div className="min-h-screen bg-gradient-to-br from-[#f4f3fb] via-[#ede9ff] to-[#f4f3fb] pt-24">
-        {/* Ambience */}
-        <div className="fixed inset-0 pointer-events-none z-0">
-          <div className="absolute top-[10%] right-[15%] w-[500px] h-[500px] bg-violet-200/40 rounded-full blur-[150px]" />
-          <div className="absolute bottom-[20%] left-[10%] w-[400px] h-[400px] bg-fuchsia-200/30 rounded-full blur-[120px]" />
-        </div>
-
+      <div className="min-h-screen bg-[#F7F5FC] pb-16 pt-24">
         {/* Header nav */}
-        <div className="relative z-10 border-b border-violet-100 bg-white/70 backdrop-blur-xl">
-          <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+        <div className="relative z-10">
+          <div className="mx-auto max-w-6xl px-4 py-4 sm:px-6 lg:px-8">
             <Link
               href="/blog"
-              className="inline-flex items-center gap-1.5 text-sm text-[#5f2eea] hover:text-[#4a1fa8] font-medium transition-colors"
+              className="inline-flex min-h-10 items-center gap-2 rounded-full border border-[#E5DFFD] bg-white px-4 text-sm font-medium text-[#5B18BE] shadow-sm transition hover:border-[#B39EF9] hover:bg-[#F8F5FF]"
             >
-              <ArrowLeft className="w-4 h-4" /> All Posts
+              <ArrowLeft className="h-4 w-4" /> All stories
             </Link>
           </div>
         </div>
 
-        <article className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        <main className="relative z-10 mx-auto max-w-6xl px-4 pb-8 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 items-start gap-5 lg:grid-cols-[minmax(0,1fr)_260px] lg:gap-7">
+          <article className="order-2 min-w-0 lg:order-1">
           {/* Hero card */}
-          <div className="overflow-hidden rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-xl shadow-violet-200/30">
+          <div className="overflow-hidden rounded-2xl border border-[#E5DFFD] bg-white shadow-[0_14px_45px_rgba(21,30,60,0.07)] sm:rounded-3xl">
             {/* Category banner */}
             <div className="relative h-[80px] w-full">
               <Image
@@ -170,66 +166,74 @@ export default async function BlogPostPage({ params }: Params) {
               </div>
             </div>
 
-            <div className="p-7 sm:p-10">
+            <div className="p-5 sm:p-8 lg:p-10">
               {/* Title */}
-              <h1 className="text-3xl md:text-4xl font-black text-[#1a0a3d] tracking-tight leading-tight mb-5">
+              <h1 className="max-w-3xl break-words font-space-grotesk text-[30px] font-bold leading-[1.12] tracking-[-0.035em] text-[#151E3C] sm:text-4xl lg:text-[44px]">
                 {post.title}
               </h1>
+              {post.meta_description && (
+                <p className="mt-4 max-w-3xl text-base leading-7 text-[#596078] sm:text-lg sm:leading-8">
+                  {post.meta_description}
+                </p>
+              )}
 
               {/* Meta */}
-              <div className="flex flex-wrap items-center gap-4 text-sm text-[#4a3f6b]/50 pb-4">
-                <span className="inline-flex items-center gap-1.5">
+              <div className="mt-6 flex flex-wrap items-center gap-x-5 gap-y-3 border-b border-[#EEE9F7] pb-5 text-xs text-[#596078] sm:text-sm">
+                <span className="inline-flex min-w-0 items-center gap-2">
                   <User className="w-3.5 h-3.5" />
-                  {post.author ?? "KLLCTRS Editorial"}
+                  <span className="break-words">{post.author ?? "KLLCTRS Editorial"}</span>
                 </span>
                 {post.published_at && (
-                  <span className="inline-flex items-center gap-1.5">
+                  <span className="inline-flex items-center gap-2">
                     <Calendar className="w-3.5 h-3.5" />
                     {format(new Date(post.published_at), "MMMM d, yyyy")}
                   </span>
                 )}
-                <span className="inline-flex items-center gap-1.5">
+                <span className="inline-flex items-center gap-2">
                   <Clock className="w-3.5 h-3.5" />
                   {readingMinutes} Min{readingMinutes === 1 ? "" : "s"} Read
                 </span>
               </div>
 
               {/* Share row */}
-              <div className="pb-6 border-b border-violet-100">
+              <div className="flex flex-col gap-3 border-b border-[#EEE9F7] py-5 sm:flex-row sm:items-center sm:justify-between">
+                <p className="text-sm font-semibold text-[#26304B]">Enjoying this story? Share it.</p>
                 <ArticleShareBar title={post.title} />
               </div>
 
-              {/* Table of contents */}
-              {headings.length >= 2 && (
-                <div className="mt-6">
-                  <ArticleTableOfContents headings={headings} />
-                </div>
-              )}
-
               {/* Body */}
               <div
-                className="prose prose-violet max-w-none mt-6
+                className="prose prose-violet prose-sm mt-7 max-w-none sm:prose-base
                 prose-headings:font-black prose-headings:text-[#1a0a3d] prose-headings:tracking-tight prose-headings:scroll-mt-28
-                prose-p:text-[#4a3f6b]/70 prose-p:leading-relaxed
+                prose-p:text-[#46506B] prose-p:leading-7 sm:prose-p:leading-8
                 prose-a:text-[#5f2eea] prose-a:no-underline hover:prose-a:underline
                 prose-strong:text-[#1a0a3d] prose-strong:font-bold
-                prose-li:text-[#4a3f6b]/70
-                prose-hr:border-violet-100
+                prose-li:text-[#46506B] prose-li:leading-7
+                prose-hr:border-[#E9E3F4]
                 prose-blockquote:border-[#5f2eea] prose-blockquote:text-[#4a3f6b]/60
-                prose-code:text-[#5f2eea] prose-code:bg-violet-50 prose-code:rounded prose-code:px-1"
+                prose-code:text-[#5f2eea] prose-code:bg-violet-50 prose-code:rounded prose-code:px-1 prose-table:block prose-table:max-w-full prose-table:overflow-x-auto"
               >
                 <ArticleMarkdown body={post.body} />
               </div>
             </div>
           </div>
+          </article>
 
+          {headings.length >= 2 && (
+            <aside className="order-1 min-w-0 lg:order-2 lg:sticky lg:top-24">
+              <ArticleTableOfContents headings={headings} />
+            </aside>
+          )}
+          </div>
+
+          <div className="mx-auto mt-5 max-w-4xl space-y-5 lg:mx-0">
           {sourceLinks.length > 0 && (
-            <aside className="rounded-2xl border border-violet-100 bg-white/80 p-6 shadow-lg shadow-violet-200/20" aria-label="Article sources">
-              <h2 className="text-sm font-black text-[#1a0a3d]">Sources & further reading</h2>
-              <p className="mt-1 text-xs text-[#4a3f6b]/50">Links checked when this article was researched. Sale details can change as new information emerges.</p>
+            <aside className="rounded-2xl border border-[#E5DFFD] bg-white p-5 shadow-[0_8px_28px_rgba(21,30,60,0.04)] sm:p-7" aria-label="Article sources">
+              <h2 className="font-space-grotesk text-lg font-semibold text-[#151E3C]">Sources & further reading</h2>
+              <p className="mt-1 text-sm leading-6 text-[#596078]">Links checked when this article was researched. Sale details can change as new information emerges.</p>
               <ul className="mt-4 space-y-2">
                 {sourceLinks.map((source) => (
-                  <li key={source.url}><a href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm font-medium text-[#5f2eea] hover:underline">{source.title}<ExternalLink className="h-3.5 w-3.5 shrink-0" /></a></li>
+                  <li key={source.url} className="min-w-0"><a href={source.url} target="_blank" rel="noopener noreferrer" className="inline-flex max-w-full items-start gap-2 break-words text-sm font-medium leading-6 text-[#5B18BE] hover:underline"><span>{source.title}</span><ExternalLink className="mt-1 h-3.5 w-3.5 shrink-0" /></a></li>
                 ))}
               </ul>
             </aside>
@@ -237,20 +241,20 @@ export default async function BlogPostPage({ params }: Params) {
 
           {/* Source event CTA */}
           {sourceEvent && (
-            <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-6">
-              <p className="text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase mb-3">
+            <div className="rounded-2xl border border-[#E5DFFD] bg-white p-5 shadow-[0_8px_28px_rgba(21,30,60,0.04)] sm:p-7">
+              <p className="mb-3 text-[10px] font-black uppercase tracking-[0.2em] text-[#5f2eea]">
                 Featured Event
               </p>
-              <h3 className="text-lg font-black text-[#1a0a3d] mb-1">
+              <h3 className="mb-1 break-words font-space-grotesk text-lg font-semibold text-[#151E3C]">
                 {sourceEvent.name}
               </h3>
-              <p className="text-sm text-[#4a3f6b]/50 mb-4">
+              <p className="mb-4 text-sm leading-6 text-[#596078]">
                 {format(new Date(sourceEvent.date_start), "MMMM d, yyyy")} ·{" "}
                 {sourceEvent.city}, {sourceEvent.state}
               </p>
               <Link
                 href={`/events/${sourceEvent.slug}`}
-                className="inline-flex items-center gap-1.5 text-sm font-black text-white px-5 py-2.5 rounded-xl shadow-lg shadow-violet-500/20"
+                className="inline-flex min-h-11 items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90"
                 style={{
                   background: "linear-gradient(135deg, #5f2eea, #4a1fa8)",
                 }}
@@ -261,13 +265,13 @@ export default async function BlogPostPage({ params }: Params) {
           )}
 
           {/* Footer CTA */}
-          <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-6 text-center">
-            <p className="text-sm text-[#4a3f6b]/50 mb-3">
+          <div className="rounded-2xl border border-[#E5DFFD] bg-white p-5 text-center shadow-[0_8px_28px_rgba(21,30,60,0.04)] sm:p-7">
+            <p className="mb-4 text-sm leading-6 text-[#596078]">
               Find more card shows and shops on KLLCTRS
             </p>
-            <div className="flex items-center justify-center gap-4">
+            <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
               <Link
-                href="/events"
+                href="/maps"
                 className="text-sm font-bold text-[#5f2eea] hover:text-[#4a1fa8] transition-colors inline-flex items-center gap-1"
               >
                 Browse Events <ArrowRight className="w-3.5 h-3.5" />
@@ -281,7 +285,8 @@ export default async function BlogPostPage({ params }: Params) {
               </Link>
             </div>
           </div>
-        </article>
+          </div>
+        </main>
       </div>
     </>
   );

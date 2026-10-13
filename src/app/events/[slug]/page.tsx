@@ -154,18 +154,18 @@ export default async function EventDetailPage({ params }: Params) {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
 
-      <div className="min-h-screen bg-white">
+      <div className="min-h-screen bg-[#F7F5FC]">
         <EventHero
           event={typedEvent}
           isSaved={savedEventIds.includes(typedEvent.id)}
         />
 
-        <div className="mx-auto flex max-w-[1241px] flex-col gap-8 px-6 py-8 md:gap-10 md:px-0 md:py-14">
+        <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-5 py-8 sm:px-8 md:gap-9 md:px-10 md:py-12 lg:px-12">
           <Link
-            href="/events"
-            className="text-sm text-[#8B5CF6] hover:underline"
+            href="/maps"
+            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E4DDF1] bg-white px-4 py-2 text-sm font-medium text-[#5B18BE] transition hover:border-[#B39EF9] hover:bg-[#F8F5FF]"
           >
-            ← All shows
+            <span aria-hidden="true">←</span> All shows
           </Link>
 
           <EventQuickFacts
@@ -175,7 +175,7 @@ export default async function EventDetailPage({ params }: Params) {
             reviewCount={reviews.length}
           />
 
-          <div className="flex flex-col gap-10 md:flex-row md:gap-[119px]">
+          <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.85fr)] xl:gap-8">
             <EventAbout event={typedEvent} />
             <EventReviews reviews={reviews} />
           </div>

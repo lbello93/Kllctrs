@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, type FormEvent } from "react";
-import { Check, LoaderCircle, LockKeyhole, Sparkles } from "lucide-react";
+import { Check, LoaderCircle, LockKeyhole, MessageCircle } from "lucide-react";
 
 import type { SponsorShow } from "./shared";
 
@@ -84,7 +84,7 @@ export default function BrandInterestForm({ sponsorId, sponsorName, events }: Pr
   return (
     <section id="collector-insights" className="scroll-mt-28 overflow-hidden rounded-2xl border border-[#DDD2FA] bg-white shadow-[0_12px_40px_rgba(44,27,90,0.08)]">
       <div className="bg-[#151E3C] px-6 py-6 text-white sm:px-8">
-        <p className="flex items-center gap-2 font-inter text-[11px] font-semibold uppercase tracking-[0.16em] text-[#CBBEFB]"><Sparkles className="h-4 w-4" /> Collector voice</p>
+        <p className="flex items-center gap-2 font-inter text-[11px] font-semibold uppercase tracking-[0.16em] text-[#CBBEFB]"><MessageCircle className="h-4 w-4" /> Collector voice</p>
         <h2 className="mt-2 font-space-grotesk text-[24px] leading-tight sm:text-[28px]">Help {sponsorName} show you what matters</h2>
         <p className="mt-2 max-w-2xl font-inter text-[14px] leading-6 text-white/70">Choose the collecting topics, products and events you care about. Your answers help shape aggregate collector insights for the hobby.</p>
       </div>

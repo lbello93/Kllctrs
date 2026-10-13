@@ -11,6 +11,7 @@ interface MobileNavbarProps {
   pathname: string;
   navLinks: NavLink[];
   user?: User | null;
+  isAdmin?: boolean;
   isPro?: boolean;
   onSignOut?: () => void;
 }
@@ -19,6 +20,7 @@ export default function MobileNavbar({
   pathname,
   navLinks,
   user,
+  isAdmin,
   isPro,
   onSignOut,
 }: MobileNavbarProps) {
@@ -84,6 +86,15 @@ export default function MobileNavbar({
               {label}
             </Link>
           ))}
+          {isAdmin && (
+            <Link
+              href="/admin"
+              onClick={() => setOpen(false)}
+              className={`px-4 py-3 rounded-xl text-sm font-semibold ${pathname.startsWith("/admin") ? "bg-purple-100 text-purple-700" : "text-violet-800 hover:bg-violet-50"}`}
+            >
+              Admin
+            </Link>
+          )}
         </div>
 
         {/* Bottom Actions */}

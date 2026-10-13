@@ -53,62 +53,48 @@ export default function RecommendedShowCard({
   }
 
   return (
-    <div className="flex w-full flex-col md:w-[427px]">
-      <div className="relative flex h-[152px] w-full md:h-[178px]">
-        <div className="relative flex-1 rounded-tl-2xl border border-[#F2EFFE] bg-[#FEF9FF]">
-          <div className="absolute left-4 top-3 flex gap-2">
-            <span className="rounded-[10px] border border-[#FCDB9F] bg-[#F0C040] px-3 py-1 text-[11px] text-[#FDEFCE]">
-              Upcoming
-            </span>
-          </div>
-
-          <div className="absolute left-4 top-11 flex flex-col gap-2">
-            <h3 className="line-clamp-1 font-space-grotesk text-xl font-medium tracking-tight text-black">
-              {event.name}
-            </h3>
-          </div>
-
-          <div className="absolute left-4 top-[86px] flex items-center gap-1">
-            <span className="text-[11px] font-bold tracking-tight text-[#8B5CF6]">
-              {event.venue_name
-                ? `${event.venue_name}, ${event.state}`
-                : `${event.city}, ${event.state}`}
-            </span>
-          </div>
-
+    <article className="flex min-w-0 flex-col overflow-hidden rounded-2xl border border-[#E9E3F4] bg-white shadow-[0_8px_24px_rgba(21,30,60,0.05)]">
+      <div className="flex min-w-0 flex-1 gap-3 p-4 sm:p-5">
+        <div className="min-w-0 flex-1">
+          <span className="inline-flex rounded-full bg-[#FFF5D9] px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.1em] text-[#80621B]">Upcoming</span>
+          <h3 className="mt-3 line-clamp-2 break-words font-space-grotesk text-base font-semibold leading-6 text-[#151E3C] sm:text-lg">
+            {event.name}
+          </h3>
+          <p className="mt-2 line-clamp-2 break-words text-xs leading-5 text-[#596078]">
+            {event.venue_name ? `${event.venue_name} · ${event.city}, ${event.state}` : `${event.city}, ${event.state}`}
+          </p>
           {event.autograph_guests && (
-            <p className="absolute left-4 top-[116px] w-[288px] text-[10px] tracking-tight text-black line-clamp-2">
+            <p className="mt-2 line-clamp-2 break-words text-xs leading-5 text-[#596078]">
               {event.autograph_guests}
             </p>
           )}
         </div>
-
-        <div className="flex w-[107px] flex-col items-center justify-center gap-2 rounded-tr-lg border border-[#F2EFFE] bg-[#FEF9FF] px-2 py-3">
-          <div className="text-base font-medium tracking-tight text-black">
-            {format(parseISO(event.date_start), "d MMM")}
-          </div>
+        <div className="flex w-[76px] shrink-0 flex-col items-center justify-center self-start rounded-xl bg-[#F5F0FF] px-2 py-3 text-center sm:w-[88px]">
+          <span className="font-space-grotesk text-lg font-semibold text-[#5B18BE]">
+            {format(parseISO(event.date_start), "d")}
+          </span>
+          <span className="font-inter text-xs font-medium uppercase tracking-wide text-[#5B18BE]">
+            {format(parseISO(event.date_start), "MMM")}
+          </span>
           {event.date_end && event.date_end !== event.date_start && (
-            <>
-              <div className="h-px w-[26px] bg-[#CBBEFB]" />
-              <div className="text-base font-medium tracking-tight text-black">
-                {format(parseISO(event.date_end), "d MMM")}
-              </div>
-            </>
+            <span className="mt-1 border-t border-[#D8C9FF] pt-1 font-inter text-[10px] text-[#777B8D]">
+              thru {format(parseISO(event.date_end), "d MMM")}
+            </span>
           )}
         </div>
       </div>
 
-      <div className="flex w-full">
+      <div className="flex w-full border-t border-[#EEE9F7] bg-[#FCFBFE]">
         <button
           onClick={handleSave}
           disabled={saving}
-          className="flex-1 border border-[#F2EFFE] bg-[#FEF9FF] py-3 text-xs font-medium tracking-tight text-[#8B5CF6] disabled:opacity-60"
+          className="flex-1 border-r border-[#EEE9F7] px-2 py-3 text-xs font-semibold text-[#5B18BE] transition hover:bg-[#F5F0FF] disabled:opacity-60"
         >
           {isSaved ? "Saved" : "Save"}
         </button>
         <Link
           href={`/events/${event.slug}`}
-          className="flex-1 border border-[#F2EFFE] bg-[#FEF9FF] py-3 text-center text-xs font-medium tracking-tight text-[#8B5CF6]"
+          className="flex-1 border-r border-[#EEE9F7] px-2 py-3 text-center text-xs font-semibold text-[#5B18BE] transition hover:bg-[#F5F0FF]"
         >
           Details
         </Link>
@@ -117,12 +103,12 @@ export default function RecommendedShowCard({
             href={event.website}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex-1 rounded-br-lg border border-[#F2EFFE] bg-[#FEF9FF] py-3 text-center text-xs font-medium tracking-tight text-[#8B5CF6]"
+            className="flex-1 px-2 py-3 text-center text-xs font-semibold text-[#5B18BE] transition hover:bg-[#F5F0FF]"
           >
             Web
           </a>
         )}
       </div>
-    </div>
+    </article>
   );
 }

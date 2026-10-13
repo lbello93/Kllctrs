@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { ArrowLeft, Save, CheckCircle2, Loader2, Clock, Copy, Sparkles, ExternalLink } from "lucide-react";
+import { ArrowLeft, Save, CheckCircle2, Loader2, Clock, Copy, Share2, RefreshCw, ExternalLink } from "lucide-react";
 import LinkedInPreview from "@/components/admin/LinkedInPreview";
 import type { Json } from "@/types/database";
 
@@ -246,8 +246,8 @@ export default function AdminBlogEditClient({ post }: Props) {
 
       <section className="overflow-hidden rounded-2xl border border-violet-100 bg-white/90 shadow-lg shadow-violet-200/20">
         <div className="flex flex-col gap-4 border-b border-violet-100 bg-violet-50/60 p-5 sm:flex-row sm:items-center sm:justify-between">
-          <div><p className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#5f2eea]"><Sparkles className="h-4 w-4" /> Social content studio</p><p className="mt-1 text-sm text-[#4a3f6b]/65">Generate platform-specific copy from this article, review it, then copy it into the social app.</p></div>
-          <button onClick={generateSocial} disabled={generatingSocial} className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#5f2eea] px-4 text-xs font-bold text-white transition hover:bg-[#4a1fa8] disabled:opacity-50">{generatingSocial ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}{socialDrafts ? "Regenerate drafts" : "Generate social drafts"}</button>
+          <div><p className="flex items-center gap-2 text-[10px] font-black uppercase tracking-[0.2em] text-[#5f2eea]"><Share2 className="h-4 w-4" /> Social content studio</p><p className="mt-1 text-sm text-[#4a3f6b]/65">Generate platform-specific copy from this article, review it, then copy it into the social app.</p></div>
+          <button onClick={generateSocial} disabled={generatingSocial} className="inline-flex h-10 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#5f2eea] px-4 text-xs font-bold text-white transition hover:bg-[#4a1fa8] disabled:opacity-50">{generatingSocial ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />}{socialDrafts ? "Regenerate drafts" : "Generate social drafts"}</button>
         </div>
         {socialDrafts ? <div className="p-5">
           <div className="mb-4 flex gap-2"><button onClick={() => setSocialTab("instagram")} className={`rounded-full px-4 py-2 text-xs font-bold ${socialTab === "instagram" ? "bg-[#5f2eea] text-white" : "bg-violet-50 text-[#4a3f6b]"}`}>Instagram</button><button onClick={() => setSocialTab("linkedin")} className={`rounded-full px-4 py-2 text-xs font-bold ${socialTab === "linkedin" ? "bg-[#5f2eea] text-white" : "bg-violet-50 text-[#4a3f6b]"}`}>LinkedIn</button></div>

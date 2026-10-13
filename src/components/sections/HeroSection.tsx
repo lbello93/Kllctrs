@@ -151,7 +151,7 @@ export default function HeroSection() {
               transition={{ duration: 0.6, delay: 0.35 }}
               className="flex flex-wrap gap-4 mb-8"
             >
-              <Link href="/events">
+              <Link href="/maps">
                 <motion.div
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
@@ -164,7 +164,7 @@ export default function HeroSection() {
                   </Button>
                 </motion.div>
               </Link>
-              <Link href="/valuation">
+              <Link href="/sponsors">
                 <motion.div
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}
@@ -173,7 +173,7 @@ export default function HeroSection() {
                     size="lg"
                     className="bg-[#1a0a3d] hover:bg-[#2d1170] text-white font-bold shadow-xl shadow-black/30 px-10 py-6 text-base rounded-2xl border-0"
                   >
-                    Appraise a Card
+                    Discover Brands
                   </Button>
                 </motion.div>
               </Link>
