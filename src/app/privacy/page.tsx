@@ -1,10 +1,10 @@
-﻿import Link from "next/link";
+import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Privacy Policy | KLLCTBLS",
+  title: "Privacy Policy | KLLCTRS",
   description:
-    "KLLCTBLS privacy policy — how we collect, use, and protect your data.",
+    "KLLCTRS privacy policy — how we collect, use, and protect your data.",
 };
 
 const SECTIONS = [
@@ -66,7 +66,7 @@ export default function PrivacyPage() {
           <article className="min-w-0 space-y-3 rounded-2xl border border-violet-100 bg-white p-5 shadow-sm sm:p-9">
             <Section id="collect" title="1. Information We Collect">
               <p>
-                When you create an account on KLLCTBLS, we collect your email
+                When you create an account on KLLCTRS, we collect your email
                 address and password. We also store your preferences including
                 saved shows, saved shops, alert state selections, and topic
                 interests.
@@ -85,7 +85,7 @@ export default function PrivacyPage() {
 
             <Section id="use" title="2. How We Use Your Information">
               <p>
-                We use your information to provide and improve the KLLCTBLS
+                We use your information to provide and improve the KLLCTRS
                 platform, including personalizing your experience with saved
                 shows and state-based alerts. Your email is used for account
                 authentication, event alert notifications you opt into, and
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
 
             <Section id="ai" title="3. AI-Powered Features">
               <p>
-                KLLCTBLS uses Google Gemini to power our chatbot assistant and
+                KLLCTRS uses Google Gemini to power our chatbot assistant and
                 blog content generation. When you interact with the chatbot,
                 your messages are sent to Google Gemini for processing. We log
                 conversations for quality improvement and abuse prevention.
@@ -153,7 +153,7 @@ export default function PrivacyPage() {
 
             <Section id="children" title="8. Children">
               <p>
-                KLLCTBLS is not directed at children under 13. We do not
+                KLLCTRS is not directed at children under 13. We do not
                 knowingly collect personal information from children under 13.
                 If you believe we have collected such information, please
                 contact us immediately.

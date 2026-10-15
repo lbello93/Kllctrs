@@ -1,6 +1,11 @@
 import { createClient } from "@/lib/supabase/server";
 import MapsClient from "@/components/maps/MapsClient";
 
+export const metadata = {
+  title: "Card Shows and Shops Near You | KLLCTRS",
+  description: "Explore upcoming trading card shows and local card shops across the United States on the KLLCTRS collector map.",
+};
+
 export default async function MapsPage() {
   const supabase = await createClient();
 

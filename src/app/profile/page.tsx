@@ -5,6 +5,7 @@ import type { Event, Shop } from "@/types";
 
 export const metadata = {
   title: "Profile | KLLCTRS",
+  robots: { index: false, follow: false },
 };
 
 export default async function ProfilePage() {
@@ -29,7 +30,6 @@ export default async function ProfilePage() {
     console.error(error);
   }
 
-  const isAdmin = profile?.role === "admin";
   // Fetch saved shops
   let savedShops: Shop[] = [];
 

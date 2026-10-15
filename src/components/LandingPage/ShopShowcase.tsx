@@ -7,7 +7,7 @@ function DesktopShopShowcase() {
   return (
     <section className="relative w-full h-[340px] bg-[#FEF9FF] overflow-hidden">
       {/* Background, fades from light on the left into the map art on the right */}
-      <Image src="/shop-showcase-bg.png" alt="" fill className="object-cover" />
+      <Image src="/shop-showcase-bg.webp" alt="" fill className="object-cover" />
 
       <div className="relative w-[1440px] h-full mx-auto flex items-center justify-start pl-[81px]">
         {/* Text block, vertically centered, pinned to the left */}
@@ -16,9 +16,11 @@ function DesktopShopShowcase() {
           <div className="flex flex-col items-start gap-[31px]">
             {/* Frame 302: gem + label */}
             <div className="flex items-center gap-[16px]">
-              <img
+              <Image
                 src="/Favicon/logo.png"
                 alt="Gem"
+                width={16}
+                height={29}
                 className="w-[16px] h-[29px]"
               />
 
@@ -52,7 +54,7 @@ function MobileShopShowcase() {
   return (
     <section className="relative z-20 w-full h-[356px] bg-[#FEF9FF] flex items-center justify-center overflow-hidden">
       {/* Background */}
-      <Image src="/shop-showcase-bg.png" alt="" fill className="object-cover" />
+      <Image src="/shop-showcase-bg.webp" alt="" fill className="object-cover" />
 
       <div className="relative w-[311px] flex flex-col items-center gap-7">
         {/* Heading Block */}

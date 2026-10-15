@@ -2,6 +2,11 @@
 @tailwind components;
 @tailwind utilities;
 
+html,
+body {
+  overflow-x: clip;
+}
+
 .shop-scrollbar::-webkit-scrollbar {
   width: 12px;
 }

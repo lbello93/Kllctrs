@@ -36,8 +36,8 @@ function DesktopHero() {
 
         {/* Description */}
         <p className="absolute left-[73px] top-[374px] w-[480px] font-inter text-[16px] leading-[21px] tracking-[-0.02em] text-black">
-          Explore card shows, local shops, and events near you. The most active
-          hobby community, mapped in real time!
+          Find card shows, local shops, and collector communities near you on
+          the KLLCTRS hobby map.
         </p>
 
         {/* Buttons */}
@@ -50,7 +50,7 @@ function DesktopHero() {
           </Link>
 
           <Link
-            href="/join"
+            href="/login?mode=signup"
             className="flex h-[48px] w-[120px] items-center justify-center rounded-[4px] bg-[#8B5CF6] text-[14px] font-normal tracking-[-0.01em] text-[#FEF9FF] transition hover:opacity-90"
           >
             Join KLLCTRS
@@ -97,7 +97,7 @@ function DesktopHero() {
         {/* Map with floating cards */}
         <div className="absolute left-[551px] top-[56px] w-[960px] h-[540px]">
           <Image
-            src="/KllctrsMap.png"
+            src="/KllctrsMap.webp"
             alt="Map of hobby shops and shows across the US"
             fill
             priority
@@ -188,7 +188,7 @@ function MobileHero() {
       {/* Background Map */}
       <div className="absolute left-[-99px] top-[-25px] w-[576px] h-[471px]">
         <Image
-          src="/hero_mobile.png"
+          src="/hero_mobile.webp"
           alt="Hobby Map"
           fill
           priority
@@ -207,8 +207,7 @@ function MobileHero() {
           </h1>
 
           <p className="font-inter w-[213px] text-[12px] leading-[13px] tracking-[-0.02em] text-black">
-            Explore card shows, local shops, and events near you. The most
-            active hobby community, mapped in real time!
+            Find card shows, local shops, and collector communities near you.
           </p>
 
           <div className="flex items-center gap-4">

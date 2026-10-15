@@ -73,7 +73,7 @@ export function Footer() {
           </div>
 
           {/* Link columns */}
-          <div className="flex max-w-[512px] flex-row items-start gap-8">
+          <div className="flex w-full max-w-[512px] flex-col items-start gap-8 sm:flex-row">
             {/* Platform */}
             <FooterColumn
               title="Platform"
@@ -98,14 +98,14 @@ export function Footer() {
             />
 
             {/* Resources */}
-            <div className="flex w-60 flex-col items-start gap-2">
-              <div className="w-60 pb-2">
+            <div className="flex w-full flex-col items-start gap-2 sm:w-60">
+              <div className="w-full pb-2">
                 <span className="font-['Inter'] text-sm font-semibold leading-[140%] text-[#FEF9FF]">
                   Resources
                 </span>
               </div>
 
-              <div className="flex w-48 flex-col items-start gap-2">
+              <div className="flex w-full flex-col items-start gap-2 sm:w-48">
                 {/* AI Chatbot */}
                 <button
                   type="button"
@@ -115,21 +115,6 @@ export function Footer() {
                   AI Chatbot
                 </button>
 
-                {/* Email Alerts */}
-                <Link
-                  href="#"
-                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
-                >
-                  Email Alerts
-                </Link>
-
-                {/* Newsletter */}
-                <Link
-                  href="#"
-                  className="font-['Inter'] text-sm font-normal leading-[140%] text-[#FEF9FF] transition hover:opacity-70"
-                >
-                  Newsletter
-                </Link>
               </div>
             </div>
           </div>
@@ -152,14 +137,14 @@ function FooterColumn({
   }[];
 }) {
   return (
-    <div className="flex w-60 flex-col items-start gap-2">
-      <div className="w-60 pb-2">
+    <div className="flex w-full flex-col items-start gap-2 sm:w-60">
+      <div className="w-full pb-2">
         <span className="font-['Inter'] text-sm font-semibold leading-[140%] text-[#FEF9FF]">
           {title}
         </span>
       </div>
 
-      <div className="flex w-48 flex-col items-start gap-2">
+      <div className="flex w-full flex-col items-start gap-2 sm:w-48">
         {items.map((item) => (
           <Link
             key={item.label}

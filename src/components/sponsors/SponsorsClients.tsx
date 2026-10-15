@@ -91,7 +91,7 @@ export default function SponsorsClients({ sponsors, stats, summary }: Props) {
     <main className="min-h-screen bg-[#FEF9FF]">
       <section className="relative w-full overflow-hidden bg-[#151E3C]">
         <Image
-          src="/sponsors/sponsMobile.png"
+          src="/sponsors/sponsMobile.webp"
           alt=""
           fill
           priority

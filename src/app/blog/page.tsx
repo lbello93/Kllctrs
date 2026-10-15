@@ -2,8 +2,8 @@ import { createClient } from "@/lib/supabase/server";
 import ContentHubClient from "@/components/content/ContentHubClient";
 
 export const metadata = {
-  title: "Content Hub | KLLCTRS",
-  description: "AI-curated content for the trading card community.",
+  title: "Collector Stories and Guides | KLLCTRS",
+  description: "Read collector stories, hobby news, card guides, and market updates from the KLLCTRS community.",
 };
 
 export default async function ContentHubPage() {

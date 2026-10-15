@@ -37,9 +37,9 @@ export default function CookieBanner() {
   if (!visible) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 p-4">
-      <div className="max-w-4xl mx-auto bg-[#1a0a3d] border border-violet-800 rounded-xl p-4 shadow-2xl flex flex-col sm:flex-row items-start sm:items-center gap-4">
-        <p className="text-sm text-violet-200 flex-1">
+    <div className="fixed bottom-3 left-3 right-3 z-50 sm:bottom-4 sm:left-4 sm:right-4">
+      <div className="mx-auto flex max-h-[60dvh] w-full max-w-4xl min-w-0 flex-col items-start gap-3 overflow-y-auto rounded-xl border border-violet-800 bg-[#1a0a3d] p-3 shadow-2xl sm:flex-row sm:items-center sm:gap-4 sm:p-4">
+        <p className="w-full min-w-0 break-words text-sm text-violet-200 sm:flex-1">
           We use essential cookies for authentication and session management. No
           tracking or advertising cookies are used.{" "}
           <a
@@ -49,7 +49,7 @@ export default function CookieBanner() {
             Privacy Policy
           </a>
         </p>
-        <div className="flex gap-2 shrink-0">
+        <div className="flex w-full shrink-0 justify-end gap-2 sm:w-auto">
           <button
             onClick={decline}
             className="h-9 px-4 rounded-md border border-violet-300 text-violet-600 text-sm hover:bg-violet-50"

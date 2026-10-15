@@ -35,7 +35,12 @@ export async function generateMetadata({ params }: Params) {
   return {
     title,
     description,
-    openGraph: { title, description, type: "website" },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "KLLCTRS card shop directory" }],
+    },
   };
 }
 

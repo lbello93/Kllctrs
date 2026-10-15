@@ -1,5 +1,4 @@
 import { createClient } from "@/lib/supabase/server";
-import { supabaseAdmin } from "@/lib/supabase/admin";
 import { redirect } from "next/navigation";
 import Link from "next/link";
 import {
@@ -14,6 +13,10 @@ import {
   BarChart3,
   Sparkles,
 } from "lucide-react";
+
+export const metadata = {
+  robots: { index: false, follow: false },
+};
 
 const NAV = [
   {

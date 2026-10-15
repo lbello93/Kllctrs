@@ -1,7 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import AdminBlogClient from "../../../components/admin/AdminBlogClient";
 
-export const metadata = { title: "Admin · Blog | KLLCTBLS" };
+export const metadata = { title: "Admin · Blog | KLLCTRS" };
 
 interface SearchParams {
   searchParams: Promise<{ status?: string }>;

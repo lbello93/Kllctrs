@@ -2,9 +2,9 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 
 export const metadata = {
-  title: "Terms of Service | KLLCTBLS",
+  title: "Terms of Service | KLLCTRS",
   description:
-    "KLLCTBLS terms of service — rules and guidelines for using the platform.",
+    "KLLCTRS terms of service — rules and guidelines for using the platform.",
 };
 
 const SECTIONS = [
@@ -71,14 +71,14 @@ export default function TermsPage() {
           <article className="min-w-0 space-y-3 rounded-2xl border border-violet-100 bg-white p-5 shadow-sm sm:p-9">
             <Section id="acceptance" title="1. Acceptance">
               <p>
-                By accessing or using KLLCTBLS, you agree to these Terms of
+                By accessing or using KLLCTRS, you agree to these Terms of
                 Service. If you do not agree, do not use the platform.
               </p>
             </Section>
 
             <Section id="description" title="2. Description of Service">
               <p>
-                KLLCTBLS is a discovery platform for sports card collectors. We
+                KLLCTRS is a discovery platform for sports card collectors. We
                 provide a directory of card shows, card shops, and industry
                 sponsors across the United States. We also offer AI-powered
                 tools including a chatbot assistant and automated blog content.
@@ -90,7 +90,7 @@ export default function TermsPage() {
                 You must provide a valid email address to create an account. You
                 are responsible for maintaining the confidentiality of your
                 credentials and for all activity under your account. You must be
-                at least 13 years old to use KLLCTBLS.
+                at least 13 years old to use KLLCTRS.
               </p>
             </Section>
 
@@ -104,7 +104,7 @@ export default function TermsPage() {
                 our discretion.
               </p>
               <p>
-                You retain ownership of content you submit but grant KLLCTBLS a
+                You retain ownership of content you submit but grant KLLCTRS a
                 non-exclusive, royalty-free license to display, distribute, and
                 promote your submissions on the platform.
               </p>
@@ -138,8 +138,8 @@ export default function TermsPage() {
 
             <Section id="ip" title="7. Intellectual Property">
               <p>
-                The KLLCTBLS name, logo, design, and original content are owned
-                by KLLCTBLS. Third-party trademarks (PSA, Beckett, eBay, Topps,
+                The KLLCTRS name, logo, design, and original content are owned
+                by KLLCTRS. Third-party trademarks (PSA, Beckett, eBay, Topps,
                 etc.) belong to their respective owners and are used for
                 identification purposes only.
               </p>
@@ -147,7 +147,7 @@ export default function TermsPage() {
 
             <Section id="warranties" title="8. Disclaimer of Warranties">
               <p>
-                KLLCTBLS is provided as-is without warranties of any kind. We do
+                KLLCTRS is provided as-is without warranties of any kind. We do
                 not guarantee the accuracy, completeness, or timeliness of event
                 listings, shop information, or AI-generated content. We are not
                 responsible for the actions of event organizers, shop owners, or
@@ -157,7 +157,7 @@ export default function TermsPage() {
 
             <Section id="liability" title="9. Limitation of Liability">
               <p>
-                To the maximum extent permitted by law, KLLCTBLS shall not be
+                To the maximum extent permitted by law, KLLCTRS shall not be
                 liable for any indirect, incidental, special, or consequential
                 damages arising from your use of the platform, including but not
                 limited to losses from attending events, purchasing cards based

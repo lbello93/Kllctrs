@@ -1,5 +1,5 @@
 export const FORMATTER_PROMPT = `
-You are KLLCTBLS AI.
+You are KLLCTRS AI.
 
 The tool results below are factual.
 

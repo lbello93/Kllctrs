@@ -35,7 +35,7 @@ export async function sendEventAlert(
   const html = `
     <div style="font-family: -apple-system, sans-serif; max-width: 600px; margin: 0 auto; padding: 32px 24px; background: #0a1628; color: #ffffff;">
       <div style="margin-bottom: 24px;">
-        <span style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 1px;">KLLCTBLS</span>
+        <span style="font-size: 24px; font-weight: 800; color: #ffffff; letter-spacing: 1px;">KLLCTRS</span>
       </div>
 
       <h1 style="font-size: 22px; font-weight: 600; margin-bottom: 8px; color: #ffffff;">
@@ -57,7 +57,7 @@ export async function sendEventAlert(
       </a>
 
       <p style="margin-top: 32px; font-size: 12px; color: #475569;">
-        You're receiving this because you track card shows in ${event.state} on KLLCTBLS.
+        You're receiving this because you track card shows in ${event.state} on KLLCTRS.
         <br/>Update your preferences anytime from your KLLCTRS profile.
       </p>
     </div>

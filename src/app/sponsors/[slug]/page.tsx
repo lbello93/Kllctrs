@@ -49,6 +49,12 @@ export async function generateMetadata({ params }: Params) {
     description:
       sponsor.description?.slice(0, 155) ??
       `Card shows sponsored by ${sponsor.name}.`,
+    openGraph: {
+      title: `${sponsor.name} | KLLCTRS`,
+      description: sponsor.description?.slice(0, 155) ?? `Card shows sponsored by ${sponsor.name}.`,
+      type: "website",
+      images: [{ url: "/og-default.png", width: 1200, height: 630, alt: `${sponsor.name} on KLLCTRS` }],
+    },
   };
 }
 

@@ -6,7 +6,7 @@ export default function ContentHeroSection() {
       {/* Desktop Background */}
 
       <Image
-        src="/Blog/HeroSection.png"
+        src="/Blog/HeroSection.webp"
         alt="Content Hero"
         fill
         priority
@@ -17,7 +17,7 @@ export default function ContentHeroSection() {
       {/* Mobile Background */}
 
       <Image
-        src="/Blog/BrandsHeroMobile.png"
+        src="/Blog/BrandsHeroMobile.webp"
         alt="Content Hero Mobile"
         fill
         priority

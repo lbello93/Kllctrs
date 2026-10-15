@@ -40,7 +40,7 @@ Vendor Tables: ${event.vendor_tables ?? 'TBA'}
 Autograph Guests: ${event.autograph_guests ?? 'None announced'}
 `.trim()
 
-  const prompt = `You are a sports card hobby blogger writing for KLLCTBLS, a US-focused card show discovery platform.
+  const prompt = `You are a sports card hobby blogger writing for KLLCTRS, a US-focused card show discovery platform.
 
 Write a 400-500 word blog post about this upcoming card show:
 
@@ -50,7 +50,7 @@ Requirements:
 - Engaging title (max 80 chars) — include the event name and city
 - Hook opening that explains why a collector should care
 - 3-4 short paragraphs covering: what the show offers, who should attend, practical tips (parking, hours, vendor count), and what to bring/look for
-- End with a call-to-action mentioning users can save this show on KLLCTBLS to get reminders
+- End with a call-to-action mentioning users can save this show on KLLCTRS to get reminders
 - Conversational but informed tone — written by someone who knows the hobby
 - DO NOT invent facts. If something is "TBA", say it's TBA or skip it
 - DO NOT use phrases like "trip down memory lane" or other clichés
@@ -97,7 +97,7 @@ No markdown code fence, no preamble, just the raw JSON.`
         meta_description: parsed.meta_description ?? null,
         status: 'draft',
         source_event_id: event_id,
-        author: 'KLLCTBLS Editorial',
+        author: 'KLLCTRS Editorial',
       })
       .select()
       .single()

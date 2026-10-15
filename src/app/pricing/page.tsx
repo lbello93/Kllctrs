@@ -76,7 +76,7 @@ export default function PricingPage() {
         {/* Background image */}
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-          style={{ backgroundImage: "url('/pricing/image.png')" }}
+          style={{ backgroundImage: "url('/pricing/image.webp')" }}
         />
 
         {/* Overlays */}

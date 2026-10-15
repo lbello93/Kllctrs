@@ -11,7 +11,7 @@ gsap.registerPlugin(ScrollTrigger);
 const EXPLORE_ITEMS = [
   { icon: PartyPopper, label: "Discover nearby hobby shops" },
   { icon: Search, label: "Explore upcoming events" },
-  { icon: Signpost, label: "Plan hobby roadtrips" },
+  { icon: Signpost, label: "Plan hobby road trips" },
   { icon: Users, label: "Find collector communities" },
 ];
 
@@ -49,9 +49,11 @@ function DesktopExplore() {
       <div className="w-[1320px] h-[540px] flex items-center">
         <div className="w-[400px] flex flex-col shrink-0">
           <div className="flex items-center gap-[24px]">
-            <img
+            <Image
               src="/Favicon/logo.png"
               alt="Gem"
+              width={16}
+              height={29}
               className="w-[16px] h-[29px]"
             />
 
@@ -65,7 +67,7 @@ function DesktopExplore() {
           </h2>
 
           <p className="mt-[23px] w-[318px] text-[20px] leading-[20px] text-[#151E3C]">
-            Your real time guide to the collector community everywhere
+            Your real-time guide to collector shops, shows, and communities across the U.S.
           </p>
 
           <div className="mt-[43px] flex flex-col gap-[16px]">
@@ -87,7 +89,7 @@ function DesktopExplore() {
       <div className="absolute top-0 right-0 w-[860px] h-full">
         <div ref={mapRef} className="absolute inset-0 origin-top-right">
           <Image
-            src="/explore-map-cut.png"
+            src="/explore-map-cut.webp"
             alt="Map of hobby shops and shows"
             fill
             className="object-contain object-right-top"
@@ -124,7 +126,7 @@ function MobileExplore() {
       {/* Map Image */}
       <div className="absolute top-[106px] left-0 w-full h-[241px]">
         <Image
-          src="/explore-mobile.png"
+          src="/explore-mobile.webp"
           alt="Hobby Map"
           fill
           sizes="393px"
@@ -134,7 +136,7 @@ function MobileExplore() {
 
       {/* Description */}
       <p className="font-inter absolute top-[370px] left-1/2 -translate-x-1/2 w-[217px] text-[14px] leading-[20px] text-center text-[#151E3C]">
-        Your real time guide to the collector community everywhere
+        Your real-time guide to collector shops, shows, and communities across the U.S.
       </p>
     </section>
   );

@@ -59,7 +59,7 @@ export default function EventHero({ event, isSaved: initialSaved }: Props) {
       }}
     >
       <Image
-        src="/EventSlug/Sho.png"
+        src="/EventSlug/Sho.webp"
         alt=""
         fill
         priority

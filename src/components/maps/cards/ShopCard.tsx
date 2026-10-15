@@ -137,15 +137,17 @@ export default function ShopCard({
           {saving ? "Saving..." : isSaved ? "Saved" : "Save"}
         </button>
 
-        <a
-          href={shop.website ?? "#"}
-          target="_blank"
-          rel="noreferrer"
-          className="flex h-9 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-medium text-[#4a3f6b]/60 hover:bg-[#F2EFFE] hover:text-[#8B5CF6] transition-colors"
-        >
-          <Globe size={16} />
-          Web
-        </a>
+        {shop.website && (
+          <a
+            href={/^https?:\/\//i.test(shop.website) ? shop.website : `https://${shop.website}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex h-9 items-center justify-center gap-1.5 rounded-full px-3 text-sm font-medium text-[#4a3f6b]/60 hover:bg-[#F2EFFE] hover:text-[#8B5CF6] transition-colors"
+          >
+            <Globe size={16} />
+            Web
+          </a>
+        )}
 
         <Link
           href={`/shops/${shop.slug}`}

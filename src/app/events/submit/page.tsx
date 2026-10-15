@@ -3,9 +3,9 @@ import { redirect } from "next/navigation";
 import SubmitEventForm from "@/components/events/SubmitEventForm";
 
 export const metadata = {
-  title: "Submit a Card Show | KLLCTBLS",
+  title: "Submit a Card Show | KLLCTRS",
   description:
-    "List your sports card show on KLLCTBLS. Reach thousands of collectors.",
+    "List your sports card show on KLLCTRS. Reach thousands of collectors.",
 };
 
 export default async function SubmitEventPage() {

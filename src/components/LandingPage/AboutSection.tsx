@@ -9,16 +9,18 @@ function DesktopAbout() {
       <div className="h-[52px] bg-[#151E3C]" />
 
       {/* Main Section */}
-      <div className="w-full h-[500px] bg-[url('/aboutBG.png')] bg-cover bg-center bg-no-repeat pt-[59px] pr-[678px] pb-[107px] pl-[300px]">
+      <div className="w-full h-[500px] bg-[url('/aboutBG.webp')] bg-cover bg-center bg-no-repeat pt-[59px] pr-[678px] pb-[107px] pl-[300px]">
         {/* Content Wrapper */}
         <div className="w-[463px] flex flex-col gap-[34px]">
           {/* Header Block */}
           <div className="flex flex-col gap-[49px]">
             {/* Label */}
             <div className="flex items-center gap-[24px]">
-              <img
+              <Image
                 src="/Favicon/logo.png"
                 alt="Gem"
+                width={16}
+                height={29}
                 className="w-[16px] h-[29px] object-contain"
               />
 
@@ -59,7 +61,7 @@ function MobileAbout() {
     <section className="relative w-full h-[375px] overflow-hidden">
       {/* Background */}
       <Image
-        src="/aboutBG-mobile.png"
+        src="/aboutBG-mobile.webp"
         alt="About Background"
         fill
         sizes="393px"

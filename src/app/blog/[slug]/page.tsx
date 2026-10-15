@@ -43,6 +43,7 @@ export async function generateMetadata({ params }: Params) {
       title: data.title,
       description: data.meta_description ?? "",
       type: "article",
+      images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "KLLCTRS collector story" }],
     },
   };
 }

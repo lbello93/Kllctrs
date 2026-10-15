@@ -5,37 +5,39 @@ import { Navbar } from "../components/layout/navbar/Navbar";
 import FooterGate from "@/components/layout/FooterGate";
 import ChatWindow from "@/components/chat/ChatWindow";
 import CookieBanner from "@/components/layout/CookieBanner";
-import AppSplash from "@/components/ui/AppSplash";
 
 import { Toaster } from "sonner";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
-import { Space_Grotesk, Inter, Unica_One } from "next/font/google";
+import { spaceGrotesk, inter, unica } from "@/lib/fonts";
 
 export const metadata: Metadata = {
-  title: "KLLCTRS",
-  description: "KLLCTRS",
+  metadataBase: new URL("https://www.kllctrs.com"),
+  title: "KLLCTRS | Find Card Shows, Shops, and Collector Stories",
+  description:
+    "Discover trading card shows, local card shops, collecting brands, and stories for collectors across the United States.",
+  openGraph: {
+    type: "website",
+    siteName: "KLLCTRS",
+    title: "KLLCTRS | Find Card Shows, Shops, and Collector Stories",
+    description:
+      "Discover trading card shows, local card shops, collecting brands, and stories for collectors across the United States.",
+    url: "https://www.kllctrs.com",
+    images: [{ url: "/og-default.png", width: 1200, height: 630, alt: "KLLCTRS — The collector community" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KLLCTRS | Find Card Shows, Shops, and Collector Stories",
+    description:
+      "Discover trading card shows, local card shops, collecting brands, and stories for collectors across the United States.",
+    images: ["/og-default.png"],
+  },
+  robots: { index: true, follow: true },
   icons: {
     icon: "/Favicon/Group.svg",
     shortcut: "/favicon.ico",
     apple: "/Favicon/Group.svg",
   },
 };
-
-const spaceGrotesk = Space_Grotesk({
-  subsets: ["latin"],
-  variable: "--font-space",
-});
-
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-});
-
-const unica = Unica_One({
-  weight: "400",
-  subsets: ["latin"],
-  variable: "--font-unica",
-});
 
 export default function RootLayout({
   children,
@@ -50,29 +52,27 @@ export default function RootLayout({
       <body
         className={`${inter.className} ${spaceGrotesk.variable} ${inter.variable} ${unica.variable}`}
       >
-        <AppSplash>
-          <div className="flex min-h-screen flex-col">
-            <Navbar />
-            <main className="flex-1">{children}</main>
-            <FooterGate />
-          </div>
+        <div className="flex min-h-screen flex-col">
+          <Navbar />
+          <main className="flex-1">{children}</main>
+          <FooterGate />
+        </div>
 
-          <ChatWindow />
-          <CookieBanner />
+        <ChatWindow />
+        <CookieBanner />
 
-          <AnalyticsTracker />
+        <AnalyticsTracker />
 
-          <Toaster
-            position="top-center"
-            richColors
-            closeButton
-            expand
-            duration={3000}
-            toastOptions={{
-              className: "font-inter",
-            }}
-          />
-        </AppSplash>
+        <Toaster
+          position="top-center"
+          richColors
+          closeButton
+          expand
+          duration={3000}
+          toastOptions={{
+            className: "font-inter",
+          }}
+        />
       </body>
     </html>
   );

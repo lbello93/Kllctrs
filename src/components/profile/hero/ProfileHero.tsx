@@ -68,7 +68,7 @@ export default function ProfileHero({ user, profile, onEdit }: Props) {
   return (
     <section className="relative overflow-hidden bg-[#151E3C]">
       <Image
-        src="/profile/ProfileHero.png"
+        src="/profile/ProfileHero.webp"
         alt=""
         fill
         priority

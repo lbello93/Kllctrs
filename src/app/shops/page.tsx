@@ -3,7 +3,7 @@ import ShopsClient from "../../components/shops/ShopsClient";
 import type { Shop } from "@/types";
 
 export const metadata = {
-  title: "Card Shops Near You | KLLCTBLS",
+  title: "Card Shops Near You | KLLCTRS",
   description:
     "Find sports card shops and trading card stores across the US. Filter by state, city, and specialty.",
 };

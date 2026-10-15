@@ -15,7 +15,7 @@ export default function SponsorsHero({
   return (
     <section className="relative w-full overflow-hidden bg-[#151E3C]">
       <Image
-        src="/sponsors/sponsMobile.png"
+        src="/sponsors/sponsMobile.webp"
         alt=""
         fill
         priority

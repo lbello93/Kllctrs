@@ -31,7 +31,7 @@ export default function LinkedInPreview({
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState(false);
 
-  const postUrl = `https://kllctrs.com/blog/${slug}`;
+  const postUrl = `https://www.kllctrs.com/blog/${slug}`;
   const location =
     eventCity && eventState ? ` in ${eventCity}, ${eventState}` : "";
 

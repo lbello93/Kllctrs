@@ -183,9 +183,11 @@ function DesktopAppraiseToolShowcase() {
         {/* Left Content */}
         <div className="w-[463px]">
           <div className="mb-[64px] flex items-center gap-4">
-            <img
+            <Image
               src="/Favicon/logo.png"
               alt="Gem"
+              width={16}
+              height={29}
               className="h-[29px] w-[16px]"
             />
 
@@ -464,7 +466,7 @@ function MobileAppraiseToolShowcase() {
 
         {/* CTA */}
         <Link
-          href="/content"
+                  href="/blog"
           className="
             flex
             h-[40px]
