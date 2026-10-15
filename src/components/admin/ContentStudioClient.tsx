@@ -57,7 +57,7 @@ export default function ContentStudioClient({ events, brands }: { events: EventO
     <div className="mx-auto max-w-6xl space-y-7">
       <header className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-800"><Sparkles className="h-3.5 w-3.5" /> GROQ · CONTENT STUDIO</p>
+          <p className="mb-2 inline-flex items-center gap-2 rounded-full bg-violet-100 px-3 py-1 text-xs font-semibold text-violet-800"><Sparkles className="h-3.5 w-3.5" /> CLAUDE · CONTENT STUDIO</p>
           <h1 className="font-space-grotesk text-3xl font-bold tracking-tight text-[#151E3C]">Create collector content</h1>
           <p className="mt-2 max-w-2xl text-sm leading-6 text-[#596078]">Research a topic or event, then generate an article and social drafts together. Every run is saved as a draft for your review.</p>
         </div>
@@ -70,7 +70,7 @@ export default function ContentStudioClient({ events, brands }: { events: EventO
         <section className="rounded-3xl border border-violet-100 bg-white p-5 shadow-[0_12px_36px_rgba(21,30,60,0.06)] sm:p-8">
           <div className="mb-5">
             <h2 className="text-sm font-bold text-[#151E3C]">1. Choose a content lane</h2>
-            <p className="mt-1 text-xs text-[#68708A]">Groq will search current information and tailor the angle to collectors.</p>
+            <p className="mt-1 text-xs text-[#68708A]">Claude will search current information and tailor the angle to collectors.</p>
           </div>
           <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {CATEGORIES.map((item) => (
@@ -133,14 +133,14 @@ export default function ContentStudioClient({ events, brands }: { events: EventO
           <div className="rounded-3xl bg-[#151E3C] p-6 text-white shadow-[0_12px_36px_rgba(21,30,60,0.12)]">
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-violet-200">How it works</p>
             <ol className="mt-5 space-y-4 text-sm">
-              <li className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold">1</span><span><strong className="block">Research</strong><span className="mt-0.5 block leading-5 text-white/70">Groq searches the web and gathers source links.</span></span></li>
+              <li className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold">1</span><span><strong className="block">Research</strong><span className="mt-0.5 block leading-5 text-white/70">Claude searches the web and gathers source links.</span></span></li>
               <li className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold">2</span><span><strong className="block">Create</strong><span className="mt-0.5 block leading-5 text-white/70">It drafts an article plus Instagram and LinkedIn copy.</span></span></li>
               <li className="flex gap-3"><span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-white/10 text-xs font-bold">3</span><span><strong className="block">Review</strong><span className="mt-0.5 block leading-5 text-white/70">Check citations and facts in Drafts before publishing.</span></span></li>
             </ol>
           </div>
           <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4">
             <p className="text-xs font-bold text-amber-950">API usage note</p>
-            <p className="mt-1 text-xs leading-5 text-amber-900">This uses the server's Groq API key for web research and writing. Usage follows your Groq account limits.</p>
+            <p className="mt-1 text-xs leading-5 text-amber-900">Uses your Anthropic API balance, separate from Claude Pro. Web search costs $0.01 per search plus model tokens; each generation is capped at two searches. Set a Console spend limit and review usage there.</p>
           </div>
           <div className="rounded-2xl border border-violet-100 bg-white p-4">
             <p className="text-xs font-bold text-[#151E3C]">Always review before publishing</p>
