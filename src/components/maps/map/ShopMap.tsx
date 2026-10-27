@@ -100,7 +100,7 @@ export default function ShopMap({
                 </a>
               )}
               <a
-                href={`/shops/${infoShop.slug}`}
+                href={`/maps/shops/${infoShop.slug}`}
                 className="text-xs text-indigo-600 mt-2 inline-block hover:underline font-medium"
               >
                 View details →

@@ -15,7 +15,7 @@ export interface NavLink {
 
 export const publicLinks: NavLink[] = [
   { path: "/maps", label: "Maps", icon: Map },
-  { path: "/sponsors", label: "Brands", icon: Trophy },
+  { path: "/brands", label: "Brands", icon: Trophy },
   { path: "/blog", label: "Content", icon: MessageSquare },
 ];
 

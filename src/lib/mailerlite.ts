@@ -51,7 +51,7 @@ export async function sendEventAlert(
         <p style="margin: 0 0 8px; font-size: 14px; color: #94a3b8;">📅 ${new Date(event.date_start).toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}</p>
       </div>
 
-      <a href="https://kllctbls.com/events/${event.slug}"
+      <a href="https://kllctbls.com/maps/events/${event.slug}"
          style="display: inline-block; background: linear-gradient(135deg, #7c3aed, #c026d3); color: white; padding: 12px 28px; border-radius: 8px; text-decoration: none; font-weight: 600; font-size: 14px;">
         View Show Details →
       </a>

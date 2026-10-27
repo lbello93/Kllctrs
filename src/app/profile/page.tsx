@@ -1,6 +1,6 @@
 import { createClient } from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import ProfileClient from "../../components/profile/ProfileClient";
+import ProfileClient from "@/page-components/ProfilePage/ProfileClient";
 import type { Event, Shop } from "@/types";
 
 export const metadata = {

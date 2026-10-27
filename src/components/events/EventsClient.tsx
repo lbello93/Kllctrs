@@ -270,7 +270,7 @@ export default function EventsClient({ initialEvents, savedIds }: Props) {
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.03, duration: 0.3 }}
                 >
-                  <Link href={`/events/${event.slug}`}>
+                  <Link href={`/maps/events/${event.slug}`}>
                     <div
                       className={`group relative bg-white rounded-2xl border p-4 transition-all cursor-pointer hover:shadow-md ${
                         selectedEvent?.id === event.id

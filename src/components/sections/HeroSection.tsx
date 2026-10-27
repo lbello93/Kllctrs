@@ -164,7 +164,7 @@ export default function HeroSection() {
                   </Button>
                 </motion.div>
               </Link>
-              <Link href="/sponsors">
+              <Link href="/brands">
                 <motion.div
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.97 }}

@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminUsersClient from "@/components/admin/AdminUsersClient";
+import AdminUsersClient from "@/page-components/AdminPage/AdminUsersClient";
 import type { Profile } from "@/types";
 
 export const metadata = { title: "Admin · Users | KLLCTRS" };

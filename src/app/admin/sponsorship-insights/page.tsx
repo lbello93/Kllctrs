@@ -1,4 +1,4 @@
-import SponsorshipInsightsClient from "./SponsorshipInsightsClient";
+import SponsorshipInsightsClient from "@/page-components/AdminPage/sponsorship-insights/SponsorshipInsightsClient";
 
 export default function SponsorshipInsightsPage() {
   return (

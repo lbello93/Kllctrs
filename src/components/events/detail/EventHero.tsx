@@ -30,7 +30,7 @@ export default function EventHero({ event, isSaved: initialSaved }: Props) {
 
       if (res.status === 401) {
         setIsSaved(wasSaved);
-        router.push(`/login?redirect=/events/${event.slug}`);
+        router.push(`/login?redirect=/maps/events/${event.slug}`);
         return;
       }
 

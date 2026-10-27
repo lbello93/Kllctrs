@@ -7,7 +7,7 @@ function DesktopMapHero() {
     <section className="relative w-full h-[300px] overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(89.06deg,#8B5CF6_0.7%,#151E3C_73.95%)]" />
 
-      <Image src="/Maps-assets/map-hero.webp" alt="" fill sizes="100vw" className="object-cover" priority />
+      <Image src="/Map-Artifact/map-hero.webp" alt="" fill sizes="100vw" className="object-cover" priority />
 
       <div className="absolute inset-0 bg-black/20" />
 
@@ -34,7 +34,7 @@ function MobileMapHero() {
     <section className="relative w-full h-[300px] overflow-hidden">
       <div className="absolute inset-0 bg-[linear-gradient(89.06deg,#8B5CF6_0.7%,#151E3C_73.95%)]" />
 
-      <Image src="/Maps-assets/mobile-map-hero.webp" alt="" fill sizes="100vw" className="object-cover" priority />
+      <Image src="/Map-Artifact/mobile-map-hero.webp" alt="" fill sizes="100vw" className="object-cover" priority />
 
       <div className="absolute inset-0 bg-black/20" />
 

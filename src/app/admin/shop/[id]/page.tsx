@@ -1,6 +1,6 @@
 // import { supabaseAdmin } from "@/lib/supabase/admin";
 // import { notFound } from "next/navigation";
-// import AdminShopEditClient from "@/components/admin/AdminShopEditClient";
+// import AdminShopEditClient from "@/page-components/AdminPage/AdminShopEditClient";
 
 // export default async function Page({
 //   params,
@@ -22,7 +22,7 @@
 
 // import { supabaseAdmin } from "@/lib/supabase/admin";
 // import { notFound } from "next/navigation";
-// import AdminShopEditClient from "@/components/admin/AdminShopEditClient";
+// import AdminShopEditClient from "@/page-components/AdminPage/AdminShopEditClient";
 
 // const { id } = await params;
 
@@ -36,7 +36,7 @@
 
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
-import AdminShopEditClient from "@/components/admin/AdminShopEditClient";
+import AdminShopEditClient from "@/page-components/AdminPage/AdminShopEditClient";
 
 export const dynamic = "force-dynamic";
 export default async function Page({

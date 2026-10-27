@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminShopsClient from "@/components/admin/AdminShopsClient";
+import AdminShopsClient from "@/page-components/AdminPage/AdminShopsClient";
 import type { Shop } from "@/types";
 
 export const metadata = { title: "Admin · Shops | KLLCTRS" };

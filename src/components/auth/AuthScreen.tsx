@@ -12,7 +12,7 @@ import {
   bodyM,
   headingM,
   primaryButtonClass,
-} from "@/components/profile/onboarding/shared/onboardingStyles";
+} from "@/page-components/ProfilePage/onboarding/shared/onboardingStyles";
 import AuthLogo from "./AuthLogo";
 
 type Mode = "signin" | "signup";

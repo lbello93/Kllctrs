@@ -4,6 +4,7 @@ import typography from "@tailwindcss/typography";
 const config = {
   content: [
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./src/page-components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {

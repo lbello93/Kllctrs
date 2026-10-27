@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import ContentStudioClient from "@/components/admin/ContentStudioClient";
+import ContentStudioClient from "@/page-components/AdminPage/ContentStudioClient";
 
 export const metadata = { title: "Admin · Content Studio | KLLCTRS" };
 

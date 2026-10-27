@@ -178,7 +178,7 @@ export default function EventCard({
         )}
 
         <Link
-          href={`/events/${event.slug}`}
+          href={`/maps/events/${event.slug}`}
           className="ml-auto flex h-9 items-center gap-1.5 rounded-full bg-[#8B5CF6] px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           Details

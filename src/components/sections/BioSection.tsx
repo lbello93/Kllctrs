@@ -1,7 +1,7 @@
 "use client";
 
 import { BIO_RULES } from "@/lib/profile/constants";
-import FieldGroup from "../profile/shared/FieldGroup";
+import FieldGroup from "@/page-components/ProfilePage/shared/FieldGroup";
 
 interface BioSectionProps {
   bio?: string;

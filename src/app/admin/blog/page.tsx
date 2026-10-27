@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminBlogClient from "../../../components/admin/AdminBlogClient";
+import AdminBlogClient from "@/page-components/AdminPage/AdminBlogClient";
 
 export const metadata = { title: "Admin · Blog | KLLCTRS" };
 

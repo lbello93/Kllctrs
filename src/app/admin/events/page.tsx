@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminEventsClient from "@/components/admin/AdminEventsClient";
+import AdminEventsClient from "@/page-components/AdminPage/AdminEventsClient";
 import type { Event } from "@/types";
 
 export const metadata = { title: "Admin · Events | KLLCTRS" };

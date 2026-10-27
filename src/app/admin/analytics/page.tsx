@@ -1,4 +1,4 @@
-import AnalyticsClient from "./AnalyticsClient";
+import AnalyticsClient from "@/page-components/AdminPage/analytics/AdminAnalyticsPageClient";
 
 export default function AnalyticsPage() {
   return (

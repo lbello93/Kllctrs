@@ -41,7 +41,7 @@ function DesktopCTASection() {
                 </Button>
               </Link>
 
-              <Link href="/shops/submit" className="flex-1 max-w-[180px]">
+              <Link href="/login?mode=signup" className="flex-1 max-w-[180px]">
                 <Button
                   variant="purple"
                   className="h-12 w-full rounded-xl font-semibold"

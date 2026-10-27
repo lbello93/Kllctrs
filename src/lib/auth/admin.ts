@@ -1,90 +1,84 @@
+import "server-only";
 import { cache } from "react";
 import { redirect } from "next/navigation";
 
 import { createClient } from "@/lib/supabase/server";
+import { isAdminRole, type AdminRole } from "./roles";
 
 export interface AdminUser {
   id: string;
   email: string;
-  role: string;
+  role: AdminRole;
 }
 
-/**
- * Returns the currently authenticated user.
- * Redirects to /login if no session exists.
- */
+/** Logged in user. Redirects to login when there is no session. */
 export const getCurrentUser = cache(async () => {
   const supabase = await createClient();
-
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    redirect("/login");
-  }
-
+  if (!user) redirect("/login?redirect=/admin");
   return user;
 });
 
-/**
- * Returns the user's profile from the profiles table.
- */
-export const getCurrentProfile = cache(async () => {
-  const user = await getCurrentUser();
-
+/** Profile row for a user. Cached so one request only queries once. */
+const getProfileById = cache(async (userId: string) => {
   const supabase = await createClient();
-
   const { data, error } = await supabase
     .from("profiles")
     .select("id,email,role")
-    .eq("id", user.id)
+    .eq("id", userId)
     .single();
 
-  if (error || !data) {
-    throw new Error("Unable to load user profile.");
-  }
-
-  return data as AdminUser;
+  if (error || !data) return null;
+  return data;
 });
 
-/**
- * Returns true if the logged-in user is an admin.
- */
-export async function isAdmin() {
-  const profile = await getCurrentProfile();
+/** Profile of the logged in user. Throws if it cannot be loaded. */
+export const getCurrentProfile = cache(async () => {
+  const user = await getCurrentUser();
+  const profile = await getProfileById(user.id);
+  if (!profile) throw new Error("Unable to load user profile.");
+  return profile;
+});
 
-  return (
-    profile.role === "admin" ||
-    profile.role === "super_admin"
-  );
+/** True when the logged in user is an admin or super admin. */
+export async function isAdmin(): Promise<boolean> {
+  const user = await getCurrentUser();
+  const profile = await getProfileById(user.id);
+  return isAdminRole(profile?.role);
 }
 
 /**
- * Protects an admin page.
- * Redirects non-admins back to the home page.
+ * Protects an admin page or layout.
+ * Redirects non admins home and returns the admin when allowed.
  */
-export async function requireAdmin() {
-  const admin = await isAdmin();
+export async function requireAdmin(): Promise<AdminUser> {
+  const user = await getCurrentUser();
+  const profile = await getProfileById(user.id);
 
-  if (!admin) {
-    redirect("/");
-  }
+  if (!profile || !isAdminRole(profile.role)) redirect("/");
+
+  return {
+    id: profile.id,
+    email: profile.email ?? user.email ?? "",
+    role: profile.role,
+  };
 }
 
-/**
- * Returns the admin profile.
- * Throws if the user is not an admin.
- */
-export async function getAdmin() {
-  const profile = await getCurrentProfile();
+/** Same as requireAdmin, but throws instead of redirecting. */
+export async function getAdmin(): Promise<AdminUser> {
+  const user = await getCurrentUser();
+  const profile = await getProfileById(user.id);
 
-  if (
-    profile.role !== "admin" &&
-    profile.role !== "super_admin"
-  ) {
+  if (!profile || !isAdminRole(profile.role)) {
     throw new Error("Unauthorized");
   }
 
-  return profile;
+  return {
+    id: profile.id,
+    email: profile.email ?? user.email ?? "",
+    role: profile.role,
+  };
 }

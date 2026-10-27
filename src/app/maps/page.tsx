@@ -1,5 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
-import MapsClient from "@/components/maps/MapsClient";
+import MapsClient from "@/page-components/MapsPage/MapsClient";
 
 export const metadata = {
   title: "Card Shows and Shops Near You | KLLCTRS",

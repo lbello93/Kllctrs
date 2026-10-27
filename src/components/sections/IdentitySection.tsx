@@ -2,8 +2,8 @@
 
 import { Input } from "@/components/ui/input";
 import { USERNAME_RULES } from "@/lib/profile/constants";
-import FieldGroup from "../profile/shared/FieldGroup";
-import FieldLabel from "../profile/shared/FieldLabel";
+import FieldGroup from "@/page-components/ProfilePage/shared/FieldGroup";
+import FieldLabel from "@/page-components/ProfilePage/shared/FieldLabel";
 
 interface IdentitySectionProps {
   displayName?: string;

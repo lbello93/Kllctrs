@@ -1,6 +1,6 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { notFound } from "next/navigation";
-import AdminBlogEditClient from "@/components/admin/AdminBlogEditClient";
+import AdminBlogEditClient from "@/page-components/AdminPage/AdminBlogEditClient";
 
 interface Params {
   params: Promise<{ id: string }>;

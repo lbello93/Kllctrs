@@ -150,7 +150,7 @@ export default function ShopCard({
         )}
 
         <Link
-          href={`/shops/${shop.slug}`}
+          href={`/maps/shops/${shop.slug}`}
           className="ml-auto flex h-9 items-center gap-1.5 rounded-full bg-[#8B5CF6] px-4 text-sm font-semibold text-white transition-opacity hover:opacity-90"
         >
           View Shop

@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import AdminSponsorsClient from "@/components/admin/AdminSponsorsClient";
+import AdminSponsorsClient from "@/page-components/AdminPage/AdminSponsorsClient";
 
 export const metadata = { title: "Admin · Sponsors | KLLCTRS" };
 

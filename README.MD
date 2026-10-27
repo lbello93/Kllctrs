@@ -1,5 +1,9 @@
 # Frontend for Kllctrs platform 
 
+## Current rebuild status
+
+The responsive desktop and mobile navbar is integrated into the new app layout. Its implementation lives in `src/page-components/navbar`.
+
 ## Production deployment
 
 This is a Next.js application and can be deployed to a Node.js host or a Next.js

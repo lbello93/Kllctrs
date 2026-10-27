@@ -31,7 +31,7 @@ export function Footer() {
                 className="relative h-12 w-[124px]"
               >
                 <Image
-                  src="/footer/Gem_Pink.png"
+                  src="/ChatPage-artifact/Gem_Pink.webp"
                   alt="KLLCTRS"
                   fill
                   sizes="124px"

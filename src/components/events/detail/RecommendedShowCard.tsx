@@ -32,7 +32,7 @@ export default function RecommendedShowCard({
 
       if (res.status === 401) {
         setIsSaved(wasSaved);
-        router.push(`/login?redirect=/events/${event.slug}`);
+        router.push(`/login?redirect=/maps/events/${event.slug}`);
         return;
       }
 
@@ -93,7 +93,7 @@ export default function RecommendedShowCard({
           {isSaved ? "Saved" : "Save"}
         </button>
         <Link
-          href={`/events/${event.slug}`}
+          href={`/maps/events/${event.slug}`}
           className="flex-1 border-r border-[#EEE9F7] px-2 py-3 text-center text-xs font-semibold text-[#5B18BE] transition hover:bg-[#F5F0FF]"
         >
           Details

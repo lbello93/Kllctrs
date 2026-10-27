@@ -1,7 +1,28 @@
+import "server-only";
 import { NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import type { User } from "@supabase/supabase-js";
 
-export async function requireAdminApi(): Promise<NextResponse | null> {
+import { createClient } from "@/lib/supabase/server";
+import { isAdminRole, type AdminRole } from "./roles";
+
+type ServerSupabase = Awaited<ReturnType<typeof createClient>>;
+
+export type AdminApiContext =
+  | { ok: true; user: User; role: AdminRole; supabase: ServerSupabase }
+  | { ok: false; response: NextResponse };
+
+function fail(error: string, status: number): AdminApiContext {
+  return { ok: false, response: NextResponse.json({ error }, { status }) };
+}
+
+/**
+ * Use in API routes:
+ *
+ *   const auth = await getAdminApiContext();
+ *   if (!auth.ok) return auth.response;
+ *   const { supabase, user } = auth;
+ */
+export async function getAdminApiContext(): Promise<AdminApiContext> {
   try {
     const supabase = await createClient();
     const {
@@ -9,9 +30,7 @@ export async function requireAdminApi(): Promise<NextResponse | null> {
       error: userError,
     } = await supabase.auth.getUser();
 
-    if (userError || !user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (userError || !user) return fail("Unauthorized", 401);
 
     const { data: profile, error: profileError } = await supabase
       .from("profiles")
@@ -19,18 +38,18 @@ export async function requireAdminApi(): Promise<NextResponse | null> {
       .eq("id", user.id)
       .single();
 
-    if (
-      profileError ||
-      (profile?.role !== "admin" && profile?.role !== "super_admin")
-    ) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    if (profileError || !profile || !isAdminRole(profile.role)) {
+      return fail("Forbidden", 403);
     }
 
-    return null;
+    return { ok: true, user, role: profile.role, supabase };
   } catch {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 },
-    );
+    return fail("Internal Server Error", 500);
   }
+}
+
+/** Old helper. Still works in every existing route. */
+export async function requireAdminApi(): Promise<NextResponse | null> {
+  const auth = await getAdminApiContext();
+  return auth.ok ? null : auth.response;
 }

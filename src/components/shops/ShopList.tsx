@@ -42,7 +42,7 @@ export default function ShopList({
             }`}
           >
             <Link
-              href={`/shops/${shop.slug}`}
+              href={`/maps/shops/${shop.slug}`}
               onClick={() => onShopSelect(shop)}
               className="block"
             >
