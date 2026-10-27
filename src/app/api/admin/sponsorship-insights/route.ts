@@ -1,7 +1,11 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase/admin";
+import { requireAdminApi } from "@/lib/auth/apiGuard";
 
 export async function GET() {
+  const authResponse = await requireAdminApi();
+  if (authResponse) return authResponse;
+
   try {
     const [
       { data: topShops, error: shopsError },
