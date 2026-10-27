@@ -161,10 +161,11 @@ export default function SponsorCard({ sponsor, stats }: Props) {
             target="_blank"
             rel="noopener noreferrer"
             onClick={trackClick}
-            aria-label={`${sponsor.name} website`}
-            className="text-[#151E3C]/50 transition hover:text-[#8B5CF6]"
+            aria-label={`Visit the ${sponsor.name} website`}
+            className="inline-flex items-center gap-1.5 rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-3 py-1.5 font-inter text-[12px] font-medium leading-[15px] text-[#5B18BE] transition hover:bg-[#E5DFFD]"
           >
-            <Globe className="h-4 w-4" />
+            <Globe className="h-3.5 w-3.5" aria-hidden />
+            Visit site
           </a>
         )}
       </div>
