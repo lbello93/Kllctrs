@@ -20,6 +20,14 @@ export function Navbar() {
   const [isPro, setIsPro] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [menuPathname, setMenuPathname] = useState(pathname);
+
+  // Close the mobile menu on navigation. Adjusting state during render (guarded
+  // by a change check) is the recommended pattern over a setState-in-effect.
+  if (pathname !== menuPathname) {
+    setMenuPathname(pathname);
+    setMobileMenuOpen(false);
+  }
 
   useEffect(() => {
     let isMounted = true;
@@ -72,10 +80,6 @@ export function Navbar() {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [router, supabase]);
-
-  useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
 
   const handleSignOut = async () => {
     await fetch("/auth/logout", { method: "POST" });

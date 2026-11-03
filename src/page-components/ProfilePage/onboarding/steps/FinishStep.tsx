@@ -15,7 +15,6 @@ interface FinishStepProps {
 
 export default function FinishStep({
   data,
-  loading = false,
   error = null,
   termsAccepted = false,
   onTermsChange,

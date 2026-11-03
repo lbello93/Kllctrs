@@ -35,7 +35,6 @@
 
 
 import { supabaseAdmin } from "@/lib/supabase/admin";
-import { notFound } from "next/navigation";
 import AdminShopEditClient from "@/page-components/AdminPage/AdminShopEditClient";
 
 export const dynamic = "force-dynamic";

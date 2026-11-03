@@ -2,7 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
-import { Search, MapPin, Store } from "lucide-react";
+import { Search, Store } from "lucide-react";
 import type { Shop } from "@/types";
 import ShopMap from "@/components/maps/map/ShopMap";
 import ShopList from "@/components/shops/ShopList";

@@ -1,17 +1,15 @@
 "use client";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useMemo } from "react";
 import Link from "next/link";
 import { format } from "date-fns";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
 import {
   CalendarDays,
   Search,
   MapPin,
   X,
   ArrowRight,
-  Navigation,
 } from "lucide-react";
 import type { Event } from "@/types";
 import EventMap from "@/components/maps/map/EventMap";
@@ -76,9 +74,8 @@ interface Props {
 }
 
 export default function EventsClient({ initialEvents, savedIds }: Props) {
-  const [events, setEvents] = useState<Event[]>(initialEvents);
+  const [events] = useState<Event[]>(initialEvents);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
-  const [loading, setLoading] = useState(false);
 
   // Filters
   const [stateFilter, setStateFilter] = useState("all");

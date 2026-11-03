@@ -34,11 +34,9 @@ export default function LocationSection({
   country = "",
   state = "",
   city = "",
-  timezone = "",
   onCountryChange,
   onStateChange,
   onCityChange,
-  onTimezoneChange,
 }: LocationSectionProps) {
   const [isLocating, setIsLocating] = useState(false);
   const [locateError, setLocateError] = useState<string | null>(null);

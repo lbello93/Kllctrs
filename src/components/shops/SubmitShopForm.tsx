@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import slugify from "slugify";
 import { Send, CheckCircle2, ArrowLeft, Loader2, Store } from "lucide-react";
@@ -61,7 +60,6 @@ const US_STATES = [
 ];
 
 export default function SubmitShopForm() {
-  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);

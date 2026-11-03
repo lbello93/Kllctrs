@@ -118,16 +118,6 @@ export function extractParagraphs(
 
 }
 
-function isStateHeading(
-    text: string
-): boolean {
-
-    return /^[A-Z ]+$/.test(
-        text.trim()
-    );
-
-}
-
 export interface SportsCollectorRawEvent {
     month: string;
     day: string;

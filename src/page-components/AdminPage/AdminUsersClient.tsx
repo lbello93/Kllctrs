@@ -11,7 +11,6 @@ import {
   ShieldOff,
   Loader2,
   CalendarDays,
-  Heart,
   MapPin,
 } from "lucide-react";
 

@@ -7,6 +7,9 @@ export default function EventReviewCard({ review }: { review: EventReview }) {
       <div className="flex min-w-0 items-center gap-3">
         <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-[#E5DFFD]">
           {review.reviewer_avatar_url && (
+            // Avatar URLs are user-provided and not guaranteed to match the
+            // configured image remotePatterns, so next/image isn't suitable here.
+            // eslint-disable-next-line @next/next/no-img-element
             <img
               src={review.reviewer_avatar_url}
               alt={review.reviewer_name}

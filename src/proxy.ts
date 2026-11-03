@@ -32,6 +32,15 @@ export async function proxy(request: NextRequest) {
 
   const { pathname, search } = request.nextUrl;
 
+  // Admin API routes: unauthenticated callers get a 401 (not a redirect).
+  // Role enforcement still happens in getAdminApiContext per route.
+  if (pathname.startsWith("/api/admin")) {
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+    return response;
+  }
+
   if (pathname.startsWith("/admin")) {
     if (!user) {
       const loginUrl = new URL("/login", request.url);
@@ -54,5 +63,5 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*"],
 };

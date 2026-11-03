@@ -9,7 +9,7 @@ interface SendEmailParams {
   html: string
 }
 
-export async function sendEmail({ to, subject, html }: SendEmailParams) {
+export async function sendEmail({ to, subject, html: _html }: SendEmailParams) {
   // First ensure subscriber exists
   await fetch(`${BASE}/subscribers`, {
     method: 'POST',
