@@ -16,7 +16,7 @@ interface Params {
 }
 
 const POST_COLUMNS =
-  "id,title,slug,body,excerpt,meta_description,seo_title,seo_description,type,category,tags,author,published_at,updated_at,related_event_id,related_sponsor_id";
+  "id,title,slug,body,excerpt,meta_description,seo_title,seo_description,type,category,tags,author,published_at,updated_at,related_event_id,related_sponsor_id,video_url";
 
 async function loadPost(slug: string) {
   const supabase = await createClient();
@@ -127,6 +127,17 @@ export default async function BlogPostPage({ params }: Params) {
         <div className="mb-6">
           <ArticleShareBar title={post.title ?? "KLLCTRS"} />
         </div>
+
+        {post.video_url && (
+          <div className="mb-6 overflow-hidden rounded-2xl border border-violet-100 bg-black">
+            <video
+              src={post.video_url}
+              controls
+              preload="metadata"
+              className="aspect-video w-full"
+            />
+          </div>
+        )}
 
         <div className="prose prose-base max-w-none prose-headings:text-[#1a0a3d] prose-headings:font-black prose-a:text-[#5B18BE] prose-strong:text-[#1a0a3d]">
           <ArticleMarkdown body={post.body ?? ""} />

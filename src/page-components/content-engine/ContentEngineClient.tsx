@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CalendarClock, Loader2, Sparkles, Wand2 } from "lucide-react";
+import { CalendarClock, Clapperboard, Loader2, Sparkles, Wand2 } from "lucide-react";
 
 import {
   CONTENT_TYPE_OPTIONS,
@@ -115,15 +115,23 @@ export default function ContentEngineClient({ stats, content, events, sponsors }
             Auto-generate blog posts, social copy, and industry insights from your live data.
           </p>
         </div>
-        <button
-          onClick={generateWeek}
-          disabled={bulkRunning}
-          className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
-          style={{ background: "linear-gradient(135deg, #5f2eea, #4a1fa8)" }}
-        >
-          {bulkRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />}
-          {bulkRunning ? "Generating…" : "Generate This Week's Content"}
-        </button>
+        <div className="flex flex-wrap items-center gap-2">
+          <Link
+            href="/admin/content/video"
+            className="inline-flex items-center gap-2 rounded-xl border border-violet-200 bg-white px-4 py-2.5 text-sm font-semibold text-[#5B18BE] hover:bg-violet-50"
+          >
+            <Clapperboard className="h-4 w-4" /> Video Studio
+          </Link>
+          <button
+            onClick={generateWeek}
+            disabled={bulkRunning}
+            className="inline-flex items-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold text-white disabled:opacity-50"
+            style={{ background: "linear-gradient(135deg, #5f2eea, #4a1fa8)" }}
+          >
+            {bulkRunning ? <Loader2 className="h-4 w-4 animate-spin" /> : <CalendarClock className="h-4 w-4" />}
+            {bulkRunning ? "Generating…" : "Generate This Week's Content"}
+          </button>
+        </div>
       </header>
 
       {/* Stats */}

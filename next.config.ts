@@ -16,6 +16,13 @@ const nextConfig: NextConfig = {
   allowedDevOrigins: [
     "10.68.152.64",
   ],
+  // Remotion's server-render packages carry native/Node-only deps (esbuild,
+  // the renderer's Chrome bridge). Keep them external so Next doesn't try to
+  // bundle them into the server build.
+  serverExternalPackages: [
+    "@remotion/bundler",
+    "@remotion/renderer",
+  ],
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -61,6 +68,7 @@ const nextConfig: NextConfig = {
               "script-src 'self' 'unsafe-eval' 'unsafe-inline' https://maps.googleapis.com https://*.gstatic.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "img-src 'self' data: blob: https:",
+              "media-src 'self' blob: data: https://*.supabase.co",
               "font-src 'self' data: https://fonts.gstatic.com",
               "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.openai.com https://maps.googleapis.com https://*.googleapis.com",
               "frame-src 'self' https://*.google.com",

@@ -126,6 +126,9 @@ export type Database = {
           title: string | null
           type: string
           updated_at: string | null
+          video_duration: number | null
+          video_type: string | null
+          video_url: string | null
         }
         Insert: {
           ai_prompt_used?: string | null
@@ -152,6 +155,9 @@ export type Database = {
           title?: string | null
           type: string
           updated_at?: string | null
+          video_duration?: number | null
+          video_type?: string | null
+          video_url?: string | null
         }
         Update: {
           ai_prompt_used?: string | null
@@ -178,6 +184,9 @@ export type Database = {
           title?: string | null
           type?: string
           updated_at?: string | null
+          video_duration?: number | null
+          video_type?: string | null
+          video_url?: string | null
         }
         Relationships: [
           {

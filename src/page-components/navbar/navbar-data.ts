@@ -3,6 +3,7 @@ import {
   Trophy,
   Store,
   FileText,
+  Film,
   User,
   type LucideIcon,
 } from "lucide-react";
@@ -20,6 +21,7 @@ export const publicLinks: NavLink[] = [
   { path: "/sponsors", label: "Sponsors", icon: Trophy },
   { path: "/shops", label: "Shops", icon: Store },
   { path: "/blog", label: "Blog", icon: FileText },
+  { path: "/videos", label: "Videos", icon: Film },
 ];
 
 export const buildNavLinks = (user: SupabaseUser | null): NavLink[] => [
