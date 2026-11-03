@@ -82,6 +82,10 @@ export function mapCandidateToEventInsert(
     // Sponsor claims remain evidence only until a reviewer verifies the relationship.
     sponsors: null,
     source: candidate.source.provider,
+    // Persist the canonical source URL and event type to their own columns
+    // (in addition to the ingestion blob) so the enhanced schema is populated.
+    source_url: candidate.source.sourceUrl ?? null,
+    event_type: candidate.categories[0] ?? null,
     status: "pending",
     submitted_by: options.submittedBy ?? null,
   };

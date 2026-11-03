@@ -11,11 +11,14 @@ import {
   AlertCircle,
   Eye,
   MousePointerClick,
+  Activity,
+  FileText,
 } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
 import { isAdminRole } from "@/lib/auth/roles";
 import { redirect } from "next/navigation";
+import SyncScrapersButton from "@/page-components/AdminPage/SyncScrapersButton";
 export const metadata = { title: "Admin Dashboard | KLLCTRS" };
 
 export default async function AdminOverviewPage() {
@@ -65,6 +68,25 @@ export default async function AdminOverviewPage() {
     supabaseAdmin.from("profiles").select("*", { count: "exact", head: true }),
     supabaseAdmin.from("sponsors").select("*", { count: "exact", head: true }),
   ]);
+
+  // Data health: total content count + most recent imported/scraped event.
+  const [contentCount, lastImport] = await Promise.all([
+    supabaseAdmin.from("content").select("*", { count: "exact", head: true }),
+    supabaseAdmin
+      .from("events")
+      .select("created_at, source")
+      .neq("source", "user_submitted")
+      .not("source", "is", null)
+      .order("created_at", { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+  ]);
+
+  const totalEvents = (eventsApproved.count ?? 0) + (eventsPending.count ?? 0);
+  const totalShops = (shopsApproved.count ?? 0) + (shopsPending.count ?? 0);
+  const lastImportAt = lastImport.data?.created_at
+    ? format(new Date(lastImport.data.created_at), "MMM d, yyyy · h:mm a")
+    : null;
 
   const { data: topSponsors } = await supabaseAdmin
     .from("sponsors")
@@ -213,6 +235,38 @@ export default async function AdminOverviewPage() {
             )}
           </Link>
         ))}
+      </div>
+
+      {/* Data health */}
+      <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm shadow-lg shadow-violet-200/20 p-5">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <h2 className="flex items-center gap-2 text-[10px] font-black tracking-[0.25em] text-[#5f2eea] uppercase">
+            <Activity className="h-3.5 w-3.5" /> Data Health
+          </h2>
+          <SyncScrapersButton />
+        </div>
+
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {[
+            { label: "Events", value: totalEvents, icon: CalendarDays },
+            { label: "Sponsors", value: sponsors.count ?? 0, icon: Trophy },
+            { label: "Shops", value: totalShops, icon: Store },
+            { label: "Content", value: contentCount.count ?? 0, icon: FileText },
+          ].map((d) => (
+            <div key={d.label} className="rounded-xl border border-violet-50 bg-[#faf9ff] p-4">
+              <div className="mb-1 flex items-center gap-1.5 text-[10px] font-black uppercase tracking-wider text-[#4a3f6b]/40">
+                <d.icon className="h-3 w-3" /> {d.label}
+              </div>
+              <div className="text-2xl font-black text-[#1a0a3d]">{d.value}</div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 flex items-center gap-1.5 text-xs text-[#4a3f6b]/50">
+          <Clock className="h-3.5 w-3.5" />
+          Last import:{" "}
+          <span className="font-bold text-[#4a3f6b]/70">{lastImportAt ?? "no imports yet"}</span>
+        </p>
       </div>
 
       {/* Pending queues */}

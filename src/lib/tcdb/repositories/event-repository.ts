@@ -57,6 +57,34 @@ export class EventRepository {
   }
 
   //--------------------------------------------------
+  // Upsert (incremental update)
+  //
+  // Writes rows keyed on the unique `slug`, so re-importing the same source
+  // refreshes the existing record instead of inserting a duplicate. Used by
+  // bulk tools (e.g. CSV import) that intentionally want incremental updates.
+  // The scraper pipeline keeps its insert + dedupe-skip path so it never
+  // overwrites admin-curated events on a re-scrape.
+  //--------------------------------------------------
+
+  async upsertMany(
+    rows: EventInsertRow[]
+  ) {
+
+    const { data, error } =
+      await this.supabase
+        .from("events")
+        .upsert(rows, { onConflict: "slug" })
+        .select();
+
+    if (error) {
+      throw error;
+    }
+
+    return data;
+
+  }
+
+  //--------------------------------------------------
   // Find By ID
   //--------------------------------------------------
 

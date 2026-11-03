@@ -150,6 +150,9 @@ async function main() {
     }
   }
 
+  console.info(
+    `Done. Upserted ${inserted} shops, skipped ${skipped} (missing city/state), ${failed} failed.`,
+  )
 }
 
 main().catch(e => {

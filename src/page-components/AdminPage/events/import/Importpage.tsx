@@ -2,6 +2,7 @@
 
 import { useState, useRef } from "react";
 import { Upload, Loader2, CheckCircle2, X } from "lucide-react";
+import CsvImportCard from "./CsvImportCard";
 
 const US_STATES: { slug: string; label: string }[] = [
   { slug: "alabama", label: "Alabama" },
@@ -240,9 +241,12 @@ export default function ImportPage() {
           Import Events
         </h1>
         <p className="text-sm text-[#4a3f6b]/60 mt-1">
-          Select states and months to scrape, or run all 50 states
+          Select states and months to scrape, run all 50 states, or import a CSV
         </p>
       </div>
+
+      {/* Bulk CSV import */}
+      <CsvImportCard />
 
       {/* Month picker */}
       <div className="rounded-2xl border border-violet-100 bg-white/80 backdrop-blur-sm p-6">
