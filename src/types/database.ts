@@ -411,15 +411,21 @@ export type Database = {
       shops: {
         Row: {
           address: string | null
+          category: string | null
           city: string
           created_at: string | null
+          description: string | null
+          email: string | null
           google_place_id: string | null
           hours: Json | null
           id: string
+          is_claimed: boolean | null
+          is_verified: boolean | null
           lat: number | null
           lng: number | null
           name: string
           phone: string | null
+          review_count: number | null
           slug: string
           source: string | null
           specialty: string | null
@@ -432,15 +438,21 @@ export type Database = {
         }
         Insert: {
           address?: string | null
+          category?: string | null
           city: string
           created_at?: string | null
+          description?: string | null
+          email?: string | null
           google_place_id?: string | null
           hours?: Json | null
           id?: string
+          is_claimed?: boolean | null
+          is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
           name: string
           phone?: string | null
+          review_count?: number | null
           slug: string
           source?: string | null
           specialty?: string | null
@@ -453,15 +465,21 @@ export type Database = {
         }
         Update: {
           address?: string | null
+          category?: string | null
           city?: string
           created_at?: string | null
+          description?: string | null
+          email?: string | null
           google_place_id?: string | null
           hours?: Json | null
           id?: string
+          is_claimed?: boolean | null
+          is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
           name?: string
           phone?: string | null
+          review_count?: number | null
           slug?: string
           source?: string | null
           specialty?: string | null
@@ -473,6 +491,41 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: []
+      }
+      shop_reviews: {
+        Row: {
+          content: string | null
+          created_at: string
+          id: string
+          rating: number
+          shop_id: string
+          user_id: string
+        }
+        Insert: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          shop_id: string
+          user_id: string
+        }
+        Update: {
+          content?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          shop_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shop_reviews_shop_id_fkey"
+            columns: ["shop_id"]
+            isOneToOne: false
+            referencedRelation: "shops"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       sponsor_applications: {
         Row: {

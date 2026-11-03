@@ -1,30 +1,30 @@
 import { createClient } from '@/lib/supabase/server'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import { NextRequest, NextResponse } from 'next/server'
+import { listShops } from '@/lib/shops/finder'
 
 export async function GET(request: NextRequest) {
   const supabase = await createClient()
-  const { searchParams } = new URL(request.url)
+  const sp = request.nextUrl.searchParams
+  const num = (k: string) => {
+    const raw = sp.get(k)
+    if (raw === null) return null
+    const v = Number(raw)
+    return Number.isFinite(v) ? v : null
+  }
 
-  const state     = searchParams.get('state')
-  const city      = searchParams.get('city')
-  const keyword   = searchParams.get('keyword')
-  const specialty = searchParams.get('specialty')
+  const shops = await listShops(supabase, {
+    lat: num('lat'),
+    lng: num('lng'),
+    radius: num('radius') ?? 25,
+    category: sp.get('category') ?? undefined,
+    minRating: num('minRating'),
+    search: sp.get('search') ?? undefined,
+    state: sp.get('state') ?? undefined,
+    city: sp.get('city') ?? undefined,
+  })
 
-  let query = supabase
-    .from('shops')
-    .select('*')
-    .eq('status', 'approved')
-    .order('name', { ascending: true })
-
-  if (state)     query = query.eq('state', state)
-  if (city)      query = query.ilike('city', `%${city}%`)
-  if (specialty) query = query.eq('specialty', specialty)
-  if (keyword)   query = query.or(`name.ilike.%${keyword}%,city.ilike.%${keyword}%`)
-
-  const { data, error } = await query
-  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ shops: data })
+  return NextResponse.json({ shops })
 }
 
 export async function POST(request: NextRequest) {
