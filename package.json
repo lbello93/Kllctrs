@@ -2,6 +2,14 @@
   "name": "kllctbls",
   "version": "0.1.0",
   "private": true,
+  "_securityNotes": [
+    "npm audit status (JSON has no comments, so this key documents it).",
+    "`npm audit fix` applied safe fixes; @vercel/functions is at latest (3.10.6) and its hono/MCP-SDK/fast-uri/body-parser advisories are resolved.",
+    "Remaining, requiring upgrades outside the current pins:",
+    "- next 16.2.4 (1 critical + bundled postcss high + sharp high): all fixed by next@16.4.4, a non-major bump. Pinned to 16.2.4 here; upgrade next and eslint-config-next together when ready, then rerun the build.",
+    "- dev/build tooling only (eslint stack, @tailwindcss/typography -> postcss-selector-parser, minimatch): npm's only offered fixes are destructive major downgrades (e.g. eslint-config-next@0.2.4), so they are deferred. These are not shipped to the browser.",
+    "Run `npm audit` for the live list."
+  ],
   "scripts": {
     "dev": "next dev",
     "build": "next build",

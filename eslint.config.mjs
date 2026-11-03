@@ -12,9 +12,6 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // Dead legacy tree, superseded by app/ + page-components/ and already
-    // excluded from typechecking.
-    "src/app-legacy/**",
   ]),
   {
     rules: {
