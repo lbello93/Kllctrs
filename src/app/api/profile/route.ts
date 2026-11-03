@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
+import type { TablesUpdate } from "@/types/database";
 
 export async function PATCH(req: NextRequest) {
   const supabase = await createClient();
@@ -41,7 +42,10 @@ export async function PATCH(req: NextRequest) {
     }
   }
 
-  const { error } = await supabase.from("profiles").update(update).eq("id", user.id);
+  const { error } = await supabase
+    .from("profiles")
+    .update(update as TablesUpdate<"profiles">)
+    .eq("id", user.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
 
   return NextResponse.json({ success: true });

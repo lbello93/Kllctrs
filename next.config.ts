@@ -6,9 +6,10 @@ const nextConfig: NextConfig = {
     "10.68.152.64",
   ],
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
-  // eslint ignore during builds is now handled via CLI flag, not next.config
+  // Next.js 16 removed the `eslint` config key and build-time linting.
+  // Linting runs separately via `npm run lint` (eslint).
   // Run: next build --no-lint  (or set in package.json build script)
   images: {
     remotePatterns: [

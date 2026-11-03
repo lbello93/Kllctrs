@@ -686,12 +686,126 @@ export type Database = {
         }
         Relationships: []
       }
+      analytics_locations: {
+        Row: {
+          city: string | null
+          country: string | null
+          created_at: string | null
+          id: string
+          ip: string | null
+          latitude: number | null
+          longitude: number | null
+          page: string | null
+          referrer: string | null
+          state: string | null
+          user_agent: string | null
+          visited_at: string
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          page?: string | null
+          referrer?: string | null
+          state?: string | null
+          user_agent?: string | null
+          visited_at?: string
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          created_at?: string | null
+          id?: string
+          ip?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          page?: string | null
+          referrer?: string | null
+          state?: string | null
+          user_agent?: string | null
+          visited_at?: string
+        }
+        Relationships: []
+      }
+      event_reviews: {
+        Row: {
+          comment: string
+          created_at: string
+          event_id: string
+          id: string
+          rating: number
+          reviewer_avatar_url: string | null
+          reviewer_name: string
+          user_id: string
+        }
+        Insert: {
+          comment: string
+          created_at?: string
+          event_id: string
+          id?: string
+          rating: number
+          reviewer_avatar_url?: string | null
+          reviewer_name: string
+          user_id: string
+        }
+        Update: {
+          comment?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          rating?: number
+          reviewer_avatar_url?: string | null
+          reviewer_name?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_reviews_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
-      [_ in never]: never
+      shop_favorite_counts: {
+        Row: {
+          city: string | null
+          favorite_count: number
+          name: string
+          shop_id: string
+          state: string | null
+        }
+        Relationships: []
+      }
+      event_save_counts: {
+        Row: {
+          city: string | null
+          event_id: string
+          name: string
+          save_count: number
+          state: string | null
+        }
+        Relationships: []
+      }
+      state_engagement_summary: {
+        Row: {
+          state: string | null
+          total_event_saves: number
+          total_shop_favorites: number
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
+      increment_sponsor_click: { Args: { sponsor_id: string }; Returns: undefined }
     }
     Enums: {
       [_ in never]: never
