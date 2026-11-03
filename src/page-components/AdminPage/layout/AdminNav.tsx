@@ -7,6 +7,7 @@ import {
   CalendarDays,
   FileText,
   Handshake,
+  Wand2,
   LayoutDashboard,
   Shield,
   Sparkles,
@@ -26,6 +27,7 @@ const NAV: { href: string; label: string; icon: LucideIcon }[] = [
   { href: "/admin/sponsors", label: "Sponsors", icon: Trophy },
   { href: "/admin/sponsorship-insights", label: "Insights", icon: Handshake },
   { href: "/admin/content-studio", label: "Content Studio", icon: Sparkles },
+  { href: "/admin/content", label: "Content Engine", icon: Wand2 },
   { href: "/admin/blog", label: "Blog", icon: FileText },
   { href: "/admin/users", label: "Users", icon: Users },
 ];

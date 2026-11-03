@@ -102,55 +102,79 @@ export type Database = {
       }
       content: {
         Row: {
+          ai_prompt_used: string | null
           author: string | null
           body: string
           category: string | null
           created_at: string | null
           event_id: string | null
+          excerpt: string | null
           id: string
+          is_ai_generated: boolean
           meta_description: string | null
           published_at: string | null
+          related_event_id: string | null
+          related_sponsor_id: string | null
+          seo_description: string | null
+          seo_title: string | null
           slug: string | null
           social_drafts: Json | null
           source_links: Json | null
           source_event_id: string | null
           status: string | null
+          tags: string[]
           title: string | null
           type: string
           updated_at: string | null
         }
         Insert: {
+          ai_prompt_used?: string | null
           author?: string | null
           body: string
           category?: string | null
           created_at?: string | null
           event_id?: string | null
+          excerpt?: string | null
           id?: string
+          is_ai_generated?: boolean
           meta_description?: string | null
           published_at?: string | null
+          related_event_id?: string | null
+          related_sponsor_id?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
           slug?: string | null
           social_drafts?: Json | null
           source_links?: Json | null
           source_event_id?: string | null
           status?: string | null
+          tags?: string[]
           title?: string | null
           type: string
           updated_at?: string | null
         }
         Update: {
+          ai_prompt_used?: string | null
           author?: string | null
           body?: string
           category?: string | null
           created_at?: string | null
           event_id?: string | null
+          excerpt?: string | null
           id?: string
+          is_ai_generated?: boolean
           meta_description?: string | null
           published_at?: string | null
+          related_event_id?: string | null
+          related_sponsor_id?: string | null
+          seo_description?: string | null
+          seo_title?: string | null
           slug?: string | null
           social_drafts?: Json | null
           source_links?: Json | null
           source_event_id?: string | null
           status?: string | null
+          tags?: string[]
           title?: string | null
           type?: string
           updated_at?: string | null
@@ -161,6 +185,20 @@ export type Database = {
             columns: ["event_id"]
             isOneToOne: false
             referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_related_event_id_fkey"
+            columns: ["related_event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "content_related_sponsor_id_fkey"
+            columns: ["related_sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "sponsors"
             referencedColumns: ["id"]
           },
           {
