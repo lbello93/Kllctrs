@@ -3,10 +3,16 @@ import { AbsoluteFill, Sequence } from "remotion";
 import { z } from "zod";
 
 import GradientBg from "../components/GradientBg";
-import AnimatedText from "../components/AnimatedText";
+import KineticText from "../components/KineticText";
+import BeatPulse from "../components/BeatPulse";
 import StatTile from "../components/StatTile";
+import AudioLayer from "../components/AudioLayer";
+import { SceneWipe } from "../components/TransitionWipe";
+import { framesPerBeat } from "../utils/beat-sync";
+import { commonVideoSchema, resolveTrack, trackBpm } from "./shared";
+import { VIDEO_FPS } from "../constants";
 
-export const weeklyRecapSchema = z.object({
+export const weeklyRecapSchema = commonVideoSchema.extend({
   weekStats: z.object({
     newEvents: z.number(),
     topSponsor: z.string(),
@@ -27,60 +33,128 @@ export const weeklyRecapDefaults: WeeklyRecapProps = {
   ],
 };
 
-export const WeeklyRecap: React.FC<WeeklyRecapProps> = ({ weekStats, events }) => {
+const S2 = 180; // stats scene
+const S3 = 440; // event list scene
+const S4 = 760; // outro scene
+
+export const WeeklyRecap: React.FC<WeeklyRecapProps> = ({
+  weekStats,
+  events,
+  audioTrack,
+  animationStyle = "kinetic",
+}) => {
+  const track = resolveTrack(audioTrack, "ambient");
+  const bpm = trackBpm(track);
+  const titleStyle = animationStyle === "minimal" ? "wipe" : "glitch";
+  // Stagger stat tiles by one beat each so they land on the music.
+  const beat = Math.round(framesPerBeat(VIDEO_FPS, bpm));
+
   return (
     <GradientBg variant="recap">
-      {/* Title */}
-      <Sequence from={0} durationInFrames={90}>
+      <AudioLayer track={track} volume={0.6} transitionFrames={[S2, S3, S4]} />
+
+      {/* Scene 1 — glitch title */}
+      <Sequence durationInFrames={S2 + 20}>
         <AbsoluteFill style={{ justifyContent: "center", alignItems: "center", padding: 90 }}>
-          <AnimatedText animation="pop" delay={4}>
-            <div style={{ color: "rgba(255,255,255,0.6)", fontSize: 40, fontWeight: 700, letterSpacing: 6, textAlign: "center" }}>
-              THIS WEEK IN
-            </div>
-          </AnimatedText>
-          <AnimatedText animation="slide-up" delay={12}>
-            <h1 style={{ color: "#fff", fontSize: 150, fontWeight: 900, margin: 0, textAlign: "center" }}>
-              CARDS
-            </h1>
-          </AnimatedText>
+          <KineticText
+            text="THIS WEEK IN"
+            style="wipe"
+            bpm={bpm}
+            startFrame={6}
+            as="div"
+            textStyle={{ color: "rgba(255,255,255,0.6)", fontSize: 44, fontWeight: 700, letterSpacing: 8, textAlign: "center" }}
+          />
+          <KineticText
+            text="CARDS"
+            style={titleStyle}
+            bpm={bpm}
+            startFrame={16}
+            as="h1"
+            textStyle={{ color: "#fff", fontSize: 170, fontWeight: 900, textAlign: "center" }}
+          />
         </AbsoluteFill>
       </Sequence>
 
-      {/* Stat tiles */}
-      <Sequence from={70} durationInFrames={160}>
+      <Sequence from={S2 - 14} durationInFrames={28} layout="none">
+        <SceneWipe style="glitch-cut" duration={28} color="#1a0a3d" />
+      </Sequence>
+
+      {/* Scene 2 — stat tiles on successive beats */}
+      <Sequence from={S2} durationInFrames={S3 - S2 + 20}>
         <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
           <div style={{ display: "flex", gap: 32, flexWrap: "wrap", justifyContent: "center" }}>
-            <StatTile value={weekStats.newEvents} label="New events" delay={0} />
-            <StatTile value={weekStats.topSponsor} label="Top sponsor" delay={10} accent="#b39ef9" />
-            <StatTile value={weekStats.trendingState} label="Trending state" delay={20} accent="#7c3aed" />
+            <BeatPulse bpm={bpm} intensity={0.06}>
+              <StatTile value={weekStats.newEvents} label="New events" delay={beat * 0} />
+            </BeatPulse>
+            <BeatPulse bpm={bpm} intensity={0.06}>
+              <StatTile value={weekStats.topSponsor} label="Top sponsor" delay={beat * 1} accent="#b39ef9" />
+            </BeatPulse>
+            <BeatPulse bpm={bpm} intensity={0.06}>
+              <StatTile value={weekStats.trendingState} label="Trending state" delay={beat * 2} accent="#7c3aed" />
+            </BeatPulse>
           </div>
         </AbsoluteFill>
       </Sequence>
 
-      {/* Event list */}
-      <Sequence from={220}>
+      <Sequence from={S3 - 14} durationInFrames={28} layout="none">
+        <SceneWipe style="slide-up" duration={28} color="#1a0a3d" />
+      </Sequence>
+
+      {/* Scene 3 — event list staggered wipes */}
+      <Sequence from={S3} durationInFrames={S4 - S3 + 20}>
         <AbsoluteFill style={{ justifyContent: "center", padding: 120 }}>
-          <AnimatedText animation="fade" delay={0} style={{ marginBottom: 30 }}>
-            <h2 style={{ color: "rgba(255,255,255,0.7)", fontSize: 44, fontWeight: 800, margin: 0, letterSpacing: 2 }}>
-              UPCOMING SHOWS
-            </h2>
-          </AnimatedText>
+          <KineticText
+            text="UPCOMING SHOWS"
+            style="wipe"
+            bpm={bpm}
+            as="h2"
+            textStyle={{ color: "rgba(255,255,255,0.7)", fontSize: 44, fontWeight: 800, letterSpacing: 2, marginBottom: 30 }}
+          />
           {events.slice(0, 5).map((event, i) => (
-            <AnimatedText key={`${event.name}-${i}`} animation="slide-left" delay={10 + i * 10} style={{ marginBottom: 20 }}>
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                  borderBottom: "2px solid rgba(255,255,255,0.12)",
-                  paddingBottom: 16,
-                }}
-              >
-                <span style={{ color: "#fff", fontSize: 44, fontWeight: 700 }}>{event.name}</span>
-                <span style={{ color: "#b39ef9", fontSize: 40, fontWeight: 800 }}>{event.date}</span>
-              </div>
-            </AnimatedText>
+            <KineticText
+              key={`${event.name}-${i}`}
+              text={`${event.name}   —   ${event.date}`}
+              style="wipe"
+              bpm={bpm}
+              startFrame={12 + i * 14}
+              as="div"
+              textStyle={{
+                color: "#fff",
+                fontSize: 46,
+                fontWeight: 700,
+                borderBottom: "2px solid rgba(255,255,255,0.12)",
+                paddingBottom: 16,
+                marginBottom: 20,
+              }}
+            />
           ))}
+        </AbsoluteFill>
+      </Sequence>
+
+      <Sequence from={S4 - 14} durationInFrames={28} layout="none">
+        <SceneWipe style="slide-left" duration={28} color="#1a0a3d" />
+      </Sequence>
+
+      {/* Scene 4 — outro / branding */}
+      <Sequence from={S4}>
+        <AbsoluteFill style={{ justifyContent: "center", alignItems: "center" }}>
+          <BeatPulse bpm={bpm} intensity={0.1} glow glowColor="#7c3aed">
+            <KineticText
+              text="KLLCTRS"
+              style={animationStyle === "minimal" ? "wipe" : "slam"}
+              bpm={bpm}
+              as="div"
+              textStyle={{ color: "#fff", fontSize: 130, fontWeight: 900, letterSpacing: 6 }}
+            />
+          </BeatPulse>
+          <KineticText
+            text="Follow the hobby, every week."
+            style="wipe"
+            bpm={bpm}
+            startFrame={18}
+            as="div"
+            textStyle={{ color: "rgba(255,255,255,0.7)", fontSize: 40, fontWeight: 600, marginTop: 20 }}
+          />
         </AbsoluteFill>
       </Sequence>
     </GradientBg>

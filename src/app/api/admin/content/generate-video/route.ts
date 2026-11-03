@@ -4,13 +4,15 @@ import slugify from "slugify";
 import { getAdminApiContext } from "@/lib/auth/apiGuard";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import { renderAndStoreVideo, VideoRenderError } from "@/lib/video/render";
-import { VIDEO_META, type VideoType } from "../../../../../../remotion/constants";
+import { VIDEO_META, type VideoType, type AnimationStyle } from "../../../../../../remotion/constants";
+import { AUDIO_TRACK_KEYS, type TrackKey } from "@/lib/video/audio-config";
 import type { TablesInsert } from "@/types/database";
 
 export const runtime = "nodejs";
 export const maxDuration = 300;
 
 const VALID_TYPES: VideoType[] = ["news", "sponsor", "event", "recap"];
+const VALID_STYLES: AnimationStyle[] = ["kinetic", "minimal", "dramatic"];
 
 export async function POST(request: Request) {
   const auth = await getAdminApiContext();
@@ -42,10 +44,26 @@ export async function POST(request: Request) {
       ? body.title.trim()
       : `${meta.label} video`;
 
+  // Optional presentation controls merged into the composition props.
+  const audioTrack =
+    typeof body.audioTrack === "string" && (AUDIO_TRACK_KEYS as string[]).includes(body.audioTrack)
+      ? (body.audioTrack as TrackKey)
+      : undefined;
+  const animationStyle =
+    typeof body.animationStyle === "string" && (VALID_STYLES as string[]).includes(body.animationStyle)
+      ? (body.animationStyle as AnimationStyle)
+      : undefined;
+
+  const renderData: Record<string, unknown> = {
+    ...(data as Record<string, unknown>),
+    ...(audioTrack ? { audioTrack } : {}),
+    ...(animationStyle ? { animationStyle } : {}),
+  };
+
   try {
     const result = await renderAndStoreVideo({
       type: videoType,
-      data: data as Record<string, unknown>,
+      data: renderData,
     });
 
     // Persist as a 'video' content row (draft) so it shows in the gallery / can be published.

@@ -4,19 +4,22 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Player } from "@remotion/player";
-import { ArrowLeft, Clapperboard, Download, Film, Loader2 } from "lucide-react";
+import { ArrowLeft, Clapperboard, Download, Film, Loader2, Music, Sparkles } from "lucide-react";
 
 import { NewsBreaking } from "../../../remotion/compositions/NewsBreaking";
 import { SponsorSpotlight } from "../../../remotion/compositions/SponsorSpotlight";
 import { EventPreview } from "../../../remotion/compositions/EventPreview";
 import { WeeklyRecap } from "../../../remotion/compositions/WeeklyRecap";
 import {
+  ANIMATION_STYLES,
   VIDEO_FPS,
   VIDEO_HEIGHT,
   VIDEO_META,
   VIDEO_WIDTH,
+  type AnimationStyle,
   type VideoType,
 } from "../../../remotion/constants";
+import { AUDIO_TRACKS, AUDIO_TRACK_KEYS, type TrackKey } from "@/lib/video/audio-config";
 
 export interface EventOption {
   id: string;
@@ -57,6 +60,14 @@ const COMPONENTS: Record<VideoType, React.ComponentType<any>> = {
   recap: WeeklyRecap,
 };
 
+// Thumbnail gradients mirror each composition's GradientBg variant.
+const THUMB: Record<VideoType, string> = {
+  news: "linear-gradient(135deg, #1a0505, #7f1010)",
+  sponsor: "linear-gradient(135deg, #1a0a3d, #5f2eea)",
+  event: "linear-gradient(135deg, #0a1a3d, #2e6cea)",
+  recap: "linear-gradient(135deg, #1a0a3d, #7c3aed)",
+};
+
 const field =
   "w-full rounded-lg border border-violet-200 bg-white px-3 py-2 text-sm text-[#1a0a3d] focus:border-violet-400 focus:outline-none focus:ring-2 focus:ring-violet-400/30";
 const labelCls = "mb-1 block text-xs font-bold text-[#4a3f6b]/70";
@@ -64,6 +75,14 @@ const labelCls = "mb-1 block text-xs font-bold text-[#4a3f6b]/70";
 export default function VideoStudioClient({ events, sponsors, videos }: Props) {
   const router = useRouter();
   const [type, setType] = useState<VideoType>("news");
+  const [audioTrack, setAudioTrack] = useState<TrackKey>(VIDEO_META.news.defaultTrack);
+  const [animationStyle, setAnimationStyle] = useState<AnimationStyle>("kinetic");
+
+  // Selecting a type resets the music to that type's default track.
+  const selectType = (t: VideoType) => {
+    setType(t);
+    setAudioTrack(VIDEO_META[t].defaultTrack);
+  };
 
   // Per-type prop state.
   const [news, setNews] = useState({
@@ -98,11 +117,14 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
 
   const toList = (s: string) => s.split(",").map((x) => x.trim()).filter(Boolean);
 
-  // Build the inputProps for the selected composition from the form state.
+  // Build the inputProps for the selected composition from the form state,
+  // including the shared audio-track + animation-style controls so the live
+  // preview matches what will be rendered.
   const inputProps = useMemo(() => {
+    const shared = { audioTrack, animationStyle };
     switch (type) {
       case "news":
-        return news;
+        return { ...news, ...shared };
       case "sponsor":
         return {
           sponsorName: sponsorProps.sponsorName,
@@ -110,6 +132,7 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
           eventCount: Number(sponsorProps.eventCount) || 0,
           states: toList(sponsorProps.states),
           topEvents: toList(sponsorProps.topEvents),
+          ...shared,
         };
       case "event":
         return {
@@ -118,6 +141,7 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
           city: eventProps.city,
           state: eventProps.state,
           sponsors: toList(eventProps.sponsors),
+          ...shared,
         };
       case "recap":
         return {
@@ -133,11 +157,13 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
               return name ? { name, date: date ?? "" } : null;
             })
             .filter((x): x is { name: string; date: string } => Boolean(x)),
+          ...shared,
         };
     }
-  }, [type, news, sponsorProps, eventProps, recapProps]);
+  }, [type, news, sponsorProps, eventProps, recapProps, audioTrack, animationStyle]);
 
   const meta = VIDEO_META[type];
+  const durationSeconds = Math.round(meta.durationInFrames / VIDEO_FPS);
 
   const fillFromEvent = (id: string) => {
     const ev = events.find((e) => e.id === id);
@@ -169,7 +195,13 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
       const res = await fetch("/api/admin/content/generate-video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type, data: inputProps, title: `${meta.label} — ${new Date().toLocaleDateString()}` }),
+        body: JSON.stringify({
+          type,
+          data: inputProps,
+          audioTrack,
+          animationStyle,
+          title: `${meta.label} — ${new Date().toLocaleDateString()}`,
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -199,28 +231,51 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
           <Clapperboard className="h-6 w-6 text-[#5f2eea]" /> Video Studio
         </h1>
         <p className="mt-1 text-sm text-[#4a3f6b]/60">
-          Generate motion-graphic videos from your data with Remotion, preview them live, then render to MP4.
+          Beat-synced motion graphics with Remotion — pick a format, fill the details, preview live, then render to MP4.
         </p>
       </header>
 
-      {/* Type selector */}
-      <div className="mb-5 flex flex-wrap gap-2">
-        {Object.values(VIDEO_META).map((m) => (
-          <button
-            key={m.type}
-            onClick={() => setType(m.type)}
-            className={`rounded-full px-4 py-2 text-sm font-semibold ${
-              type === m.type ? "bg-[#5f2eea] text-white" : "bg-violet-50 text-[#4a3f6b] hover:bg-violet-100"
-            }`}
-          >
-            {m.label}
-          </button>
-        ))}
+      {/* Video type picker */}
+      <div className="mb-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {Object.values(VIDEO_META).map((m) => {
+          const selected = type === m.type;
+          return (
+            <button
+              key={m.type}
+              onClick={() => selectType(m.type)}
+              className={`flex items-center gap-4 rounded-2xl border-2 bg-white p-3 text-left transition ${
+                selected
+                  ? "border-[#5f2eea] shadow-[0_8px_30px_rgba(95,46,234,0.18)]"
+                  : "border-violet-100 hover:border-violet-300"
+              }`}
+            >
+              <div
+                className="flex h-16 w-24 flex-shrink-0 items-center justify-center rounded-xl text-3xl"
+                style={{ background: THUMB[m.type] }}
+              >
+                {m.emoji}
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <p className="truncate text-sm font-black text-[#1a0a3d]">{m.label}</p>
+                  <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[10px] font-bold text-[#5f2eea]">
+                    ~{Math.round(m.durationInFrames / VIDEO_FPS)}s
+                  </span>
+                </div>
+                <p className="mt-0.5 line-clamp-2 text-xs text-[#4a3f6b]/60">{m.description}</p>
+              </div>
+            </button>
+          );
+        })}
       </div>
 
       <div className="grid grid-cols-1 gap-5 lg:grid-cols-[1fr_1.1fr]">
         {/* Form */}
         <section className="space-y-3 rounded-2xl border border-violet-100 bg-white p-5">
+          <p className="text-xs font-bold uppercase tracking-wide text-[#5f2eea]">
+            {meta.emoji} {meta.label} · {durationSeconds}s
+          </p>
+
           {type === "news" && (
             <>
               <Labeled label="Headline"><input className={field} value={news.headline} onChange={(e) => setNews({ ...news, headline: e.target.value })} /></Labeled>
@@ -285,6 +340,28 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
             </>
           )}
 
+          {/* Shared presentation controls */}
+          <div className="grid grid-cols-2 gap-3 border-t border-violet-100 pt-3">
+            <Labeled label={<span className="inline-flex items-center gap-1"><Music className="h-3 w-3" /> Audio track</span>}>
+              <select className={field} value={audioTrack} onChange={(e) => setAudioTrack(e.target.value as TrackKey)}>
+                {AUDIO_TRACK_KEYS.map((key) => (
+                  <option key={key} value={key}>
+                    {key} · {AUDIO_TRACKS[key].mood} ({AUDIO_TRACKS[key].bpm} BPM)
+                  </option>
+                ))}
+              </select>
+            </Labeled>
+            <Labeled label={<span className="inline-flex items-center gap-1"><Sparkles className="h-3 w-3" /> Animation style</span>}>
+              <select className={field} value={animationStyle} onChange={(e) => setAnimationStyle(e.target.value as AnimationStyle)}>
+                {ANIMATION_STYLES.map((s) => (
+                  <option key={s.value} value={s.value}>
+                    {s.label} — {s.hint}
+                  </option>
+                ))}
+              </select>
+            </Labeled>
+          </div>
+
           <button
             onClick={render}
             disabled={rendering}
@@ -330,6 +407,9 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
               loop
             />
           </div>
+          <p className="mt-2 px-1 text-xs text-white/50">
+            Preview plays music too — unmute with the player controls. Beats drive the flashes, pulses and stat timing.
+          </p>
         </section>
       </div>
 
@@ -364,7 +444,7 @@ export default function VideoStudioClient({ events, sponsors, videos }: Props) {
   );
 }
 
-function Labeled({ label, children }: { label: string; children: React.ReactNode }) {
+function Labeled({ label, children }: { label: React.ReactNode; children: React.ReactNode }) {
   return (
     <div>
       <span className={labelCls}>{label}</span>

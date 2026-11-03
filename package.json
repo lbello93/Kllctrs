@@ -15,7 +15,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "seed:shops": "tsx scripts/seed-shops.ts"
+    "seed:shops": "tsx scripts/seed-shops.ts",
+    "setup:audio": "npx tsx scripts/download-sample-audio.ts"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.115.0",
@@ -24,6 +25,7 @@
     "@radix-ui/react-dialog": "^1.1.16",
     "@remotion/bundler": "^4.0.370",
     "@remotion/cli": "^4.0.370",
+    "@remotion/media": "4.0.370",
     "@remotion/player": "^4.0.370",
     "@remotion/renderer": "^4.0.370",
     "@supabase/ssr": "^0.10.2",
