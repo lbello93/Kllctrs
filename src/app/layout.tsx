@@ -4,7 +4,7 @@ import { Toaster } from "sonner";
 
 import "./globals.css";
 import { Navbar } from "@/page-components/navbar/Navbar";
-import ChatPage from "@/page-components/ChatPage/ChatPage";
+import ChatWidget from "@/page-components/chat/ChatWidget";
 import AnalyticsTracker from "@/page-components/shared/AnalyticsTracker";
 import CookieBanner from "@/page-components/shared/CookieBanner";
 import { inter, spaceGrotesk, unica } from "@/lib/fonts";
@@ -32,7 +32,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <Navbar />
         {children}
-        <ChatPage />
+        <ChatWidget />
 
         <Suspense fallback={null}>
           <AnalyticsTracker />
