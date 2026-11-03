@@ -9,28 +9,69 @@ export async function GET(request: NextRequest) {
   const supabase = await createClient()
   const { searchParams } = new URL(request.url)
 
-  const state    = searchParams.get('state')
-  const city     = searchParams.get('city')
-  const keyword  = searchParams.get('keyword')
-  const dateFrom = searchParams.get('dateFrom')
-  const dateTo   = searchParams.get('dateTo')
+  const state     = searchParams.get('state')
+  const city      = searchParams.get('city')
+  // Accept both the new (search/startDate/endDate) and legacy
+  // (keyword/dateFrom/dateTo) param names so existing callers keep working.
+  const search    = searchParams.get('search') ?? searchParams.get('keyword')
+  const startDate = searchParams.get('startDate') ?? searchParams.get('dateFrom')
+  const endDate   = searchParams.get('endDate') ?? searchParams.get('dateTo')
+  const type      = searchParams.get('type')
+  const hasSponsors = searchParams.get('hasSponsors') === 'true'
+
+  const page  = Math.max(1, Number(searchParams.get('page')) || 1)
+  const limit = Math.min(50, Math.max(1, Number(searchParams.get('limit')) || 20))
+  const from  = (page - 1) * limit
+  const to    = from + limit - 1
 
   let query = supabase
     .from('events')
-    .select('*')
+    .select('*', { count: 'exact' })
     .eq('status', 'approved')
     .order('date_start', { ascending: true })
 
-  if (state)    query = query.eq('state', state)
-  if (city)     query = query.ilike('city', `%${city}%`)
-  if (keyword)  query = query.or(`name.ilike.%${keyword}%,venue_name.ilike.%${keyword}%,city.ilike.%${keyword}%`)
-  if (dateFrom) query = query.gte('date_start', dateFrom)
-  if (dateTo)   query = query.lte('date_start', dateTo)
+  if (state)     query = query.eq('state', state)
+  if (city)      query = query.ilike('city', `%${city}%`)
+  if (type)      query = query.eq('event_type', type)
+  if (search)    query = query.or(`name.ilike.%${search}%,venue_name.ilike.%${search}%,city.ilike.%${search}%`)
+  if (startDate) query = query.gte('date_start', startDate)
+  if (endDate)   query = query.lte('date_start', endDate)
 
-  const { data, error } = await query
+  const { data, error, count } = await query.range(from, to)
 
   if (error) return NextResponse.json({ error: error.message }, { status: 500 })
-  return NextResponse.json({ events: data })
+
+  const rows = data ?? []
+
+  // Count tiered sponsors from the junction for this page of events.
+  const ids = rows.map((e) => e.id)
+  const junctionTally = new Map<string, number>()
+  if (ids.length > 0) {
+    const { data: links } = await supabase
+      .from('event_sponsors')
+      .select('event_id')
+      .in('event_id', ids)
+    for (const link of links ?? []) {
+      junctionTally.set(link.event_id, (junctionTally.get(link.event_id) ?? 0) + 1)
+    }
+  }
+
+  const events = rows.map((row) => {
+    // Fall back to the legacy sponsors array when the junction is empty.
+    const sponsorCount = junctionTally.get(row.id) || row.sponsors?.length || 0
+    return { ...row, sponsorCount }
+  })
+
+  // "Has sponsors" is applied after counting so the fallback array is honored.
+  const filtered = hasSponsors ? events.filter((e) => e.sponsorCount > 0) : events
+
+  return NextResponse.json({
+    events: filtered,
+    page,
+    limit,
+    total: count ?? filtered.length,
+    totalPages: count ? Math.ceil(count / limit) : 1,
+  })
 }
 
 export async function POST(request: NextRequest) {

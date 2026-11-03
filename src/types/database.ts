@@ -220,13 +220,17 @@ export type Database = {
           created_at: string | null
           date_end: string | null
           date_start: string
+          event_type: string | null
           id: string
+          is_featured: boolean | null
+          is_verified: boolean | null
           lat: number | null
           lng: number | null
           name: string
           slug: string
           social_links: Json | null
           source: string | null
+          source_url: string | null
           sponsors: string[] | null
           state: string
           status: string | null
@@ -248,13 +252,17 @@ export type Database = {
           created_at?: string | null
           date_end?: string | null
           date_start: string
+          event_type?: string | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
           name: string
           slug: string
           social_links?: Json | null
           source?: string | null
+          source_url?: string | null
           sponsors?: string[] | null
           state: string
           status?: string | null
@@ -276,13 +284,17 @@ export type Database = {
           created_at?: string | null
           date_end?: string | null
           date_start?: string
+          event_type?: string | null
           id?: string
+          is_featured?: boolean | null
+          is_verified?: boolean | null
           lat?: number | null
           lng?: number | null
           name?: string
           slug?: string
           social_links?: Json | null
           source?: string | null
+          source_url?: string | null
           sponsors?: string[] | null
           state?: string
           status?: string | null
@@ -296,6 +308,42 @@ export type Database = {
           zip_code?: string | null
         }
         Relationships: []
+      }
+      event_sponsors: {
+        Row: {
+          created_at: string
+          event_id: string
+          sponsor_id: string
+          tier: "title" | "gold" | "silver" | "exhibitor"
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          sponsor_id: string
+          tier?: "title" | "gold" | "silver" | "exhibitor"
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          sponsor_id?: string
+          tier?: "title" | "gold" | "silver" | "exhibitor"
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_sponsors_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_sponsors_sponsor_id_fkey"
+            columns: ["sponsor_id"]
+            isOneToOne: false
+            referencedRelation: "sponsors"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {

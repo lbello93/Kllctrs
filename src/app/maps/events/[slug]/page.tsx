@@ -9,8 +9,16 @@ import EventAbout from "@/components/events/detail/EventAbout";
 import EventReviews from "@/components/events/detail/EventReviews";
 import EventReviewCTA from "@/components/events/detail/EventReviewCTA";
 import RecommendedShows from "@/components/events/detail/RecommendedShows";
+import EventSponsors, {
+  type EventSponsor,
+  type SponsorTierGroup,
+} from "@/components/events/detail/EventSponsors";
+import ShareButtons from "@/components/events/detail/ShareButtons";
+import EventDetailMap from "@/page-components/MapsPage/map/EventsDetailMap";
 
 import type { Event, EventReview } from "@/types";
+
+const SPONSOR_TIER_ORDER = ["title", "gold", "silver", "exhibitor"] as const;
 
 interface Params {
   params: Promise<{ slug: string }>;
@@ -79,6 +87,29 @@ export default async function EventDetailPage({ params }: Params) {
   const avgRating = reviews.length
     ? reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length
     : null;
+
+  // Tiered sponsors from the junction, with a fallback to the legacy array.
+  const { data: sponsorLinks } = await supabase
+    .from("event_sponsors")
+    .select("sponsor_id,tier")
+    .eq("event_id", typedEvent.id);
+  const sponsorIds = (sponsorLinks ?? []).map((l) => l.sponsor_id);
+  const sponsorById = new Map<string, EventSponsor>();
+  if (sponsorIds.length > 0) {
+    const { data: sponsorRows } = await supabase
+      .from("sponsors")
+      .select("id,slug,name,logo_url,tagline,category")
+      .in("id", sponsorIds);
+    for (const s of sponsorRows ?? []) sponsorById.set(s.id, s as EventSponsor);
+  }
+  const sponsorTiers: SponsorTierGroup[] = SPONSOR_TIER_ORDER.map((tier) => ({
+    tier,
+    sponsors: (sponsorLinks ?? [])
+      .filter((l) => l.tier === tier)
+      .map((l) => sponsorById.get(l.sponsor_id))
+      .filter((s): s is EventSponsor => Boolean(s)),
+  }));
+  const fallbackSponsorNames = event.sponsors ?? [];
 
   const today = new Date().toISOString().split("T")[0];
 
@@ -166,12 +197,15 @@ export default async function EventDetailPage({ params }: Params) {
         />
 
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-7 px-5 py-8 sm:px-8 md:gap-9 md:px-10 md:py-12 lg:px-12">
-          <Link
-            href="/maps"
-            className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E4DDF1] bg-white px-4 py-2 text-sm font-medium text-[#5B18BE] transition hover:border-[#B39EF9] hover:bg-[#F8F5FF]"
-          >
-            <span aria-hidden="true">←</span> All shows
-          </Link>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <Link
+              href="/maps"
+              className="inline-flex w-fit items-center gap-2 rounded-full border border-[#E4DDF1] bg-white px-4 py-2 text-sm font-medium text-[#5B18BE] transition hover:border-[#B39EF9] hover:bg-[#F8F5FF]"
+            >
+              <span aria-hidden="true">←</span> All shows
+            </Link>
+            <ShareButtons title={typedEvent.name} />
+          </div>
 
           <EventQuickFacts
             event={typedEvent}
@@ -180,10 +214,23 @@ export default async function EventDetailPage({ params }: Params) {
             reviewCount={reviews.length}
           />
 
+          <EventSponsors tiers={sponsorTiers} fallbackNames={fallbackSponsorNames} />
+
           <div className="grid min-w-0 grid-cols-1 items-start gap-6 lg:grid-cols-[minmax(0,1.45fr)_minmax(340px,0.85fr)] xl:gap-8">
             <EventAbout event={typedEvent} />
             <EventReviews reviews={reviews} />
           </div>
+
+          {typedEvent.lat && typedEvent.lng && (
+            <section className="overflow-hidden rounded-2xl border border-[#EEE9F7] bg-white">
+              <div className="border-b border-[#EEE9F7] px-5 py-3">
+                <h2 className="font-space-grotesk text-lg font-bold tracking-tight text-[#151E3C]">Location</h2>
+              </div>
+              <div className="h-[320px] w-full">
+                <EventDetailMap lat={typedEvent.lat} lng={typedEvent.lng} name={typedEvent.name} />
+              </div>
+            </section>
+          )}
 
           <EventReviewCTA eventId={typedEvent.id} />
 
