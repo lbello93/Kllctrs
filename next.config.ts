@@ -46,6 +46,26 @@ const nextConfig: NextConfig = {
       {
         source: "/:path*",
         headers: [
+          {
+            key: "Content-Security-Policy",
+            value: [
+              "default-src 'self'",
+              // Next.js injects inline bootstrap scripts; Google Maps loads from
+              // its own origins. A nonce-based policy would need middleware.
+              "script-src 'self' 'unsafe-inline' https://maps.googleapis.com https://*.gstatic.com",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "img-src 'self' data: blob: https://*.supabase.co https://*.ebay.com https://*.googleapis.com https://*.gstatic.com https://*.ggpht.com",
+              "font-src 'self' data: https://fonts.gstatic.com",
+              "connect-src 'self' https://*.supabase.co wss://*.supabase.co https://*.googleapis.com",
+              "frame-src 'self' https://*.google.com",
+              "worker-src 'self' blob:",
+              "object-src 'none'",
+              "base-uri 'self'",
+              "form-action 'self'",
+              "frame-ancestors 'none'",
+              "upgrade-insecure-requests",
+            ].join("; "),
+          },
           { key: "Strict-Transport-Security", value: "max-age=31536000" },
           { key: "X-Content-Type-Options", value: "nosniff" },
           { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
