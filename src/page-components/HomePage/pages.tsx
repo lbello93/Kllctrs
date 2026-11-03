@@ -3,12 +3,14 @@ import ContentSection from "./homecomponent/contentSection";
 import CTASection from "./homecomponent/CTASection";
 import ExploreSection from "./homecomponent/ExploreSection";
 import HeroSection from "./homecomponent/HeroSection";
+import IndustryHubSection from "./homecomponent/IndustryHubSection";
 import ShopShowcase from "./homecomponent/ShopShowcase";
 
 export default function HomePageSections() {
   return (
     <div className="min-h-screen overflow-hidden bg-[#f4f3fb]">
       <HeroSection />
+      <IndustryHubSection />
       <AboutSection />
       <ExploreSection />
       <ShopShowcase />

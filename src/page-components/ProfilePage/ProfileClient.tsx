@@ -9,6 +9,7 @@ import type { OnboardingStep, ProfileClientProps } from "@/lib/profile/types";
 import ProfileHero from "./hero/ProfileHero";
 import SavedShops from "./shops/SavedShops";
 import SavedEvents from "./events/SavedEvents";
+import ProfileActivity from "./activity/ProfileActivity";
 
 import ProfileOnboarding from "./onboarding/ProfileOnboarding";
 import { Bookmark, CalendarDays, Store } from "lucide-react";
@@ -18,6 +19,7 @@ export default function ProfileClient({
   profile,
   savedShops,
   savedEvents,
+  activity,
 }: ProfileClientProps) {
   // /profile?edit=welcome opens the edit flow at that step.
   const searchParams = useSearchParams();
@@ -96,6 +98,7 @@ export default function ProfileClient({
         <div className="space-y-12">
         <SavedEvents events={savedEvents} />
         <SavedShops shops={savedShops} />
+        {activity && <ProfileActivity activity={activity} />}
         </div>
       </div>
     </div>

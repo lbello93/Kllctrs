@@ -37,12 +37,12 @@ function readingTime(body: string | null): number {
 export async function generateMetadata({ params }: Params): Promise<Metadata> {
   const { slug } = await params;
   const post = await loadPost(slug);
-  if (!post) return { title: "Post not found | KLLCTRS" };
+  if (!post) return { title: "Post not found" };
 
   const title = post.seo_title || post.title || "KLLCTRS";
   const description = post.seo_description || post.meta_description || post.excerpt || undefined;
   return {
-    title: `${title} | KLLCTRS`,
+    title,
     description,
     keywords: post.tags ?? undefined,
     openGraph: { title, description: description ?? undefined, type: "article" },

@@ -62,9 +62,35 @@ export interface OnboardingData {
   notifications: string[];
 }
 
+export interface SubmittedShopSummary {
+  id: string;
+  name: string;
+  slug: string | null;
+  city: string | null;
+  state: string | null;
+  status: string | null;
+  is_verified: boolean | null;
+}
+
+export interface UserReviewSummary {
+  id: string;
+  rating: number;
+  comment: string | null;
+  target: string;
+  href: string | null;
+  kind: "event" | "shop";
+}
+
+export interface ProfileActivityData {
+  submittedShops: SubmittedShopSummary[];
+  reviews: UserReviewSummary[];
+  chatThreadCount: number;
+}
+
 export interface ProfileClientProps {
   user: User;
   profile: Profile | null;
   savedShops: Shop[];
   savedEvents: Event[];
+  activity?: ProfileActivityData;
 }
