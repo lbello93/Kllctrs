@@ -909,6 +909,18 @@ export type Database = {
         }
         Relationships: []
       }
+      sponsor_analytics: {
+        Row: {
+          category: string | null
+          events_this_year: number
+          name: string | null
+          sponsor_id: string
+          states_present_in: string[] | null
+          top_tier_count: number
+          total_events_sponsored: number
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_admin: { Args: never; Returns: boolean }
