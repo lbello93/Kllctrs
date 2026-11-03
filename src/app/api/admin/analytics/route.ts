@@ -9,40 +9,16 @@
 
 import { NextRequest, NextResponse } from "next/server";
 
-import { createClient } from "@/lib/supabase/server";
+import { getAdminApiContext } from "@/lib/auth/apiGuard";
 import {
   ANALYTICS_RANGES,
   getAnalytics,
   type AnalyticsRange,
 } from "@/lib/analytics/queries";
 
-async function requireAdmin() {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) return { ok: false as const, status: 401, error: "Unauthorized" };
-
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("role")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") {
-    return { ok: false as const, status: 403, error: "Forbidden" };
-  }
-
-  return { ok: true as const };
-}
-
 export async function GET(request: NextRequest) {
-  const auth = await requireAdmin();
-  if (!auth.ok) {
-    return NextResponse.json({ error: auth.error }, { status: auth.status });
-  }
+  const auth = await getAdminApiContext();
+  if (!auth.ok) return auth.response;
 
   const requested = request.nextUrl.searchParams.get("range");
   const range: AnalyticsRange = ANALYTICS_RANGES.includes(

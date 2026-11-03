@@ -1,23 +1,14 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
 
-import { createClient } from "@/lib/supabase/server";
+import { getAdminApiContext } from "@/lib/auth/apiGuard";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! });
 
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { ok: false as const, status: 401 };
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return { ok: false as const, status: 403 };
-  return { ok: true as const };
-}
-
 export async function POST(_request: Request, { params }: { params: Promise<{ id: string }> }) {
-  const auth = await requireAdmin();
-  if (!auth.ok) return NextResponse.json({ error: "Unauthorized" }, { status: auth.status });
+  const auth = await getAdminApiContext();
+  if (!auth.ok) return auth.response;
 
   const { id } = await params;
   const { data: article, error } = await supabaseAdmin.from("content").select("id, title, body, meta_description, slug, status, source_event_id").eq("id", id).single();

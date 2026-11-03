@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 import { createImportPipeline } from "@/lib/tcdb/factory/create-import-pipeline";
 import { parseEventDetail } from "@/lib/tcdb/parser/detail-parser";
-import { createClient } from "@/lib/supabase/server";
+import { getAdminApiContext } from "@/lib/auth/apiGuard";
 
 import { SportsCollectorDigestScraper } from "@/lib/tcdb/services/sports-collector-digest-scrapper";
 import { hasWrittenSourcePermission } from "@/lib/events/source-access";
@@ -16,41 +16,16 @@ export async function POST(
 // Authentication
 //------------------------------------------------
 
-const supabase = await createClient();
+const auth = await getAdminApiContext();
 
-const {
-  data: { user },
-} = await supabase.auth.getUser();
-
-if (!user) {
+if (!auth.ok) {
   return NextResponse.json(
     {
       success: false,
-      error: "Unauthorized",
+      error: auth.response.status === 401 ? "Unauthorized" : "Forbidden",
     },
     {
-      status: 401,
-    }
-  );
-}
-
-const { data: profile } = await supabase
-  .from("profiles")
-  .select("role")
-  .eq("id", user.id)
-  .single();
-
-if (
-  profile?.role !== "admin" &&
-  profile?.role !== "super_admin"
-) {
-  return NextResponse.json(
-    {
-      success: false,
-      error: "Forbidden",
-    },
-    {
-      status: 403,
+      status: auth.response.status,
     }
   );
 }

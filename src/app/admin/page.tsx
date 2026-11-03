@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 
 import { createClient } from "@/lib/supabase/server";
+import { isAdminRole } from "@/lib/auth/roles";
 import { redirect } from "next/navigation";
 export const metadata = { title: "Admin Dashboard | KLLCTRS" };
 
@@ -34,9 +35,9 @@ export default async function AdminOverviewPage() {
     .eq("id", user.id)
     .single();
 
-  // if (profile?.role !== "admin") {
-  //   redirect("/");
-  // }
+  if (!isAdminRole(profile?.role)) {
+    redirect("/");
+  }
   const [
     eventsApproved,
     eventsPending,

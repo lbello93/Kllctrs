@@ -1,24 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { GoogleGenAI } from '@google/genai'
-import { createClient } from '@/lib/supabase/server'
+import { getAdminApiContext } from '@/lib/auth/apiGuard'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 import slugify from 'slugify'
 
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY! })
 
-async function requireAdmin() {
-  const supabase = await createClient()
-  const { data: { user } } = await supabase.auth.getUser()
-  if (!user) return { ok: false as const, status: 401, error: 'Unauthorized' }
-  const { data: profile } = await supabase
-    .from('profiles').select('role').eq('id', user.id).single()
-  if (profile?.role !== 'admin') return { ok: false as const, status: 403, error: 'Forbidden' }
-  return { ok: true as const, user }
-}
-
 export async function POST(req: NextRequest) {
-  const auth = await requireAdmin()
-  if (!auth.ok) return NextResponse.json({ error: auth.error }, { status: auth.status })
+  const auth = await getAdminApiContext()
+  if (!auth.ok) return auth.response
 
   const { event_id } = await req.json()
   if (!event_id) return NextResponse.json({ error: 'event_id required' }, { status: 400 })

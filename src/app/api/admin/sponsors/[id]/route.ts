@@ -1,17 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 
-import { createClient } from "@/lib/supabase/server";
+import { getAdminApiContext } from "@/lib/auth/apiGuard";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 import type { TablesUpdate } from "@/types/database";
-
-async function requireAdmin() {
-  const supabase = await createClient();
-  const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return { ok: false as const, status: 401 };
-  const { data: profile } = await supabase.from("profiles").select("role").eq("id", user.id).single();
-  if (profile?.role !== "admin") return { ok: false as const, status: 403 };
-  return { ok: true as const };
-}
 
 function parseList(value: unknown): string[] | undefined {
   if (Array.isArray(value) && value.every((item) => typeof item === "string")) {
@@ -22,8 +13,8 @@ function parseList(value: unknown): string[] | undefined {
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const auth = await requireAdmin();
-  if (!auth.ok) return NextResponse.json({ error: "Unauthorized" }, { status: auth.status });
+  const auth = await getAdminApiContext();
+  if (!auth.ok) return auth.response;
   const { id } = await params;
   let body: unknown;
   try { body = await request.json(); } catch { return NextResponse.json({ error: "Invalid request" }, { status: 400 }); }
@@ -53,8 +44,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
 }
 
 export async function DELETE(_request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  const auth = await requireAdmin();
-  if (!auth.ok) return NextResponse.json({ error: "Unauthorized" }, { status: auth.status });
+  const auth = await getAdminApiContext();
+  if (!auth.ok) return auth.response;
   const { id } = await params;
   const { error } = await supabaseAdmin.from("sponsors").delete().eq("id", id);
   if (error) return NextResponse.json({ error: "Could not delete brand" }, { status: 500 });

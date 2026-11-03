@@ -1,5 +1,6 @@
 import SubmitEventForm from "@/components/events/SubmitEventForm";
 import { createClient } from "@/lib/supabase/server";
+import { isAdminRole } from "@/lib/auth/roles";
 import { notFound } from "next/navigation";
 
 interface Props {
@@ -35,7 +36,7 @@ export default async function EditEventPage({ params }: Props) {
     .eq("id", user.id)
     .single();
 
-  if (profile?.role !== "admin" && profile?.role !== "super_admin") {
+  if (!isAdminRole(profile?.role)) {
     notFound();
   }
 
