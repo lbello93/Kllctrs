@@ -6,6 +6,7 @@ import Link from "next/link";
 import { X, PanelLeft } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
+import { trackEvent } from "@/lib/analytics";
 import ChatMessage from "./ChatMessage";
 import ChatInput from "./ChatInput";
 import ChatSidebar from "./ChatSidebar";
@@ -100,6 +101,7 @@ export default function ChatWidget() {
           return next;
         });
 
+      trackEvent("chatbot_query");
       try {
         const res = await fetch("/api/chat", {
           method: "POST",

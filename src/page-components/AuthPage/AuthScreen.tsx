@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Loader2, MailCheck, TriangleAlert } from "lucide-react";
 
 import { safeRedirect } from "@/lib/auth/safeRedirect";
+import { trackEvent } from "@/lib/analytics";
 import {
   bodyM,
   headingM,
@@ -109,6 +110,7 @@ function SignInForm({
       return;
     }
 
+    trackEvent("login");
     router.push(redirectTo);
     router.refresh();
   }
@@ -136,6 +138,12 @@ function SignInForm({
         onChange={(e) => setPassword(e.target.value)}
         placeholder="Your password"
       />
+
+      <div className="-mt-2 text-right">
+        <a href="/auth/reset-password" className="text-xs font-medium text-[#5f2eea] hover:underline">
+          Forgot password?
+        </a>
+      </div>
 
       {error && <ErrorBanner message={error} />}
 
@@ -225,6 +233,7 @@ function SignUpForm({ onSuccess }: { onSuccess: (email: string) => void }) {
     }
 
     setLoading(false);
+    trackEvent("signup");
     onSuccess(cleanEmail);
   }
 

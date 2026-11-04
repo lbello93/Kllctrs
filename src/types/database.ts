@@ -397,13 +397,17 @@ export type Database = {
           alert_states: string[] | null
           avatar_url: string | null
           bio: string | null
+          cards_count: number | null
           city: string | null
+          collecting_since: string | null
           created_at: string | null
           display_name: string | null
           email: string | null
+          events_attended: number | null
           favorite_categories: string[] | null
           grading_preference: string | null
           id: string
+          location: string | null
           role: string | null
           saved_events: string[] | null
           saved_shops: string[] | null
@@ -417,13 +421,17 @@ export type Database = {
           alert_states?: string[] | null
           avatar_url?: string | null
           bio?: string | null
+          cards_count?: number | null
           city?: string | null
+          collecting_since?: string | null
           created_at?: string | null
           display_name?: string | null
           email?: string | null
+          events_attended?: number | null
           favorite_categories?: string[] | null
           grading_preference?: string | null
           id: string
+          location?: string | null
           role?: string | null
           saved_events?: string[] | null
           saved_shops?: string[] | null
@@ -437,13 +445,17 @@ export type Database = {
           alert_states?: string[] | null
           avatar_url?: string | null
           bio?: string | null
+          cards_count?: number | null
           city?: string | null
+          collecting_since?: string | null
           created_at?: string | null
           display_name?: string | null
           email?: string | null
+          events_attended?: number | null
           favorite_categories?: string[] | null
           grading_preference?: string | null
           id?: string
+          location?: string | null
           role?: string | null
           saved_events?: string[] | null
           saved_shops?: string[] | null

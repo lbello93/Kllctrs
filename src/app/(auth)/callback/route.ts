@@ -14,6 +14,9 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
+  // Only allow internal, same-origin relative paths as the post-verify target.
+  const nextParam = searchParams.get("next");
+  const safeNext = nextParam && /^\/(?!\/)/.test(nextParam) ? nextParam : null;
 
   const fail = (message: string) =>
     NextResponse.redirect(
@@ -76,7 +79,10 @@ export async function GET(request: NextRequest) {
       }
     }
 
-    return NextResponse.redirect(`${origin}/profile`);
+    // Password recovery (and any explicit next) lands on its target page;
+    // normal verification lands on the profile.
+    const dest = safeNext ?? (type === "recovery" ? "/auth/update-password" : "/profile");
+    return NextResponse.redirect(`${origin}${dest}`);
   } catch (err) {
     console.error("[callback] unexpected error:", err);
     return fail("Something went wrong. Please try again.");

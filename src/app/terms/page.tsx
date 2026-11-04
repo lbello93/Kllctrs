@@ -195,10 +195,10 @@ export default function TermsPage() {
               <p>
                 For questions about these terms, contact us at{" "}
                 <a
-                  href="mailto:legal@kllctbls.com"
+                  href="mailto:legal@kllctrs.com"
                   className="font-medium text-violet-600 underline underline-offset-2 hover:text-violet-700"
                 >
-                  legal@kllctbls.com
+                  legal@kllctrs.com
                 </a>
                 .
               </p>

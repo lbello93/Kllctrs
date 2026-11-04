@@ -173,10 +173,10 @@ export default function PrivacyPage() {
               <p>
                 For privacy questions or data requests, contact us at{" "}
                 <a
-                  href="mailto:privacy@kllctbls.com"
+                  href="mailto:privacy@kllctrs.com"
                   className="font-medium text-violet-600 underline underline-offset-2 hover:text-violet-700"
                 >
-                  privacy@kllctbls.com
+                  privacy@kllctrs.com
                 </a>
                 .
               </p>

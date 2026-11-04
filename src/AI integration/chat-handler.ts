@@ -178,7 +178,7 @@ export async function handleChatPost(req: NextRequest) {
     let response = await ai.models.generateContent({
       model: GEMINI_MODEL,
       contents,
-      config: { tools, systemInstruction: systemInstruction(message) },
+      config: { tools, systemInstruction: systemInstruction(message), maxOutputTokens: 800 },
     });
 
     let safety = 0;
@@ -199,7 +199,7 @@ export async function handleChatPost(req: NextRequest) {
       response = await ai.models.generateContent({
         model: GEMINI_MODEL,
         contents,
-        config: { tools, systemInstruction: systemInstruction(message) },
+        config: { tools, systemInstruction: systemInstruction(message), maxOutputTokens: 800 },
       });
     }
 
@@ -223,7 +223,7 @@ export async function handleChatPost(req: NextRequest) {
           const modelStream = await ai.models.generateContentStream({
             model: GEMINI_MODEL,
             contents,
-            config: { systemInstruction: systemInstruction(message) },
+            config: { systemInstruction: systemInstruction(message), maxOutputTokens: 800 },
           });
           for await (const chunk of modelStream) {
             const token = chunk.text;
