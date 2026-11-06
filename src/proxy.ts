@@ -59,9 +59,23 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  // Protected user routes: send unauthenticated visitors to login.
+  if (pathname.startsWith("/profile")) {
+    if (!user) {
+      const loginUrl = new URL("/login", request.url);
+      loginUrl.searchParams.set("redirect", `${pathname}${search}`);
+      return NextResponse.redirect(loginUrl);
+    }
+  }
+
+  // Already signed in → keep them out of the auth pages.
+  if (user && pathname === "/login") {
+    return NextResponse.redirect(new URL("/", request.url));
+  }
+
   return response;
 }
 
 export const config = {
-  matcher: ["/admin/:path*", "/api/admin/:path*"],
+  matcher: ["/admin/:path*", "/api/admin/:path*", "/profile/:path*", "/login"],
 };

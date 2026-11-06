@@ -82,7 +82,7 @@ export function Navbar() {
   }, [router, supabase]);
 
   const handleSignOut = async () => {
-    await fetch("/auth/logout", { method: "POST" });
+    await supabase.auth.signOut();
     setMobileMenuOpen(false);
     router.push("/");
     router.refresh();

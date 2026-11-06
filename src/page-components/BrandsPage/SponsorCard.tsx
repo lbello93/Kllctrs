@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { format, parseISO } from "date-fns";
-import { ArrowRight, Globe } from "lucide-react";
+import { ArrowRight, ArrowUpRight, Bookmark, Globe } from "lucide-react";
 
 import { getSponsorLogo } from "@/lib/sponsors/sponsorLogos";
 import {
@@ -77,13 +77,28 @@ export default function SponsorCard({ sponsor, stats }: Props) {
           </div>
         </Link>
 
-        <div className="shrink-0 text-right">
-          <p className="font-space-grotesk text-[24px] leading-[28px] text-[#151E3C]">
-            {stats.left}
+        <div className="shrink-0 rounded-lg border border-[#CBBEFB] px-3 py-1.5 text-center">
+          <p className="font-inter text-[10px] leading-3 text-[#151E3C]/50">
+            this year
           </p>
-          <p className="font-inter text-[11px] leading-[14px] text-[#151E3C]/55">
-            of {stats.total} left
-          </p>
+          <div className="mt-1 flex items-center gap-3">
+            <div className="flex flex-col items-center">
+              <span className="font-inter text-[18px] font-semibold leading-5 text-[#151E3C]">
+                {stats.left}
+              </span>
+              <span className="font-inter text-[10px] leading-3 text-[#151E3C]/55">
+                left
+              </span>
+            </div>
+            <div className="flex flex-col items-center">
+              <span className="font-inter text-[18px] font-semibold leading-5 text-[#151E3C]">
+                {stats.total}
+              </span>
+              <span className="font-inter text-[10px] leading-3 text-[#151E3C]/55">
+                total
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -94,20 +109,9 @@ export default function SponsorCard({ sponsor, stats }: Props) {
       )}
 
       <div className="flex flex-col gap-2">
-        <div className="flex items-center justify-between">
-          <h3 className="font-inter text-[12px] font-semibold leading-[15px] text-[#8B5CF6]">
-            Next shows
-          </h3>
-
-          {more > 0 && (
-            <Link
-              href={profileHref}
-              className="font-inter text-[12px] leading-[15px] text-[#8B5CF6] hover:underline"
-            >
-              +{more} more
-            </Link>
-          )}
-        </div>
+        <h3 className="font-inter text-[12px] font-semibold leading-[15px] text-[#8B5CF6]">
+          Next shows
+        </h3>
 
         {shows.length === 0 ? (
           <p className="rounded-lg bg-[#FEF9FF] px-3 py-3 font-inter text-[12px] leading-[15px] text-[#151E3C]/50">
@@ -140,20 +144,33 @@ export default function SponsorCard({ sponsor, stats }: Props) {
                 )}
               </div>
 
-              <ArrowRight className="h-4 w-4 shrink-0 text-[#8B5CF6]" />
+              <div className="flex shrink-0 items-center gap-2">
+                <Bookmark className="h-4 w-4 text-[#8B5CF6]" aria-hidden />
+                <ArrowRight className="h-4 w-4 text-[#8B5CF6]" aria-hidden />
+              </div>
             </Link>
           ))
         )}
       </div>
 
       <div className="mt-auto flex items-center justify-between border-t border-[#F2EFFE] pt-4">
-        <Link
-          href={profileHref}
-          className="inline-flex items-center gap-1 font-inter text-[12px] font-medium leading-[15px] text-[#8B5CF6] hover:opacity-80"
-        >
-          View profile
-          <ArrowRight className="h-3.5 w-3.5" />
-        </Link>
+        {more > 0 ? (
+          <Link
+            href={profileHref}
+            className="inline-flex items-center gap-1 font-inter text-[10px] font-bold leading-[13px] text-[#8B5CF6] hover:opacity-80"
+          >
+            +{more} More Upcoming Shows
+            <ArrowRight className="h-3 w-3" />
+          </Link>
+        ) : (
+          <Link
+            href={profileHref}
+            className="inline-flex items-center gap-1 font-inter text-[12px] font-medium leading-[15px] text-[#8B5CF6] hover:opacity-80"
+          >
+            View profile
+            <ArrowRight className="h-3.5 w-3.5" />
+          </Link>
+        )}
 
         {sponsor.website && (
           <a
@@ -165,7 +182,8 @@ export default function SponsorCard({ sponsor, stats }: Props) {
             className="inline-flex items-center gap-1.5 rounded-full border border-[#E5DFFD] bg-[#F2EFFE] px-3 py-1.5 font-inter text-[12px] font-medium leading-[15px] text-[#5B18BE] transition hover:bg-[#E5DFFD]"
           >
             <Globe className="h-3.5 w-3.5" aria-hidden />
-            Visit site
+            Visit Website
+            <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
           </a>
         )}
       </div>

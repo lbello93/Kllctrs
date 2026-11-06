@@ -8,6 +8,7 @@ import { Loader2, MailCheck, TriangleAlert } from "lucide-react";
 
 import { safeRedirect } from "@/lib/auth/safeRedirect";
 import { trackEvent } from "@/lib/analytics";
+import { createClient } from "@/lib/supabase/client";
 import {
   bodyM,
   headingM,
@@ -71,6 +72,7 @@ function SignInForm({
   onNeedsVerification: (email: string) => void;
 }) {
   const router = useRouter();
+  const [supabase] = useState(() => createClient());
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -82,31 +84,20 @@ function SignInForm({
     setLoading(true);
     setError("");
 
-    let response: Response;
-    let result: { error?: string };
-    try {
-      response = await fetch("/api/auth/sign-in", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email.trim(), password }),
-      });
-      result = await response.json();
-    } catch {
-      setLoading(false);
-      setError("Unable to connect. Please try again.");
-      return;
-    }
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
 
-    if (!response.ok) {
-      const signInError = result.error ?? "Unable to sign in. Please try again.";
+    if (signInError) {
       setLoading(false);
       // Account exists but the email link was never clicked.
-      if (signInError.toLowerCase().includes("email not confirmed")) {
+      if (signInError.message.toLowerCase().includes("email not confirmed")) {
         onNeedsVerification(email.trim());
         return;
       }
 
-      setError(signInError);
+      setError(signInError.message || "Unable to sign in. Please try again.");
       return;
     }
 
@@ -167,7 +158,10 @@ function SignInForm({
 
 /* ---------- sign up ---------- */
 
-function SignUpForm({ onSuccess }: { onSuccess: (email: string) => void }) {
+function SignUpForm() {
+  const router = useRouter();
+  const [supabase] = useState(() => createClient());
+
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
@@ -206,35 +200,34 @@ function SignUpForm({ onSuccess }: { onSuccess: (email: string) => void }) {
 
     const cleanEmail = email.trim();
 
-    let response: Response;
-    let result: { error?: string };
-    try {
-      response = await fetch("/api/auth/sign-up", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          fullName,
-          username,
-          email: cleanEmail,
-          password,
-        }),
-      });
-      result = await response.json();
-    } catch {
-      setError("Unable to connect. Please try again.");
+    const { data, error: signUpError } = await supabase.auth.signUp({
+      email: cleanEmail,
+      password,
+      options: {
+        data: {
+          full_name: fullName.trim(),
+          username: username.trim(),
+        },
+      },
+    });
+
+    if (signUpError) {
+      setError(signUpError.message || "Unable to create account. Please try again.");
       setLoading(false);
       return;
     }
 
-    if (!response.ok) {
-      setError(result.error ?? "Unable to create account. Please try again.");
+    // Supabase returns an empty identities array when the email is already registered.
+    if (data.user && data.user.identities?.length === 0) {
+      setError("An account with this email already exists. Try signing in instead.");
       setLoading(false);
       return;
     }
 
-    setLoading(false);
     trackEvent("signup");
-    onSuccess(cleanEmail);
+    // Confirm email is off → signUp returns a session and the user is logged in.
+    router.push("/");
+    router.refresh();
   }
 
   return (
@@ -418,7 +411,8 @@ function CheckEmailPanel({
 export default function AuthScreen() {
   const searchParams = useSearchParams();
 
-  const redirectTo = safeRedirect(searchParams.get("redirect"));
+  const redirectParam = searchParams.get("redirect");
+  const redirectTo = redirectParam ? safeRedirect(redirectParam) : "/";
   const callbackError = searchParams.get("error");
 
   const [mode, setMode] = useState<Mode>(
@@ -482,7 +476,7 @@ export default function AuthScreen() {
                 onNeedsVerification={setPendingEmail}
               />
             ) : (
-              <SignUpForm onSuccess={setPendingEmail} />
+              <SignUpForm />
             )}
           </>
         )}

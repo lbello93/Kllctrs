@@ -105,11 +105,10 @@ function DesktopHero() {
         {/* Buttons */}
         <div className="absolute left-[73px] top-[443px] z-40 flex items-center gap-[11px]">
           <Link
-            href="/pricing"
+            href="/maps"
             className="flex h-[48px] items-center justify-center gap-2 rounded-[4px] bg-[#F0C040] px-6 text-[14px] font-medium tracking-[-0.01em] text-black shadow-[0_4px_14px_rgba(240,192,64,0.4)] transition hover:-translate-y-0.5 hover:opacity-95"
           >
-            <Crown size={16} aria-hidden />
-            Go Pro
+            Explore Maps
           </Link>
 
           <Link
